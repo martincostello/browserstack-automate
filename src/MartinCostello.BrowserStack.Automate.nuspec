@@ -18,15 +18,15 @@
     <frameworkAssemblies>
     </frameworkAssemblies>
     <references>
-      <group targetFramework="net452">
+      <group targetFramework="net45">
         <reference file="MartinCostello.BrowserStack.Automate.dll" />
       </group>
     </references>
   </metadata>
   <files>
-    <file src="MartinCostello.BrowserStack.Automate.dll" target="lib\net452" />
-    <file src="MartinCostello.BrowserStack.Automate.pdb" target="lib\net452" />
-    <file src="MartinCostello.BrowserStack.Automate.xml" target="lib\net452" />
+    <file src="MartinCostello.BrowserStack.Automate.dll" target="lib\net45" />
+    <file src="MartinCostello.BrowserStack.Automate.pdb" target="lib\net45" />
+    <file src="MartinCostello.BrowserStack.Automate.xml" target="lib\net45" />
     <file src="src\**\*.cs" target="src" />
   </files>
 </package>
