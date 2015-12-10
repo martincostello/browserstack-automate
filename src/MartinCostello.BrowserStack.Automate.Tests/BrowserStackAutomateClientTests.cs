@@ -103,6 +103,14 @@
                     Assert.Equal(session.Item.ProjectName, sessionDetail.Item.ProjectName);
                     Assert.Equal(session.Item.Reason, sessionDetail.Item.Reason);
                     Assert.Equal(session.Item.Status, sessionDetail.Item.Status);
+
+                    // Act
+                    SessionItem updatedSession = await target.SetSessionCompletedAsync(session.Item.HashedId, string.Empty);
+
+                    // Assert
+                    Assert.NotNull(updatedSession);
+                    Assert.NotNull(updatedSession.Item);
+                    Assert.Equal(session.Item.HashedId, updatedSession.Item.HashedId);
                 }
 
                 // Arrange

@@ -285,7 +285,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <exception cref="ArgumentException">
         /// <paramref name="sessionId"/> or <paramref name="status"/> is <see langword="null"/> or white space.
         /// </exception>
-        public virtual async Task<string> SetSessionStatusAsync(string sessionId, string status, string reason)
+        public virtual async Task<SessionItem> SetSessionStatusAsync(string sessionId, string status, string reason)
         {
             if (string.IsNullOrWhiteSpace(sessionId))
             {
@@ -313,7 +313,7 @@ namespace MartinCostello.BrowserStack.Automate
                 using (var response = await client.PutAsJsonAsync(requestUri, value))
                 {
                     response.EnsureSuccessStatusCode();
-                    return await response.Content.ReadAsStringAsync();
+                    return await response.Content.ReadAsAsync<SessionItem>();
                 }
             }
         }
