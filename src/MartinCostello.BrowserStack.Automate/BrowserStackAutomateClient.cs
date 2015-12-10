@@ -295,12 +295,12 @@ namespace MartinCostello.BrowserStack.Automate
         /// Recycles the current access key as an asynchronous operation.
         /// </summary>
         /// <returns>
-        /// A <see cref="Task{TResult}"/> representing the asynchronous operation to recycle the access key which returns the new access token.
+        /// A <see cref="Task{TResult}"/> representing the asynchronous operation to recycle the access key which returns the new and old access keys.
         /// </returns>
         /// <remarks>
         /// The credentials used by the current instance are automatically updated if successful.
         /// </remarks>
-        public virtual async Task<string> RecycleAccessTokenAsync()
+        public virtual async Task<RecycleAccessKeyResult> RecycleAccessKeyAsync()
         {
             var value = new { };
 
@@ -309,11 +309,15 @@ namespace MartinCostello.BrowserStack.Automate
                 using (var response = await client.PutAsJsonAsync("recycle_key.json", value))
                 {
                     response.EnsureSuccessStatusCode();
-                    string newAccessToken = await response.Content.ReadAsStringAsync();
 
-                    SetAuthorization(UserName, newAccessToken);
+                    RecycleAccessKeyResult result = await response.Content.ReadAsAsync<RecycleAccessKeyResult>();
 
-                    return newAccessToken;
+                    if (result != null)
+                    {
+                        SetAuthorization(UserName, result.NewKey);
+                    }
+
+                    return result;
                 }
             }
         }
@@ -431,10 +435,10 @@ namespace MartinCostello.BrowserStack.Automate
         /// Sets the <c>Authorization</c> header value used by this instance.
         /// </summary>
         /// <param name="userName">The user name to use.</param>
-        /// <param name="accessToken">The access key to use.</param>
-        private void SetAuthorization(string userName, string accessToken)
+        /// <param name="accessKey">The access key to use.</param>
+        private void SetAuthorization(string userName, string accessKey)
         {
-            Authorization = Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format(CultureInfo.InvariantCulture, "{0}:{1}", userName, accessToken)));
+            Authorization = Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format(CultureInfo.InvariantCulture, "{0}:{1}", userName, accessKey)));
         }
     }
 }

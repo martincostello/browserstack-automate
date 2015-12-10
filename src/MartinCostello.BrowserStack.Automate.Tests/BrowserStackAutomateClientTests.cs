@@ -175,6 +175,22 @@
             Assert.StartsWith("The limit value cannot be less than one.", error.Message);
         }
 
+        [RequiresServiceCredentialsFact(Skip = "Test can only be run manually so that the API key can be updated.")]
+        public static async Task Can_Recycle_BrowserStack_Api_Key()
+        {
+            // Arrange
+            string expected = Environment.GetEnvironmentVariable("BrowserStack_AccessKey");
+            BrowserStackAutomateClient target = CreateAuthenticatedClient();
+
+            // Act
+            RecycleAccessKeyResult actual = await target.RecycleAccessKeyAsync();
+
+            // Assert
+            Assert.NotNull(actual);
+            Assert.Equal(expected, actual.OldKey);
+            Assert.NotEqual(expected, actual.NewKey);
+        }
+
         /// <summary>
         /// Creates an authenticated instance of <see cref="BrowserStackAutomateClient"/>.
         /// </summary>
