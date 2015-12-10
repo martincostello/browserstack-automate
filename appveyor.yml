@@ -4,7 +4,7 @@ environment:
   BrowserStack_UserName:
     secure: 1pPava/umi31t0fUJWpcaw==
   BrowserStack_AccessKey:
-    secure: Hpvay+UTQJ0RPuhYSEckLmeHzjMmq8hFzVLGVns+Z/c=
+    secure: kTuv757nz0qovSIwBwGIIFeb2X3PXJuci0mJjGMJuIk=
 
 assembly_info:
   patch: true
