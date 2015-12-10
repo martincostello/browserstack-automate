@@ -7,6 +7,7 @@ Bin
 BuildOutput
 obj
 packages
+project.lock.json
 TestResults
 *.DotSettings
 *.GhostDoc.xml
