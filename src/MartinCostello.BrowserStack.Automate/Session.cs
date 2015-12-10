@@ -9,7 +9,7 @@ namespace MartinCostello.BrowserStack.Automate
     /// A class representing a session.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{" + nameof(Name) + "}")]
-    public class Session
+    public class Session : IBrowserInfo
     {
         /// <summary>
         /// Gets or sets the reason.

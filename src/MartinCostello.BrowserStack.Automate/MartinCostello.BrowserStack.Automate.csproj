@@ -60,6 +60,7 @@
     <Compile Include="BuildItem.cs" />
     <Compile Include="BuildStatuses.cs" />
     <Compile Include="IAutomateItem`1.cs" />
+    <Compile Include="IBrowserInfo.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="ProjectDetail.cs" />
     <Compile Include="ProjectDetailItem.cs" />

@@ -9,7 +9,7 @@ namespace MartinCostello.BrowserStack.Automate
     /// A class representing a browser.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{" + nameof(BrowserName) + "}")]
-    public class Browser
+    public class Browser : IBrowserInfo
     {
         /// <summary>
         /// Gets or sets the Operating System version.
