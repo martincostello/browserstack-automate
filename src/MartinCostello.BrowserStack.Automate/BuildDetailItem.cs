@@ -8,7 +8,7 @@ namespace MartinCostello.BrowserStack.Automate
     /// <summary>
     /// A class representing a build detail item.
     /// </summary>
-    public class BuildDetailItem
+    public class BuildDetailItem : IAutomateItem<BuildDetail>
     {
         /// <summary>
         /// Gets or sets the build.

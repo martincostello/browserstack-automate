@@ -3,17 +3,15 @@
 
 namespace MartinCostello.BrowserStack.Automate
 {
-    using Newtonsoft.Json;
-
     /// <summary>
-    /// A class representing a build item.
+    /// Defines an item returned from the <c>BrowserStack</c> Automate API.
     /// </summary>
-    public class BuildItem : IAutomateItem<Build>
+    /// <typeparam name="T">The type of the item.</typeparam>
+    public interface IAutomateItem<T>
     {
         /// <summary>
-        /// Gets or sets the build.
+        /// Gets the item.
         /// </summary>
-        [JsonProperty("automation_build")]
-        public Build Item { get; set; }
+        T Item { get; }
     }
 }

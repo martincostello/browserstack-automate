@@ -8,7 +8,7 @@ namespace MartinCostello.BrowserStack.Automate
     /// <summary>
     /// A class representing a session detail item.
     /// </summary>
-    public class SessionDetailItem
+    public class SessionDetailItem : IAutomateItem<SessionDetail>
     {
         /// <summary>
         /// Gets or sets the session.
