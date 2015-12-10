@@ -295,32 +295,6 @@
         }
 
         [Fact]
-        public static async Task GetSessionLogsAsync_Throws_If_BuildId_Is_Null()
-        {
-            // Arrange
-            BrowserStackAutomateClient target = CreateClient();
-
-            string buildId = null;
-            string sessionId = string.Empty;
-
-            // Act and Assert
-            await Assert.ThrowsAsync<ArgumentException>("buildId", () => target.GetSessionLogsAsync(buildId, sessionId));
-        }
-
-        [Fact]
-        public static async Task GetSessionLogsAsync_Throws_If_SessionId_Is_Null()
-        {
-            // Arrange
-            BrowserStackAutomateClient target = CreateClient();
-
-            string buildId = "x";
-            string sessionId = null;
-
-            // Act and Assert
-            await Assert.ThrowsAsync<ArgumentException>("sessionId", () => target.GetSessionLogsAsync(buildId, sessionId));
-        }
-
-        [Fact]
         public static async Task GetSessionsAsync_Throws_If_BuildId_Is_Null()
         {
             // Arrange

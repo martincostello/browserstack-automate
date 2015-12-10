@@ -178,45 +178,6 @@ namespace MartinCostello.BrowserStack.Automate
         }
 
         /// <summary>
-        /// Gets the logs of the session associated with the specified build Id as an asynchronous operation.
-        /// </summary>
-        /// <param name="buildId">The build Id of the session.</param>
-        /// <param name="sessionId">The session Id to return the logs for.</param>
-        /// <returns>
-        /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the logs for the session with the specified Id.
-        /// </returns>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="buildId"/> or <paramref name="sessionId"/> is <see langword="null"/> or white space.
-        /// </exception>
-        public virtual async Task<string> GetSessionLogsAsync(string buildId, string sessionId)
-        {
-            if (string.IsNullOrWhiteSpace(buildId))
-            {
-                throw new ArgumentException("No build Id specified.", nameof(buildId));
-            }
-
-            if (string.IsNullOrWhiteSpace(sessionId))
-            {
-                throw new ArgumentException("No session Id specified.", nameof(sessionId));
-            }
-
-            string requestUri = string.Format(
-                CultureInfo.InvariantCulture,
-                "builds/{0}/sessions/{1}/logs",
-                Uri.EscapeDataString(buildId),
-                Uri.EscapeDataString(sessionId));
-
-            using (var client = CreateClient())
-            {
-                using (var response = await client.GetAsync(requestUri))
-                {
-                    response.EnsureSuccessStatusCode();
-                    return await response.Content.ReadAsStringAsync();
-                }
-            }
-        }
-
-        /// <summary>
         /// Gets the sessions associated with the specified build Id as an asynchronous operation.
         /// </summary>
         /// <param name="buildId">The build Id of the sessions to return.</param>
