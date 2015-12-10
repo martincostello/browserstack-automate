@@ -1,18 +1,15 @@
 # BrowserStack Automate REST API C# Client
 
-<!--
 ## Build Status
 
 [![Build status](https://img.shields.io/appveyor/ci/martincostello/browserstack-automate/master.svg)](https://ci.appveyor.com/project/martincostello/browserstack-automate) [![Coverage Status](https://img.shields.io/codecov/c/github/martincostello/browserstack-automate/master.svg)](https://codecov.io/github/martincostello/browserstack-automate)
 
 [![Build History](https://ci-buildstats.azurewebsites.net/appveyor/chart/martincostello/browserstack-automate?branch=master&includeBuildsFromPullRequest=false)](https://ci.appveyor.com/project/martincostello/browserstack-automate)
--->
 
 ## Overview
 
 This repository contains a C# client library and a NuGet package for the [BrowserStack Automate](https://www.browserstack.com/automate) REST API.
 
-<!--
 ## Installation
 
 ```batchfile
@@ -43,7 +40,6 @@ To compile the application, you can do any of the following:
 
  * Open ```src\MartinCostello.BrowserStack.Automate.sln``` in Visual Studio;
  * Run ```Build.cmd``` from the command prompt.
--->
 
 ## License
 
