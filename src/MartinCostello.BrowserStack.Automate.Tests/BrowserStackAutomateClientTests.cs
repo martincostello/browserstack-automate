@@ -1,6 +1,8 @@
 ﻿namespace MartinCostello.BrowserStack.Automate
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Xunit;
 
@@ -16,28 +18,145 @@
             BrowserStackAutomateClient target = CreateAuthenticatedClient();
 
             // Act
-            var browsers = await target.GetBrowsersAsync();
+            ICollection<Browser> browsers = await target.GetBrowsersAsync();
 
             // Assert
             Assert.NotNull(browsers);
+            Assert.NotEmpty(browsers);
+
+            Assert.True(browsers.Any((p) => !string.IsNullOrEmpty(p.BrowserVersion)));
+            Assert.True(browsers.Any((p) => !string.IsNullOrEmpty(p.Device)));
+
+            foreach (var browser in browsers)
+            {
+                Assert.NotNull(browser);
+                Assert.False(string.IsNullOrEmpty(browser.BrowserName));
+                Assert.False(string.IsNullOrEmpty(browser.OSName));
+                Assert.False(string.IsNullOrEmpty(browser.OSVersion));
+            }
 
             // Act
-            var builds = await target.GetBuildsAsync();
+            ICollection<BuildItem> builds = await target.GetBuildsAsync();
+
+            // Assert
+            Assert.NotNull(builds);
+            Assert.NotEmpty(builds);
+
+            foreach (var build in builds)
+            {
+                Assert.NotNull(build);
+                Assert.NotNull(build.Item);
+                Assert.True(build.Item.Duration >= 1);
+                Assert.False(string.IsNullOrEmpty(build.Item.HashedId));
+                Assert.False(string.IsNullOrEmpty(build.Item.Name));
+                Assert.False(string.IsNullOrEmpty(build.Item.Status));
+            }
+
+            // Arrange
+            int? limit = 5;
+            string status = null;
+
+            // Act
+            builds = await target.GetBuildsAsync(limit, status);
+
+            // Assert
+            Assert.NotNull(builds);
+            Assert.True(builds.Count <= limit.Value);
+
+            foreach (var build in builds)
+            {
+                Assert.NotNull(build);
+                Assert.NotNull(build.Item);
+                Assert.True(build.Item.Duration >= 1);
+                Assert.False(string.IsNullOrEmpty(build.Item.HashedId));
+                Assert.False(string.IsNullOrEmpty(build.Item.Name));
+                Assert.False(string.IsNullOrEmpty(build.Item.Status));
+            }
+
+            // Arrange
+            limit = null;
+            status = BuildStatuses.Done;
+
+            // Act
+            builds = await target.GetBuildsAsync(limit, status);
 
             // Assert
             Assert.NotNull(builds);
 
+            foreach (var build in builds)
+            {
+                Assert.NotNull(build);
+                Assert.NotNull(build.Item);
+                Assert.True(build.Item.Duration >= 1);
+                Assert.False(string.IsNullOrEmpty(build.Item.HashedId));
+                Assert.False(string.IsNullOrEmpty(build.Item.Name));
+                Assert.Equal(status, build.Item.Status);
+            }
+
             // Act
-            var projects = await target.GetProjectsAsync();
+            ICollection<ProjectItem> projects = await target.GetProjectsAsync();
 
             // Assert
             Assert.NotNull(projects);
+            Assert.NotEmpty(projects);
+
+            DateTime minimumDate = new DateTime(2011, 1, 1, 0, 0, 0);
+
+            foreach (var project in projects)
+            {
+                Assert.NotNull(project);
+                Assert.NotNull(project.Item);
+                Assert.True(project.Item.Id > 0);
+                Assert.True(project.Item.GroupId > 0);
+                Assert.True(project.Item.CreatedAt > minimumDate);
+                Assert.True(project.Item.UpdatedAt > minimumDate);
+                Assert.False(string.IsNullOrEmpty(project.Item.Name));
+            }
+
+            // Arrange
+            foreach (int projectId in projects.Select((p) => p.Item.Id))
+            {
+                // Act
+                ProjectDetailItem project = await target.GetProjectAsync(projectId);
+
+                // Assert
+                Assert.NotNull(project);
+                Assert.NotNull(project.Item);
+                Assert.True(project.Item.Id > 0);
+                Assert.True(project.Item.GroupId > 0);
+                Assert.True(project.Item.CreatedAt > minimumDate);
+                Assert.True(project.Item.UpdatedAt > minimumDate);
+                Assert.False(string.IsNullOrEmpty(project.Item.Name));
+
+                Assert.NotNull(project.Item.Builds);
+                Assert.NotEmpty(project.Item.Builds);
+
+                foreach (var build in project.Item.Builds)
+                {
+                    Assert.NotNull(build);
+                    Assert.NotNull(build.Item);
+
+                    Assert.True(project.Item.CreatedAt >= project.Item.CreatedAt);
+                    Assert.True(build.Item.Duration >= 1);
+                    Assert.True(build.Item.Id > 0);
+                    Assert.False(string.IsNullOrEmpty(build.Item.HashedId));
+                    Assert.False(string.IsNullOrEmpty(build.Item.Name));
+                    Assert.False(string.IsNullOrEmpty(build.Item.Status));
+                    Assert.True(project.Item.UpdatedAt > project.Item.CreatedAt);
+                    Assert.Equal(project.Item.GroupId, build.Item.GroupId);
+                    Assert.Equal(project.Item.Id, build.Item.ProjectId);
+                    Assert.True(build.Item.UserId > 0);
+                }
+            }
 
             // Act
-            var status = await target.GetStatusAsync();
+            AutomatePlanStatus plan = await target.GetStatusAsync();
 
             // Assert
             Assert.NotNull(status);
+            Assert.False(string.IsNullOrEmpty(plan.AutomatePlan));
+            Assert.True(plan.MaximumAllowedParallelSessions >= 1);
+            Assert.True(plan.ParallelSessionsRunning >= 0);
         }
 
         [Fact]
@@ -50,18 +169,6 @@
             Assert.Throws<ArgumentException>("accessKey", () => new BrowserStackAutomateClient("MyUserName", null));
             Assert.Throws<ArgumentException>("accessKey", () => new BrowserStackAutomateClient("MyUserName", string.Empty));
             Assert.Throws<ArgumentException>("accessKey", () => new BrowserStackAutomateClient("MyUserName", "          "));
-        }
-
-        [Fact]
-        public static async Task GetProjectAsync_Throws_If_ProjectId_Is_Null()
-        {
-            // Arrange
-            BrowserStackAutomateClient target = CreateClient();
-
-            string projectId = null;
-
-            // Act and Assert
-            await Assert.ThrowsAsync<ArgumentException>("projectId", () => target.GetProjectAsync(projectId));
         }
 
         [Fact]

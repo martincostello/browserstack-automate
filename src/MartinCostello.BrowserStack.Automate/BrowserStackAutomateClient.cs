@@ -4,11 +4,14 @@
 namespace MartinCostello.BrowserStack.Automate
 {
     using System;
+    using System.Collections.Generic;
     using System.Globalization;
+    using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Text;
     using System.Threading.Tasks;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// A class representing a client for the <c>BrowserStack</c> Automate REST API.
@@ -60,14 +63,14 @@ namespace MartinCostello.BrowserStack.Automate
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the browsers.
         /// </returns>
-        public virtual async Task<string> GetBrowsersAsync()
+        public virtual async Task<ICollection<Browser>> GetBrowsersAsync()
         {
             using (var client = CreateClient())
             {
                 using (var response = await client.GetAsync("browsers.json"))
                 {
                     response.EnsureSuccessStatusCode();
-                    return await response.Content.ReadAsStringAsync();
+                    return await response.Content.ReadAsAsync<List<Browser>>();
                 }
             }
         }
@@ -78,7 +81,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the builds.
         /// </returns>
-        public virtual Task<string> GetBuildsAsync() => GetBuildsAsync(null, null);
+        public virtual Task<ICollection<BuildItem>> GetBuildsAsync() => GetBuildsAsync(null, null);
 
         /// <summary>
         /// Gets the builds as an asynchronous operation.
@@ -88,7 +91,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the builds.
         /// </returns>
-        public virtual async Task<string> GetBuildsAsync(int? limit, string status)
+        public virtual async Task<ICollection<BuildItem>> GetBuildsAsync(int? limit, string status)
         {
             string requestUri = string.Format(
                 CultureInfo.InvariantCulture,
@@ -100,7 +103,7 @@ namespace MartinCostello.BrowserStack.Automate
                 using (var response = await client.GetAsync(requestUri))
                 {
                     response.EnsureSuccessStatusCode();
-                    return await response.Content.ReadAsStringAsync();
+                    return await response.Content.ReadAsAsync<List<BuildItem>>();
                 }
             }
         }
@@ -112,27 +115,16 @@ namespace MartinCostello.BrowserStack.Automate
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the project with the specified Id.
         /// </returns>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="projectId"/> is <see langword="null"/> or white space.
-        /// </exception>
-        public virtual async Task<string> GetProjectAsync(string projectId)
+        public virtual async Task<ProjectDetailItem> GetProjectAsync(int projectId)
         {
-            if (string.IsNullOrWhiteSpace(projectId))
-            {
-                throw new ArgumentException("No project Id specified.", nameof(projectId));
-            }
-
-            string requestUri = string.Format(
-                CultureInfo.InvariantCulture,
-                "projects/{0}.json",
-                Uri.EscapeDataString(projectId));
+            string requestUri = string.Format(CultureInfo.InvariantCulture, "projects/{0}.json", projectId);
 
             using (var client = CreateClient())
             {
                 using (var response = await client.GetAsync(requestUri))
                 {
                     response.EnsureSuccessStatusCode();
-                    return await response.Content.ReadAsStringAsync();
+                    return await response.Content.ReadAsAsync<ProjectDetailItem>();
                 }
             }
         }
@@ -143,14 +135,14 @@ namespace MartinCostello.BrowserStack.Automate
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the projects.
         /// </returns>
-        public virtual async Task<string> GetProjectsAsync()
+        public virtual async Task<ICollection<ProjectItem>> GetProjectsAsync()
         {
             using (var client = CreateClient())
             {
                 using (var response = await client.GetAsync("projects.json"))
                 {
                     response.EnsureSuccessStatusCode();
-                    return await response.Content.ReadAsStringAsync();
+                    return await response.Content.ReadAsAsync<List<ProjectItem>>();
                 }
             }
         }
@@ -196,7 +188,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the logs for the session with the specified Id.
         /// </returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="sessionId"/> is <see langword="null"/> or white space.
+        /// <paramref name="buildId"/> or <paramref name="sessionId"/> is <see langword="null"/> or white space.
         /// </exception>
         public virtual async Task<string> GetSessionLogsAsync(string buildId, string sessionId)
         {
@@ -279,14 +271,14 @@ namespace MartinCostello.BrowserStack.Automate
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the status of the Automate plan.
         /// </returns>
-        public virtual async Task<string> GetStatusAsync()
+        public virtual async Task<AutomatePlanStatus> GetStatusAsync()
         {
             using (var client = CreateClient())
             {
                 using (var response = await client.GetAsync("plan.json"))
                 {
                     response.EnsureSuccessStatusCode();
-                    return await response.Content.ReadAsStringAsync();
+                    return await response.Content.ReadAsAsync<AutomatePlanStatus>();
                 }
             }
         }
