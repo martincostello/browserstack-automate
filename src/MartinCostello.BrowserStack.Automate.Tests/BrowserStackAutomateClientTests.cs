@@ -65,7 +65,8 @@
                 Assert.NotNull(sessions);
                 Assert.NotEmpty(sessions);
 
-                foreach (var session in sessions)
+                // Limit the sessions for performance
+                foreach (var session in sessions.Take(1))
                 {
                     Assert.NotNull(session);
                     Assert.NotNull(session.Item);
@@ -81,6 +82,27 @@
                     Assert.False(string.IsNullOrEmpty(session.Item.Reason));
                     Assert.False(string.IsNullOrEmpty(session.Item.Status));
                     Assert.True(session.Item.Duration > 0);
+
+                    // Act
+                    var sessionDetail = await target.GetSessionAsync(session.Item.HashedId);
+
+                    // Assert
+                    Assert.NotNull(sessionDetail);
+                    Assert.NotNull(sessionDetail.Item);
+                    Assert.NotNull(sessionDetail.Item.BrowserUri);
+                    Assert.NotNull(sessionDetail.Item.VideoUri);
+                    Assert.Equal(session.Item.BrowserName, sessionDetail.Item.BrowserName);
+                    Assert.Equal(session.Item.BrowserVersion, sessionDetail.Item.BrowserVersion);
+                    Assert.Equal(session.Item.BuildName, sessionDetail.Item.BuildName);
+                    Assert.Equal(session.Item.Duration, sessionDetail.Item.Duration);
+                    Assert.Equal(session.Item.HashedId, sessionDetail.Item.HashedId);
+                    Assert.Equal(session.Item.LogsUri, sessionDetail.Item.LogsUri);
+                    Assert.Equal(session.Item.Name, sessionDetail.Item.Name);
+                    Assert.Equal(session.Item.OSName, sessionDetail.Item.OSName);
+                    Assert.Equal(session.Item.OSVersion, sessionDetail.Item.OSVersion);
+                    Assert.Equal(session.Item.ProjectName, sessionDetail.Item.ProjectName);
+                    Assert.Equal(session.Item.Reason, sessionDetail.Item.Reason);
+                    Assert.Equal(session.Item.Status, sessionDetail.Item.Status);
                 }
 
                 // Arrange
