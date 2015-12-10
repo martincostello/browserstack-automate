@@ -1,0 +1,32 @@
+version: 1.0.{build}
+
+environment:
+  BrowserStack_UserName:
+    secure: 1pPava/umi31t0fUJWpcaw==
+  BrowserStack_AccessKey:
+    secure: Hpvay+UTQJ0RPuhYSEckLmeHzjMmq8hFzVLGVns+Z/c=
+
+assembly_info:
+  patch: true
+  file: AssemblyVersion.cs
+  assembly_version: "1.0.0.0"
+  assembly_file_version: "{version}.0"
+  assembly_informational_version: "{version}.0"
+
+build:
+  project: src\MartinCostello.BrowserStack.Automate.msbuild
+  verbosity: minimal
+
+after_build:
+    - "SET PATH=C:\\Python34;C:\\Python34\\Scripts;%PATH%"
+    - pip install codecov
+    - codecov -f "src\BuildOutput\MartinCostello.BrowserStack.Automate_coverage.xml"
+
+artifacts:
+  - path: src\BuildOutput\*.nupkg
+
+nuget:
+  disable_publish_on_pr: true
+
+skip_tags: false
+test: off
