@@ -17,6 +17,9 @@
             // Arrange
             BrowserStackAutomateClient target = CreateAuthenticatedClient();
 
+            int? limit;
+            string status;
+
             // Act
             ICollection<Browser> browsers = await target.GetBrowsersAsync();
 
@@ -53,8 +56,94 @@
             }
 
             // Arrange
-            int? limit = 5;
-            string status = null;
+            foreach (var build in builds)
+            {
+                // Act
+                ICollection<SessionItem> sessions = await target.GetSessionsAsync(build.Item.HashedId);
+
+                // Assert
+                Assert.NotNull(sessions);
+                Assert.NotEmpty(sessions);
+
+                foreach (var session in sessions)
+                {
+                    Assert.NotNull(session);
+                    Assert.NotNull(session.Item);
+                    Assert.False(string.IsNullOrEmpty(session.Item.BrowserName));
+                    Assert.False(string.IsNullOrEmpty(session.Item.BrowserVersion));
+                    Assert.Equal(build.Item.Name, session.Item.BuildName);
+                    Assert.False(string.IsNullOrEmpty(session.Item.HashedId));
+                    Assert.False(string.IsNullOrEmpty(session.Item.LogsUri));
+                    Assert.False(string.IsNullOrEmpty(session.Item.Name));
+                    Assert.False(string.IsNullOrEmpty(session.Item.OSName));
+                    Assert.False(string.IsNullOrEmpty(session.Item.OSVersion));
+                    Assert.False(string.IsNullOrEmpty(session.Item.ProjectName));
+                    Assert.False(string.IsNullOrEmpty(session.Item.Reason));
+                    Assert.False(string.IsNullOrEmpty(session.Item.Status));
+                    Assert.True(session.Item.Duration > 0);
+                }
+
+                // Arrange
+                limit = 5;
+                status = null;
+
+                // Act
+                sessions = await target.GetSessionsAsync(build.Item.HashedId, limit, status);
+
+                // Assert
+                Assert.NotNull(sessions);
+                Assert.True(sessions.Count <= limit);
+
+                foreach (var session in sessions)
+                {
+                    Assert.NotNull(session);
+                    Assert.NotNull(session.Item);
+                    Assert.False(string.IsNullOrEmpty(session.Item.BrowserName));
+                    Assert.False(string.IsNullOrEmpty(session.Item.BrowserVersion));
+                    Assert.Equal(build.Item.Name, session.Item.BuildName);
+                    Assert.False(string.IsNullOrEmpty(session.Item.HashedId));
+                    Assert.False(string.IsNullOrEmpty(session.Item.LogsUri));
+                    Assert.False(string.IsNullOrEmpty(session.Item.Name));
+                    Assert.False(string.IsNullOrEmpty(session.Item.OSName));
+                    Assert.False(string.IsNullOrEmpty(session.Item.OSVersion));
+                    Assert.False(string.IsNullOrEmpty(session.Item.ProjectName));
+                    Assert.False(string.IsNullOrEmpty(session.Item.Reason));
+                    Assert.False(string.IsNullOrEmpty(session.Item.Status));
+                    Assert.True(session.Item.Duration > 0);
+                }
+
+                // Arrange
+                limit = null;
+                status = SessionStatuses.Done;
+
+                // Act
+                sessions = await target.GetSessionsAsync(build.Item.HashedId, limit, status);
+
+                // Assert
+                Assert.NotNull(sessions);
+
+                foreach (var session in sessions)
+                {
+                    Assert.NotNull(session);
+                    Assert.NotNull(session.Item);
+                    Assert.False(string.IsNullOrEmpty(session.Item.BrowserName));
+                    Assert.False(string.IsNullOrEmpty(session.Item.BrowserVersion));
+                    Assert.Equal(build.Item.Name, session.Item.BuildName);
+                    Assert.False(string.IsNullOrEmpty(session.Item.HashedId));
+                    Assert.False(string.IsNullOrEmpty(session.Item.LogsUri));
+                    Assert.False(string.IsNullOrEmpty(session.Item.Name));
+                    Assert.False(string.IsNullOrEmpty(session.Item.OSName));
+                    Assert.False(string.IsNullOrEmpty(session.Item.OSVersion));
+                    Assert.False(string.IsNullOrEmpty(session.Item.ProjectName));
+                    Assert.False(string.IsNullOrEmpty(session.Item.Reason));
+                    Assert.Equal(status, session.Item.Status);
+                    Assert.True(session.Item.Duration > 0);
+                }
+            }
+
+            // Arrange
+            limit = 5;
+            status = null;
 
             // Act
             builds = await target.GetBuildsAsync(limit, status);

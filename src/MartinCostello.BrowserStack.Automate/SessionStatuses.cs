@@ -14,6 +14,11 @@ namespace MartinCostello.BrowserStack.Automate
         public static string Completed => "completed";
 
         /// <summary>
+        /// Gets the name of the status for a session which is done.
+        /// </summary>
+        public static string Done => BuildStatuses.Done;
+
+        /// <summary>
         /// Gets the name of the status for a session which has an error.
         /// </summary>
         public static string Error => "error";

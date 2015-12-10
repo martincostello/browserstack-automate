@@ -6,12 +6,10 @@ namespace MartinCostello.BrowserStack.Automate
     using System;
     using System.Collections.Generic;
     using System.Globalization;
-    using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Text;
     using System.Threading.Tasks;
-    using Newtonsoft.Json;
 
     /// <summary>
     /// A class representing a client for the <c>BrowserStack</c> Automate REST API.
@@ -228,7 +226,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <exception cref="ArgumentException">
         /// <paramref name="buildId"/> is <see langword="null"/> or white space.
         /// </exception>
-        public virtual Task<string> GetSessionsAsync(string buildId) => GetSessionsAsync(buildId, null, null);
+        public virtual Task<ICollection<SessionItem>> GetSessionsAsync(string buildId) => GetSessionsAsync(buildId, null, null);
 
         /// <summary>
         /// Gets the sessions associated with the specified build Id as an asynchronous operation.
@@ -242,7 +240,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <exception cref="ArgumentException">
         /// <paramref name="buildId"/> is <see langword="null"/> or white space.
         /// </exception>
-        public virtual async Task<string> GetSessionsAsync(string buildId, int? limit, string status)
+        public virtual async Task<ICollection<SessionItem>> GetSessionsAsync(string buildId, int? limit, string status)
         {
             if (string.IsNullOrWhiteSpace(buildId))
             {
@@ -260,7 +258,7 @@ namespace MartinCostello.BrowserStack.Automate
                 using (var response = await client.GetAsync(requestUri))
                 {
                     response.EnsureSuccessStatusCode();
-                    return await response.Content.ReadAsStringAsync();
+                    return await response.Content.ReadAsAsync<List<SessionItem>>();
                 }
             }
         }
