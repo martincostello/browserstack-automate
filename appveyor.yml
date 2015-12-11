@@ -30,3 +30,11 @@ nuget:
 
 skip_tags: false
 test: off
+
+deploy:
+
+  - provider: NuGet
+    api_key:
+      secure: 7xiMOBgPvPg3LrtOPUFfhJJqcCU/fKHWG9WHVDgPnBI74dAd3lgeh1VxL7qjM5R0
+    artifact: /.*\.nupkg/
+    skip_symbols: false
