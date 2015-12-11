@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="browserstack-automate : .NET client for the BrowserStack Automate REST API">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>browserstack-automate</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/martincostello/browserstack-automate">View on GitHub</a>
+
+          <h1 id="project_title">browserstack-automate</h1>
+          <h2 id="project_tagline">.NET client for the BrowserStack Automate REST API</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/martincostello/browserstack-automate/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/martincostello/browserstack-automate/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="browserstack-automate-rest-api-net-client" class="anchor" href="#browserstack-automate-rest-api-net-client" aria-hidden="true"><span class="octicon octicon-link"></span></a>BrowserStack Automate REST API .NET Client</h1>
+
+<h2>
+<a id="build-status" class="anchor" href="#build-status" aria-hidden="true"><span class="octicon octicon-link"></span></a>Build Status</h2>
+
+<p><a href="https://ci.appveyor.com/project/martincostello/browserstack-automate"><img src="https://img.shields.io/appveyor/ci/martincostello/browserstack-automate/master.svg" alt="Build status"></a> <a href="https://codecov.io/github/martincostello/browserstack-automate"><img src="https://img.shields.io/codecov/c/github/martincostello/browserstack-automate/master.svg" alt="Coverage Status"></a></p>
+
+<p><a href="http://www.nuget.org/packages/MartinCostello.BrowserStack.Automate"><img src="https://img.shields.io/nuget/dt/MartinCostello.BrowserStack.Automate.svg?label=NuGet%20Downloads" alt="NuGet Downloads"></a> <a href="http://www.nuget.org/packages/MartinCostello.BrowserStack.Automate"><img src="https://img.shields.io/nuget/v/MartinCostello.BrowserStack.Automate.svg?label=Latest%20NuGet%20Package" alt="Latest NuGet Package Version"></a></p>
+
+<p><a href="https://ci.appveyor.com/project/martincostello/browserstack-automate"><img src="https://ci-buildstats.azurewebsites.net/appveyor/chart/martincostello/browserstack-automate?branch=master&amp;includeBuildsFromPullRequest=false" alt="Build History"></a></p>
+
+<h2>
+<a id="overview" class="anchor" href="#overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview</h2>
+
+<p>This repository contains a .NET client library/NuGet package for the <a href="https://www.browserstack.com/automate">BrowserStack Automate</a> REST API.</p>
+
+<p>Features include:</p>
+
+<ul>
+<li>Querying the status of a BrowserStack Automate plan.</li>
+<li>Querying the available browsers.</li>
+<li>Querying builds.</li>
+<li>Querying projects.</li>
+<li>Querying sessions.</li>
+<li>Setting the status of a session.</li>
+<li>Regenerating the API access key.</li>
+</ul>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<div class="highlight highlight-source-dosbatch"><pre>Install-Package MartinCostello.BrowserStack.Automate</pre></div>
+
+<h2>
+<a id="usage-examples" class="anchor" href="#usage-examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage Examples</h2>
+
+<p>The following example shows a custom <a href="https://xunit.github.io/">xUnit.net</a> <code>[Trait]</code> that checks for an available BrowserStack Automate session before running the test, otherwise it is skipped.</p>
+
+<div class="highlight highlight-source-cs"><pre><span class="pl-k">namespace</span> <span class="pl-en">MyApp.Tests</span>
+{
+    <span class="pl-k">using</span> System;
+    <span class="pl-k">using</span> System.Configuration;
+    <span class="pl-k">using</span> MartinCostello.BrowserStack.Automate;
+    <span class="pl-k">using</span> Xunit;
+
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = <span class="pl-c1">false</span>)]
+    <span class="pl-k">public</span> <span class="pl-k">sealed</span> <span class="pl-k">class</span> <span class="pl-en">RequiresBrowserStackAutomateAttribute</span> : <span class="pl-k">FactAttribute</span>
+    {
+        <span class="pl-k">public</span> <span class="pl-en">RequiresBrowserStackAutomateAttribute</span>()
+        {
+            <span class="pl-k">string</span> userName = ConfigurationManager.AppSettings[<span class="pl-s"><span class="pl-pds">"</span>BrowserStack:UserName<span class="pl-pds">"</span></span>];
+            <span class="pl-k">string</span> accessKey = ConfigurationManager.AppSettings[<span class="pl-s"><span class="pl-pds">"</span>BrowserStack:AccessKey<span class="pl-pds">"</span></span>];
+
+            <span class="pl-k">var</span> client = <span class="pl-k">new</span> BrowserStackAutomateClient(userName, accessKey);
+            <span class="pl-k">var</span> plan = client.GetStatusAsync().Result;
+
+            <span class="pl-k">if</span> (plan.MaximumAllowedParallelSessions &lt; <span class="pl-c1">1</span> ||
+                plan.ParallelSessionsRunning == plan.MaximumAllowedParallelSessions)
+            {
+                Skip = <span class="pl-s"><span class="pl-pds">"</span>No BrowserStack Automate sessions are currently available.<span class="pl-pds">"</span></span>;
+            }
+        }
+    }
+}</pre></div>
+
+<h2>
+<a id="prerequisites" class="anchor" href="#prerequisites" aria-hidden="true"><span class="octicon octicon-link"></span></a>Prerequisites</h2>
+
+<h3>
+<a id="compilation-and-debugging" class="anchor" href="#compilation-and-debugging" aria-hidden="true"><span class="octicon octicon-link"></span></a>Compilation and Debugging</h3>
+
+<ul>
+<li>Microsoft Windows 7 SP1 (or later);</li>
+<li>Visual Studio (Community, Professional or Enterprise) 2015 (or later).</li>
+</ul>
+
+<h3>
+<a id="runtime" class="anchor" href="#runtime" aria-hidden="true"><span class="octicon octicon-link"></span></a>Runtime</h3>
+
+<p>The following prerequisites are required to use the assembly:</p>
+
+<ul>
+<li>Microsoft Windows 7 SP1 (or later);</li>
+<li>Microsoft .NET Framework 4.5 (or later).</li>
+</ul>
+
+<h2>
+<a id="compilation" class="anchor" href="#compilation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Compilation</h2>
+
+<p>To compile the application, you can do any of the following:</p>
+
+<ul>
+<li>Open <code>src\MartinCostello.BrowserStack.Automate.sln</code> in Visual Studio;</li>
+<li>Run <code>Build.cmd</code> from the command prompt.</li>
+</ul>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>Licensed under the Apache 2.0 license.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">browserstack-automate maintained by <a href="https://github.com/martincostello">martincostello</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-42907618-5");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+
+  </body>
+</html>
