@@ -23,6 +23,9 @@
         <reference file="MartinCostello.BrowserStack.Automate.dll" />
       </group>
     </references>
+    <dependencies>
+      <dependency id="Microsoft.AspNet.WebApi.Client" version="5.2.3" />
+    </dependencies>
   </metadata>
   <files>
     <file src="MartinCostello.BrowserStack.Automate.dll" target="lib\net45" />
