@@ -10,6 +10,16 @@
 
 This repository contains a C# client library and a NuGet package for the [BrowserStack Automate](https://www.browserstack.com/automate) REST API.
 
+Features include:
+
+ * Querying the status of a BrowserStack Automate plan.
+ * Querying the available browsers.
+ * Querying builds.
+ * Querying projects.
+ * Querying sessions.
+ * Setting the status of a session.
+ * Regenerating the API access key.
+
 ## Installation
 
 ```batchfile
@@ -18,7 +28,36 @@ Install-Package MartinCostello.BrowserStack.Automate
 
 ## Usage Examples
 
-*TODO*
+The following example shows a custom [xUnit.net](https://xunit.github.io/) ```[Trait]``` that checks for an available BrowserStack Automate session before running the test, otherwise it is skipped.
+
+```csharp
+namespace MyApp.Tests
+{
+    using System;
+    using System.Configuration;
+    using MartinCostello.BrowserStack.Automate;
+    using Xunit;
+
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+    public sealed class RequiresBrowserStackAutomateAttribute : FactAttribute
+    {
+        public RequiresBrowserStackAutomateAttribute()
+        {
+            string userName = ConfigurationManager.AppSettings["BrowserStack:UserName"];
+            string accessKey = ConfigurationManager.AppSettings["BrowserStack:AccessKey"];
+
+            var client = new BrowserStackAutomateClient(userName, accessKey);
+            var plan = client.GetStatusAsync().Result;
+
+            if (plan.MaximumAllowedParallelSessions < 1 ||
+                plan.ParallelSessionsRunning == plan.MaximumAllowedParallelSessions)
+            {
+                Skip = "No BrowserStack Automate sessions are currently available.";
+            }
+        }
+    }
+}
+```
 
 ## Prerequisites
 
