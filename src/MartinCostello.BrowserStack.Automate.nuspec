@@ -12,8 +12,8 @@
     <iconUrl>https://martincostello.github.io/browserstack-automate/images/browserstack-logo.png</iconUrl>
     <releaseNotes>See https://github.com/martincostello/browserstack-automate/releases for details.</releaseNotes>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>.NET client for the BrowserStack Automate REST API</description>
-    <summary>.NET client for the BrowserStack Automate REST API</summary>
+    <description>.NET client for the BrowserStack Automate REST API.</description>
+    <summary>.NET client for the BrowserStack Automate REST API.</summary>
     <language>en-US</language>
     <copyright>Copyright © Martin Costello 2015</copyright>
     <frameworkAssemblies>
