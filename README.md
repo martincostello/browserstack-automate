@@ -1,4 +1,4 @@
-# BrowserStack Automate REST API C# Client
+# BrowserStack Automate REST API .NET Client
 
 ## Build Status
 
@@ -10,7 +10,7 @@
 
 ## Overview
 
-This repository contains a C# client library and a NuGet package for the [BrowserStack Automate](https://www.browserstack.com/automate) REST API.
+This repository contains a .NET client library/NuGet package for the [BrowserStack Automate](https://www.browserstack.com/automate) REST API.
 
 Features include:
 
