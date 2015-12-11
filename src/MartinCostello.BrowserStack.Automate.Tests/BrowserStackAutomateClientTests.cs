@@ -225,6 +225,7 @@
                 Assert.NotNull(project.Item);
                 Assert.True(project.Item.Id > 0);
                 Assert.True(project.Item.GroupId > 0);
+                Assert.True(project.Item.UserId == null || project.Item.UserId > 0);
                 Assert.True(project.Item.CreatedAt > minimumDate);
                 Assert.True(project.Item.UpdatedAt > minimumDate);
                 Assert.False(string.IsNullOrEmpty(project.Item.Name));

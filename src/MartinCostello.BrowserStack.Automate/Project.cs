@@ -40,7 +40,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// Gets or sets the user Id.
         /// </summary>
         [JsonProperty("user_id")]
-        public string UserId { get; set; }
+        public int? UserId { get; set; }
 
         /// <summary>
         /// Gets or sets the group Id.
