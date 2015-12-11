@@ -170,6 +170,33 @@ namespace MartinCostello.BrowserStack.Automate
                     Assert.Equal(status, session.Item.Status);
                     Assert.True(session.Item.Duration > 0);
                 }
+
+                // Arrange
+                limit = 5;
+                status = SessionStatuses.Done;
+
+                // Act
+                sessions = await target.GetSessionsAsync(build.Item.HashedId, limit, status);
+
+                // Assert
+                Assert.NotNull(sessions);
+                Assert.True(sessions.Count <= limit);
+
+                foreach (var session in sessions)
+                {
+                    Assert.NotNull(session);
+                    Assert.NotNull(session.Item);
+                    Assert.Equal(build.Item.Name, session.Item.BuildName);
+                    Assert.False(string.IsNullOrEmpty(session.Item.HashedId));
+                    Assert.False(string.IsNullOrEmpty(session.Item.LogsUri));
+                    Assert.False(string.IsNullOrEmpty(session.Item.Name));
+                    Assert.False(string.IsNullOrEmpty(session.Item.OSName));
+                    Assert.False(string.IsNullOrEmpty(session.Item.OSVersion));
+                    Assert.False(string.IsNullOrEmpty(session.Item.ProjectName));
+                    Assert.False(string.IsNullOrEmpty(session.Item.Reason));
+                    Assert.Equal(status, session.Item.Status);
+                    Assert.True(session.Item.Duration > 0);
+                }
             }
 
             // Arrange
