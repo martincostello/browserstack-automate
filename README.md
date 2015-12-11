@@ -6,6 +6,8 @@
 
 [![NuGet Downloads](https://img.shields.io/nuget/dt/MartinCostello.BrowserStack.Automate.svg?label=NuGet%20Downloads)](http://www.nuget.org/packages/MartinCostello.BrowserStack.Automate) [![Latest NuGet Package Version](https://img.shields.io/nuget/v/MartinCostello.BrowserStack.Automate.svg?label=Latest%20NuGet%20Package)](http://www.nuget.org/packages/MartinCostello.BrowserStack.Automate)
 
+[![Join the chat at https://gitter.im/martincostello/sqllocaldb](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/martincostello/browserstack-automate)
+
 [![Build History](https://ci-buildstats.azurewebsites.net/appveyor/chart/martincostello/browserstack-automate?branch=master&includeBuildsFromPullRequest=false)](https://ci.appveyor.com/project/martincostello/browserstack-automate)
 
 ## Overview
