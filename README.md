@@ -1,4 +1,4 @@
-# BrowserStack Automate REST API .NET Client
+# ![Alt text](browserstack-logo.png) BrowserStack Automate REST API .NET Client
 
 ## Build Status
 
