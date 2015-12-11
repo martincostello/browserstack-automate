@@ -108,7 +108,7 @@
       <AssemblyVersion Required="true" />
       <CIBuildNumber Required="true" />
       <ReleasesFileName Required="true" />
-      <PrereleaseVersion ParameterType="System.Int32" Output="true" />
+      <PrereleaseVersion Output="true" />
     </ParameterGroup>
     <Task>
       <Using Namespace="System.Linq" />
@@ -124,12 +124,12 @@
         {
             // If the version number has not increased, just use the build
             // number as its guaranteed to be larger than the last number
-            PrereleaseVersion = thisBuildNumber;
+            PrereleaseVersion = thisBuildNumber.ToString("000", System.Globalization.CultureInfo.InvariantCulture);
         }
         else
         {
             // Determine the offset between this build and the build of the last version
-            PrereleaseVersion = thisBuildNumber - lastReleasedVersion.Build;
+            PrereleaseVersion = (thisBuildNumber - lastReleasedVersion.Build).ToString("000", System.Globalization.CultureInfo.InvariantCulture);
         }
       ]]>
       </Code>
