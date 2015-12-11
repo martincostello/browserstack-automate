@@ -9,6 +9,7 @@
     <tags>BrowserStack Automate</tags>
     <projectUrl>https://github.com/martincostello/browserstack-automate</projectUrl>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.txt</licenseUrl>
+    <iconUrl>https://martincostello.github.io/browserstack-automate/images/browserstack-logo.png</iconUrl>
     <releaseNotes>See https://github.com/martincostello/browserstack-automate/releases for details.</releaseNotes>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>.NET client for the BrowserStack Automate REST API</description>
