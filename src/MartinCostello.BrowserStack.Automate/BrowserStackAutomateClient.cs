@@ -6,6 +6,7 @@ namespace MartinCostello.BrowserStack.Automate
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Net;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Text;
@@ -54,6 +55,26 @@ namespace MartinCostello.BrowserStack.Automate
         /// Gets or sets the <c>Authorization</c> value to use.
         /// </summary>
         private string Authorization { get; set; }
+
+        /// <summary>
+        /// Creates an instance of <see cref="BrowserStackAutomateClient"/> using the specified <see cref="NetworkCredential"/>.
+        /// </summary>
+        /// <param name="credential">The credential to use the authenticate.</param>
+        /// <returns>
+        /// The created instance of <see cref="BrowserStackAutomateClient"/> authenticated using <paramref name="credential"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="credential"/> is <see langword="null"/>.
+        /// </exception>
+        public static BrowserStackAutomateClient FromCredential(NetworkCredential credential)
+        {
+            if (credential == null)
+            {
+                throw new ArgumentNullException(nameof(credential));
+            }
+
+            return new BrowserStackAutomateClient(credential.UserName, credential.Password);
+        }
 
         /// <summary>
         /// Gets the browsers as an asynchronous operation.

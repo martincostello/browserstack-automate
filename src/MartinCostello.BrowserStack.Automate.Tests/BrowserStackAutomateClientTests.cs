@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Threading.Tasks;
     using Xunit;
 
@@ -287,6 +288,16 @@
         }
 
         [Fact]
+        public static void FromCredential_Throws_If_Credential_Is_Null()
+        {
+            // Arrange
+            NetworkCredential credential = null;
+
+            // Act and Assert
+            Assert.Throws<ArgumentNullException>("credential", () => BrowserStackAutomateClient.FromCredential(credential));
+        }
+
+        [Fact]
         public static async Task GetSessionAsync_Throws_If_SessionId_Is_Null()
         {
             // Arrange
@@ -398,7 +409,9 @@
             string userName = Environment.GetEnvironmentVariable("BrowserStack_UserName");
             string accessKey = Environment.GetEnvironmentVariable("BrowserStack_AccessKey");
 
-            return new BrowserStackAutomateClient(userName, accessKey);
+            var credential = new NetworkCredential(userName, accessKey);
+
+            return BrowserStackAutomateClient.FromCredential(credential);
         }
 
         /// <summary>
