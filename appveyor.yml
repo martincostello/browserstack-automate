@@ -1,4 +1,4 @@
-version: 1.0.{build}
+version: 1.1.{build}
 
 environment:
   BrowserStack_UserName:
@@ -9,7 +9,7 @@ environment:
 assembly_info:
   patch: true
   file: AssemblyVersion.cs
-  assembly_version: "1.0.0.0"
+  assembly_version: "1.1.0.0"
   assembly_file_version: "{version}.0"
   assembly_informational_version: "{version}.0"
 
