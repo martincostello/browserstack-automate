@@ -371,7 +371,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <returns>
         /// The query string to use, if any.
         /// </returns>
-        private string BuildQuery(int? limit, string status)
+        private static string BuildQuery(int? limit, string status)
         {
             StringBuilder builder = new StringBuilder();
 
