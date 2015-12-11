@@ -65,13 +65,14 @@
                 Assert.NotNull(sessions);
                 Assert.NotEmpty(sessions);
 
+                Assert.True(sessions.Any((p) => !string.IsNullOrEmpty(p.Item.BrowserName)));
+                Assert.True(sessions.Any((p) => !string.IsNullOrEmpty(p.Item.BrowserVersion)));
+
                 // Limit the sessions for performance
                 foreach (var session in sessions.Take(1))
                 {
                     Assert.NotNull(session);
                     Assert.NotNull(session.Item);
-                    Assert.False(string.IsNullOrEmpty(session.Item.BrowserName));
-                    Assert.False(string.IsNullOrEmpty(session.Item.BrowserVersion));
                     Assert.Equal(build.Item.Name, session.Item.BuildName);
                     Assert.False(string.IsNullOrEmpty(session.Item.HashedId));
                     Assert.False(string.IsNullOrEmpty(session.Item.LogsUri));
@@ -128,8 +129,6 @@
                 {
                     Assert.NotNull(session);
                     Assert.NotNull(session.Item);
-                    Assert.False(string.IsNullOrEmpty(session.Item.BrowserName));
-                    Assert.False(string.IsNullOrEmpty(session.Item.BrowserVersion));
                     Assert.Equal(build.Item.Name, session.Item.BuildName);
                     Assert.False(string.IsNullOrEmpty(session.Item.HashedId));
                     Assert.False(string.IsNullOrEmpty(session.Item.LogsUri));
@@ -156,8 +155,6 @@
                 {
                     Assert.NotNull(session);
                     Assert.NotNull(session.Item);
-                    Assert.False(string.IsNullOrEmpty(session.Item.BrowserName));
-                    Assert.False(string.IsNullOrEmpty(session.Item.BrowserVersion));
                     Assert.Equal(build.Item.Name, session.Item.BuildName);
                     Assert.False(string.IsNullOrEmpty(session.Item.HashedId));
                     Assert.False(string.IsNullOrEmpty(session.Item.LogsUri));
@@ -248,7 +245,6 @@
                 Assert.False(string.IsNullOrEmpty(project.Item.Name));
 
                 Assert.NotNull(project.Item.Builds);
-                Assert.NotEmpty(project.Item.Builds);
 
                 foreach (var build in project.Item.Builds)
                 {
