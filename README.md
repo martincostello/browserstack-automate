@@ -4,7 +4,7 @@
 
 [![Build status](https://img.shields.io/appveyor/ci/martincostello/browserstack-automate/master.svg)](https://ci.appveyor.com/project/martincostello/browserstack-automate) [![Coverage Status](https://img.shields.io/codecov/c/github/martincostello/browserstack-automate/master.svg)](https://codecov.io/github/martincostello/browserstack-automate)
 
-[![NuGet Downloads](https://img.shields.io/nuget/dt/MartinCostello.BrowserStack.Automate.svg?label=NuGet%20Downloads)](http://www.nuget.org/packages/MartinCostello.BrowserStack.Automate) [![Latest NuGet Package Version](https://img.shields.io/nuget/v/MartinCostello.BrowserStack.Automate.svg?label=Latest%20NuGet%20Package)](http://www.nuget.org/packages/MartinCostello.BrowserStack.Automate)
+[![NuGet](https://buildstats.info/nuget/MartinCostello.BrowserStack.Automate)](http://www.nuget.org/packages/MartinCostello.BrowserStack.Automate)
 
 [![Join the chat at https://gitter.im/martincostello/sqllocaldb](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/martincostello/browserstack-automate)
 
