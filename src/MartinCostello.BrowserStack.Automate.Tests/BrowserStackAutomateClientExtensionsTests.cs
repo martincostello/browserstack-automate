@@ -4,7 +4,7 @@
 namespace MartinCostello.BrowserStack.Automate
 {
     using System;
-    using System.Threading.Tasks;
+    using FluentAssertions;
     using Xunit;
 
     /// <summary>
@@ -13,7 +13,7 @@ namespace MartinCostello.BrowserStack.Automate
     public static class BrowserStackAutomateClientExtensionsTests
     {
         [Fact]
-        public static async Task SetSessionCompletedAsync_Throws_If_Client_Is_Null()
+        public static void SetSessionCompletedAsync_Throws_If_Client_Is_Null()
         {
             // Arrange
             BrowserStackAutomateClient client = null;
@@ -22,11 +22,17 @@ namespace MartinCostello.BrowserStack.Automate
             string reason = "My reason";
 
             // Act and Assert
-            await Assert.ThrowsAsync<ArgumentNullException>("client", () => client.SetSessionCompletedAsync(sessionId, reason));
+            client
+                .Awaiting((p) => p.SetSessionCompletedAsync(sessionId, reason))
+                .ShouldThrow<ArgumentNullException>()
+                .And
+                .ParamName
+                .Should()
+                .Be("client");
         }
 
         [Fact]
-        public static async Task SetSessionErrorAsync_Throws_If_Client_Is_Null()
+        public static void SetSessionErrorAsync_Throws_If_Client_Is_Null()
         {
             // Arrange
             BrowserStackAutomateClient client = null;
@@ -35,7 +41,13 @@ namespace MartinCostello.BrowserStack.Automate
             string reason = "My reason";
 
             // Act and Assert
-            await Assert.ThrowsAsync<ArgumentNullException>("client", () => client.SetSessionErrorAsync(sessionId, reason));
+            client
+                .Awaiting((p) => p.SetSessionErrorAsync(sessionId, reason))
+                .ShouldThrow<ArgumentNullException>()
+                .And
+                .ParamName
+                .Should()
+                .Be("client");
         }
     }
 }
