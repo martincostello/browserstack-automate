@@ -432,7 +432,6 @@ namespace MartinCostello.BrowserStack.Automate
             session.Item.BuildName.Should().Be(expectedName);
             session.Item.HashedId.Should().NotBeNullOrEmpty();
             session.Item.LogsUri.Should().NotBeNullOrEmpty();
-            session.Item.Name.Should().NotBeNullOrEmpty();
             session.Item.OSName.Should().NotBeNullOrEmpty();
             session.Item.OSVersion.Should().NotBeNullOrEmpty();
             session.Item.ProjectName.Should().NotBeNullOrEmpty();
