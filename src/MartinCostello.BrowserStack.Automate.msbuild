@@ -12,7 +12,6 @@
     <CreatePackage Condition="'$(CI)' != ''">true</CreatePackage>
     <CreatePackage Condition="'$(CreatePackage)' == ''">false</CreatePackage>
     <DotNetExecPrefix Condition="'$(OS)' == 'Unix'">mono </DotNetExecPrefix>
-    <EnableCodeCoverage Condition="'$(EnableCodeCoverage)' == '' and '$(OS)' != 'Unix'">true</EnableCodeCoverage>
     <CodeTaskFactoryAssembly Condition="'$(MSBuildToolsVersion)' != '14.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.v$(MSBuildToolsVersion).dll</CodeTaskFactoryAssembly>
     <CodeTaskFactoryAssembly Condition="'$(MSBuildToolsVersion)' == '14.0'">$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll</CodeTaskFactoryAssembly>
   </PropertyGroup>
@@ -54,14 +53,9 @@
     </ItemGroup>
     <PropertyGroup>
       <_TestCommand>@(TestContainer->'%22%(fullpath)%22', ' ')</_TestCommand>
-      <_CodeCoverageXml>$(OutputPath)\MartinCostello.BrowserStack.Automate_coverage.xml</_CodeCoverageXml>
-      <_OpenCoverVersion>4.6.166</_OpenCoverVersion>
-      <_OpenCoverTool>%22$(SolutionDir)packages\OpenCover.$(_OpenCoverVersion)\Tools\OpenCover.Console.exe%22</_OpenCoverTool>
-      <_OpenCoverOptions>-register:user -hideskipped:All -mergebyhash -skipautoprops -filter:%22+[*]* -[xunit*]* -[*Tests]*%22 -returntargetcode -output:%22$(_CodeCoverageXml)%22</_OpenCoverOptions>
     </PropertyGroup>
     <Exec Condition="'$(OS)' == 'Unix'" Command="chmod +x %22$(TestTool)%22" />
-    <Exec Condition="'$(EnableCodeCoverage)' != 'true'" Command="$(DotNetExecPrefix)$(TestTool) $(_TestCommand)" WorkingDirectory="$(OutputPath)" />    
-    <Exec Condition="'$(EnableCodeCoverage)' == 'true'" Command="$(_OpenCoverTool) $(_OpenCoverOptions) -target:$(TestTool) -targetargs:$(_TestCommand)" WorkingDirectory="$(OutputPath)" />
+    <Exec Command="$(DotNetExecPrefix)$(TestTool) $(_TestCommand)" WorkingDirectory="$(OutputPath)" />
   </Target>
   <Target Name="CreateNuGetPackage">
     <PropertyGroup>
