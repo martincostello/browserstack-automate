@@ -17,6 +17,12 @@ namespace MartinCostello.BrowserStack.Automate
         public string BrowserUri { get; set; }
 
         /// <summary>
+        /// Gets or sets the public URI of the session.
+        /// </summary>
+        [JsonProperty("public_url")]
+        public string PublicUri { get; set; }
+
+        /// <summary>
         /// Gets or sets the URI of the video.
         /// </summary>
         [JsonProperty("video_url")]

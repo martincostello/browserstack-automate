@@ -82,6 +82,7 @@ namespace MartinCostello.BrowserStack.Automate
                     sessionDetail.Should().NotBeNull();
                     sessionDetail.Item.Should().NotBeNull();
                     sessionDetail.Item.BrowserUri.Should().NotBeNull();
+                    sessionDetail.Item.PublicUri.Should().NotBeNull();
                     sessionDetail.Item.VideoUri.Should().NotBeNull();
                     sessionDetail.Item.BrowserName.Should().Be(session.Item.BrowserName);
                     sessionDetail.Item.BrowserVersion.Should().Be(session.Item.BrowserVersion);
