@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{14426345-2DE8-4450-A2F6-D23107D62989}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		.travis.yml = .travis.yml
+		appveyor.yml = appveyor.yml
+		AssemblyVersion.cs = AssemblyVersion.cs
+		Build.ps1 = Build.ps1
+		build.sh = build.sh
+		CommonAssemblyInfo.cs = CommonAssemblyInfo.cs
+		global.json = global.json
+		LICENSE = LICENSE
+		MartinCostello.BrowserStack.Automate.ruleset = MartinCostello.BrowserStack.Automate.ruleset
+		MartinCostello.BrowserStack.Automate.snk = MartinCostello.BrowserStack.Automate.snk
+		README.md = README.md
+		stylecop.json = stylecop.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F0ED165C-03B3-4578-8B19-64B15F673E76}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0F694B07-6EBF-45FB-99A0-266542E16DEE}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MartinCostello.BrowserStack.Automate", "src\MartinCostello.BrowserStack.Automate\MartinCostello.BrowserStack.Automate.xproj", "{DA306F05-7E38-43DA-9C48-674028A34577}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MartinCostello.BrowserStack.Automate.Tests", "tests\MartinCostello.BrowserStack.Automate.Tests\MartinCostello.BrowserStack.Automate.Tests.xproj", "{DC723DF1-5852-45B1-B2BD-71BA85CDED1E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DA306F05-7E38-43DA-9C48-674028A34577}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA306F05-7E38-43DA-9C48-674028A34577}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA306F05-7E38-43DA-9C48-674028A34577}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA306F05-7E38-43DA-9C48-674028A34577}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC723DF1-5852-45B1-B2BD-71BA85CDED1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC723DF1-5852-45B1-B2BD-71BA85CDED1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC723DF1-5852-45B1-B2BD-71BA85CDED1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC723DF1-5852-45B1-B2BD-71BA85CDED1E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DA306F05-7E38-43DA-9C48-674028A34577} = {F0ED165C-03B3-4578-8B19-64B15F673E76}
+		{DC723DF1-5852-45B1-B2BD-71BA85CDED1E} = {0F694B07-6EBF-45FB-99A0-266542E16DEE}
+	EndGlobalSection
+EndGlobal

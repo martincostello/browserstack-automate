@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCompany("https://github.com/martincostello/browserstack-automate")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyCopyright("Copyright © Martin Costello, 2015.")]
+[assembly: AssemblyCopyright("Copyright (c) Martin Costello, 2015.")]
 [assembly: AssemblyProduct("MartinCostello.BrowserStack.Automate")]
 [assembly: AssemblyTrademark("")]
 
