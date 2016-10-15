@@ -77,6 +77,91 @@ namespace MartinCostello.BrowserStack.Automate
         }
 
         /// <summary>
+        /// Deletes the build with the specified Id as an asynchronous operation.
+        /// </summary>
+        /// <param name="buildId">The Id of the build to delete.</param>
+        /// <returns>
+        /// A <see cref="Task"/> representing the asynchronous operation to delete the build with the specified Id.
+        /// </returns>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="buildId"/> is <see langword="null"/> or white space.
+        /// </exception>
+        /// <exception cref="BrowserStackAutomateException">
+        /// The build could not be deleted.
+        /// </exception>
+        public virtual async Task DeleteBuildAsync(string buildId)
+        {
+            if (string.IsNullOrWhiteSpace(buildId))
+            {
+                throw new ArgumentException("No build Id specified.", nameof(buildId));
+            }
+
+            string requestUri = string.Format(CultureInfo.InvariantCulture, "builds/{0}.json", Uri.EscapeDataString(buildId));
+
+            using (var client = CreateClient())
+            {
+                using (var response = await client.DeleteAsync(requestUri))
+                {
+                    await EnsureSuccessAsync(response);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Deletes the project with the specified Id as an asynchronous operation.
+        /// </summary>
+        /// <param name="projectId">The Id of the project to delete.</param>
+        /// <returns>
+        /// A <see cref="Task"/> representing the asynchronous operation to delete the project with the specified Id.
+        /// </returns>
+        /// <exception cref="BrowserStackAutomateException">
+        /// The project could not be deleted.
+        /// </exception>
+        public virtual async Task DeleteProjectAsync(int projectId)
+        {
+            string requestUri = string.Format(CultureInfo.InvariantCulture, "projects/{0}.json", projectId);
+
+            using (var client = CreateClient())
+            {
+                using (var response = await client.DeleteAsync(requestUri))
+                {
+                    await EnsureSuccessAsync(response);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Deletes the session with the specified Id as an asynchronous operation.
+        /// </summary>
+        /// <param name="sessionId">The Id of the session to delete.</param>
+        /// <returns>
+        /// A <see cref="Task"/> representing the asynchronous operation to delete the session with the specified Id.
+        /// </returns>
+        /// <exception cref="BrowserStackAutomateException">
+        /// The session could not be deleted.
+        /// </exception>
+        public virtual async Task DeleteSessionAsync(string sessionId)
+        {
+            if (string.IsNullOrWhiteSpace(sessionId))
+            {
+                throw new ArgumentException("No session Id specified.", nameof(sessionId));
+            }
+
+            string requestUri = string.Format(
+                CultureInfo.InvariantCulture,
+                "sessions/{0}.json",
+                Uri.EscapeDataString(sessionId));
+
+            using (var client = CreateClient())
+            {
+                using (var response = await client.DeleteAsync(requestUri))
+                {
+                    await EnsureSuccessAsync(response);
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets the browsers as an asynchronous operation.
         /// </summary>
         /// <returns>
@@ -88,7 +173,7 @@ namespace MartinCostello.BrowserStack.Automate
             {
                 using (var response = await client.GetAsync("browsers.json"))
                 {
-                    response.EnsureSuccessStatusCode();
+                    await EnsureSuccessAsync(response);
                     return await response.Content.ReadAsAsync<List<Browser>>();
                 }
             }
@@ -121,7 +206,7 @@ namespace MartinCostello.BrowserStack.Automate
             {
                 using (var response = await client.GetAsync(requestUri))
                 {
-                    response.EnsureSuccessStatusCode();
+                    await EnsureSuccessAsync(response);
                     return await response.Content.ReadAsAsync<List<BuildItem>>();
                 }
             }
@@ -142,7 +227,7 @@ namespace MartinCostello.BrowserStack.Automate
             {
                 using (var response = await client.GetAsync(requestUri))
                 {
-                    response.EnsureSuccessStatusCode();
+                    await EnsureSuccessAsync(response);
                     return await response.Content.ReadAsAsync<ProjectDetailItem>();
                 }
             }
@@ -160,7 +245,7 @@ namespace MartinCostello.BrowserStack.Automate
             {
                 using (var response = await client.GetAsync("projects.json"))
                 {
-                    response.EnsureSuccessStatusCode();
+                    await EnsureSuccessAsync(response);
                     return await response.Content.ReadAsAsync<List<ProjectItem>>();
                 }
             }
@@ -192,8 +277,53 @@ namespace MartinCostello.BrowserStack.Automate
             {
                 using (var response = await client.GetAsync(requestUri))
                 {
-                    response.EnsureSuccessStatusCode();
+                    await EnsureSuccessAsync(response);
                     return await response.Content.ReadAsAsync<SessionDetailItem>();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the session logs associated with the specified build and session Id as an asynchronous operation.
+        /// </summary>
+        /// <param name="buildId">The build Id to return the logs for.</param>
+        /// <param name="sessionId">The session Id to return the logs for.</param>
+        /// <returns>
+        /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the logs for the build and session with the specified Ids.
+        /// </returns>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="buildId"/> or <paramref name="sessionId"/> is <see langword="null"/> or white space.
+        /// </exception>
+        public virtual async Task<string> GetSessionLogsAsync(string buildId, string sessionId)
+        {
+            if (string.IsNullOrWhiteSpace(buildId))
+            {
+                throw new ArgumentException("No build Id specified.", nameof(buildId));
+            }
+
+            if (string.IsNullOrWhiteSpace(sessionId))
+            {
+                throw new ArgumentException("No session Id specified.", nameof(sessionId));
+            }
+
+            string requestUri = string.Format(
+                CultureInfo.InvariantCulture,
+                "builds/{0}/sessions/{1}/logs.json",
+                Uri.EscapeDataString(buildId),
+                Uri.EscapeDataString(sessionId));
+
+            using (var client = CreateClient())
+            {
+                using (var response = await client.GetAsync(requestUri))
+                {
+                    if (response.StatusCode == HttpStatusCode.NotFound)
+                    {
+                        // Returns an HTML error page, so just return empty if there are no logs
+                        return string.Empty;
+                    }
+
+                    response.EnsureSuccessStatusCode();
+                    return await response.Content.ReadAsStringAsync();
                 }
             }
         }
@@ -239,7 +369,7 @@ namespace MartinCostello.BrowserStack.Automate
             {
                 using (var response = await client.GetAsync(requestUri))
                 {
-                    response.EnsureSuccessStatusCode();
+                    await EnsureSuccessAsync(response);
                     return await response.Content.ReadAsAsync<List<SessionItem>>();
                 }
             }
@@ -257,7 +387,7 @@ namespace MartinCostello.BrowserStack.Automate
             {
                 using (var response = await client.GetAsync("plan.json"))
                 {
-                    response.EnsureSuccessStatusCode();
+                    await EnsureSuccessAsync(response);
                     return await response.Content.ReadAsAsync<AutomatePlanStatus>();
                 }
             }
@@ -280,7 +410,7 @@ namespace MartinCostello.BrowserStack.Automate
             {
                 using (var response = await client.PutAsJsonAsync("recycle_key.json", value))
                 {
-                    response.EnsureSuccessStatusCode();
+                    await EnsureSuccessAsync(response);
 
                     RecycleAccessKeyResult result = await response.Content.ReadAsAsync<RecycleAccessKeyResult>();
 
@@ -333,7 +463,7 @@ namespace MartinCostello.BrowserStack.Automate
             {
                 using (var response = await client.PutAsJsonAsync(requestUri, value))
                 {
-                    response.EnsureSuccessStatusCode();
+                    await EnsureSuccessAsync(response);
                     return await response.Content.ReadAsAsync<SessionItem>();
                 }
             }
@@ -401,6 +531,35 @@ namespace MartinCostello.BrowserStack.Automate
             }
 
             return builder.ToString();
+        }
+
+        /// <summary>
+        /// Ensures that the specified <see cref="HttpResponseMessage"/> was successful.
+        /// </summary>
+        /// <param name="response">The HTTP response message.</param>
+        /// <returns>
+        /// A <see cref="Task"/> representing the asynchronous operation to test the response for success.
+        /// </returns>
+        private static async Task EnsureSuccessAsync(HttpResponseMessage response)
+        {
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                try
+                {
+                    var error = await response.Content.ReadAsAsync<BrowserStackAutomateError>();
+                    throw new BrowserStackAutomateException(error);
+                }
+                catch (System.Runtime.Serialization.SerializationException)
+                {
+                    // Just fall-through to EnsureSuccessStatusCode() if deserialization fails
+                }
+                catch (Newtonsoft.Json.JsonReaderException)
+                {
+                    // Just fall-through to EnsureSuccessStatusCode() if deserialization fails
+                }
+            }
+
+            response.EnsureSuccessStatusCode();
         }
 
         /// <summary>

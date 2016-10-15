@@ -54,6 +54,8 @@
     <Compile Include="Browser.cs" />
     <Compile Include="BrowserStackAutomateClient.cs" />
     <Compile Include="BrowserStackAutomateClientExtensions.cs" />
+    <Compile Include="BrowserStackAutomateError.cs" />
+    <Compile Include="BrowserStackAutomateException.cs" />
     <Compile Include="Build.cs" />
     <Compile Include="BuildDetail.cs" />
     <Compile Include="BuildDetailItem.cs" />
