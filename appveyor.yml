@@ -6,6 +6,10 @@ environment:
   BrowserStack_AccessKey:
     secure: kTuv757nz0qovSIwBwGIIFeb2X3PXJuci0mJjGMJuIk=
 
+branches:
+  only:
+    - master
+
 assembly_info:
   patch: true
   file: AssemblyVersion.cs
