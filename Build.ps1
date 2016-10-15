@@ -106,9 +106,14 @@ $packageProjects = @(
     (Join-Path $solutionPath "src\MartinCostello.BrowserStack.Automate\project.json")
 )
 
+$restoreProjects = @(
+    (Join-Path $solutionPath "src\MartinCostello.BrowserStack.Automate\project.json"),
+	(Join-Path $solutionPath "tests\MartinCostello.BrowserStack.Automate.Tests\project.json")
+)
+
 if ($RestorePackages -eq $true) {
-    Write-Host "Restoring NuGet packages for $($projects.Count) projects..." -ForegroundColor Green
-    ForEach ($project in $projects) {
+    Write-Host "Restoring NuGet packages for $($restoreProjects.Count) projects..." -ForegroundColor Green
+    ForEach ($project in $restoreProjects) {
         DotNetRestore $project
     }
 }
