@@ -65,7 +65,7 @@ namespace MartinCostello.BrowserStack.Automate
                 ICollection<SessionItem> sessions = await target.GetSessionsAsync(build.Item.HashedId);
 
                 // Assert
-                sessions.Should().NotBeNullOrEmpty();
+                sessions.Should().NotBeNull();
 
                 sessions.All((p) => !string.IsNullOrEmpty(p.Item.BrowserName));
                 sessions.All((p) => !string.IsNullOrEmpty(p.Item.BrowserVersion));
