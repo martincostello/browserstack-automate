@@ -2,7 +2,7 @@
 
 ## Build Status
 
-[![Build status](https://img.shields.io/appveyor/ci/martincostello/browserstack-automate/master.svg)](https://ci.appveyor.com/project/martincostello/browserstack-automate) [![Coverage Status](https://img.shields.io/codecov/c/github/martincostello/browserstack-automate/master.svg)](https://codecov.io/github/martincostello/browserstack-automate)
+[![Build status](https://img.shields.io/appveyor/ci/martincostello/browserstack-automate/master.svg)](https://ci.appveyor.com/project/martincostello/browserstack-automate)
 
 [![NuGet](https://buildstats.info/nuget/MartinCostello.BrowserStack.Automate)](http://www.nuget.org/packages/MartinCostello.BrowserStack.Automate)
 
