@@ -1,12 +1,13 @@
 # ![Alt text](browserstack-logo.png) BrowserStack Automate REST API .NET Client
 
-## Build Status
-
-[![Build status](https://img.shields.io/appveyor/ci/martincostello/browserstack-automate/master.svg)](https://ci.appveyor.com/project/martincostello/browserstack-automate)
-
 [![NuGet](https://buildstats.info/nuget/MartinCostello.BrowserStack.Automate)](http://www.nuget.org/packages/MartinCostello.BrowserStack.Automate)
 
-[![Build History](https://buildstats.info/appveyor/chart/martincostello/browserstack-automate?branch=master&includeBuildsFromPullRequest=false)](https://ci.appveyor.com/project/martincostello/browserstack-automate)
+## Build Status
+
+| | Linux | Windows |
+|:-:|:-:|:-:|
+| **Build Status** | [![Build status](https://img.shields.io/travis/martincostello/browserstack-automate/master.svg)](https://travis-ci.org/martincostello/browserstack-automate) | [![Build status](https://img.shields.io/appveyor/ci/martincostello/browserstack-automate/master.svg)](https://ci.appveyor.com/project/martincostello/browserstack-automate) |
+| **Build History** | [![Build history](https://buildstats.info/travisci/chart/martincostello/browserstack-automate?branch=master&includeBuildsFromPullRequest=false)](https://travis-ci.org/martincostello/browserstack-automate) |  [![Build history](https://buildstats.info/appveyor/chart/martincostello/browserstack-automate?branch=master&includeBuildsFromPullRequest=false)](https://ci.appveyor.com/project/martincostello/browserstack-automate) |
 
 ## Overview
 
