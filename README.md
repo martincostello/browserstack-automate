@@ -83,8 +83,8 @@ To build and test the assembly run one of the following set of commands:
 **Linux/OS X**
 
 ```sh
-EXPORT BrowserStack_UserName  "MyUserName"
-EXPORT BrowserStack_AccessKey "MyAccessKey"
+EXPORT BrowserStack_UserName  = "MyUserName"
+EXPORT BrowserStack_AccessKey = "MyAccessKey"
 ./build.sh
 ```
 
