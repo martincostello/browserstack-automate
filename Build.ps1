@@ -5,7 +5,7 @@ param(
     [Parameter(Mandatory=$false)][string] $OutputPath       = "",
     [Parameter(Mandatory=$false)][bool]   $PatchVersion     = $false,
     [Parameter(Mandatory=$false)][bool]   $RunTests         = $true,
-	[Parameter(Mandatory=$false)][bool]   $CreatePackages   = $true
+    [Parameter(Mandatory=$false)][bool]   $CreatePackages   = $true
 )
 
 $ErrorActionPreference = "Stop"
@@ -25,15 +25,15 @@ if ($env:CI -ne $null) {
     $RestorePackages = $true
     $PatchVersion = $true
 
-	if (($VersionSuffix -eq "" -and $env:APPVEYOR_REPO_TAG -eq "false" -and $env:APPVEYOR_BUILD_NUMBER -ne "") -eq $true) {
+    if (($VersionSuffix -eq "" -and $env:APPVEYOR_REPO_TAG -eq "false" -and $env:APPVEYOR_BUILD_NUMBER -ne "") -eq $true) {
 
-	    $LastVersionBuild = (Get-Content ".\releases.txt" | Select -Last 1)
-		$LastVersion = New-Object -TypeName System.Version -ArgumentList $LastVersionBuild
-		$ThisVersion = $env:APPVEYOR_BUILD_NUMBER -as [int]
-		$ThisBuildNumber = $ThisVersion - $LastVersion.Build
+        $LastVersionBuild = (Get-Content ".\releases.txt" | Select -Last 1)
+        $LastVersion = New-Object -TypeName System.Version -ArgumentList $LastVersionBuild
+        $ThisVersion = $env:APPVEYOR_BUILD_NUMBER -as [int]
+        $ThisBuildNumber = $ThisVersion - $LastVersion.Build
 
-	    $VersionSuffix = "beta-" + $ThisBuildNumber.ToString("0000")
-	}
+        $VersionSuffix = "beta-" + $ThisBuildNumber.ToString("0000")
+    }
 }
 
 if (!(Test-Path $env:DOTNET_INSTALL_DIR)) {
@@ -108,7 +108,7 @@ $packageProjects = @(
 
 $restoreProjects = @(
     (Join-Path $solutionPath "src\MartinCostello.BrowserStack.Automate\project.json"),
-	(Join-Path $solutionPath "tests\MartinCostello.BrowserStack.Automate.Tests\project.json")
+    (Join-Path $solutionPath "tests\MartinCostello.BrowserStack.Automate.Tests\project.json")
 )
 
 if ($RestorePackages -eq $true) {
@@ -121,14 +121,14 @@ if ($RestorePackages -eq $true) {
 Write-Host "Building $($projects.Count) projects..." -ForegroundColor Green
 ForEach ($project in $projects) {
     DotNetBuild $project $Configuration "netstandard1.3" $VersionSuffix
-	DotNetBuild $project $Configuration "net451" $VersionSuffix
+    DotNetBuild $project $Configuration "net451" $VersionSuffix
 }
 
 if ($RunTests -eq $true) {
     Write-Host "Testing $($testProjects.Count) project(s)..." -ForegroundColor Green
     ForEach ($project in $testProjects) {
         DotNetTest $project "netcoreapp1.0"
-		DotNetTest $project "net451"
+        DotNetTest $project "net451"
     }
 }
 
