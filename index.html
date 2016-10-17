@@ -1,51 +1,31 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en-us">
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="browserstack-automate : .NET client for the BrowserStack Automate REST API" />
-
-    <link rel="shortcut icon" type="image/x-icon" href="https://martincostello.github.io/browserstack-automate/favicon.ico" />
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css" />
-
-    <title>Browserstack Automate</title>
+    <meta charset="UTF-8">
+    <title>browserstack-automate by martincostello</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
-
   <body>
+    <section class="page-header">
+      <h1 class="project-name">browserstack-automate</h1>
+      <h2 class="project-tagline">.NET client for the BrowserStack Automate REST API</h2>
+      <a href="https://github.com/martincostello/browserstack-automate" class="btn">View on GitHub</a>
+      <a href="https://github.com/martincostello/browserstack-automate/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/martincostello/browserstack-automate/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/martincostello/browserstack-automate">View on GitHub</a>
+    <section class="main-content">
+      <h1>
+<a id="-browserstack-automate-rest-api-net-client" class="anchor" href="#-browserstack-automate-rest-api-net-client" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><img src="https://github.com/martincostello/browserstack-automate/raw/master/browserstack-logo.png" alt="BrowserStack"> BrowserStack Automate REST API .NET Client</h1>
 
-          <h1 id="project_title">browserstack-automate</h1>
-          <h2 id="project_tagline">.NET client for the BrowserStack Automate REST API</h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/martincostello/browserstack-automate/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/martincostello/browserstack-automate/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h1>
-<a id="browserstack-automate-rest-api-net-client" class="anchor" href="#browserstack-automate-rest-api-net-client" aria-hidden="true"><span class="octicon octicon-link"></span></a>BrowserStack Automate REST API .NET Client</h1>
+<p><a href="http://www.nuget.org/packages/MartinCostello.BrowserStack.Automate"><img src="https://buildstats.info/nuget/MartinCostello.BrowserStack.Automate" alt="NuGet"></a></p>
 
 <h2>
-<a id="build-status" class="anchor" href="#build-status" aria-hidden="true"><span class="octicon octicon-link"></span></a>Build Status</h2>
-
-<p><a href="https://ci.appveyor.com/project/martincostello/browserstack-automate"><img src="https://img.shields.io/appveyor/ci/martincostello/browserstack-automate/master.svg" alt="Build status"></a> <a href="https://codecov.io/github/martincostello/browserstack-automate"><img src="https://img.shields.io/codecov/c/github/martincostello/browserstack-automate/master.svg" alt="Coverage Status"></a></p>
-
-<p><a href="http://www.nuget.org/packages/MartinCostello.BrowserStack.Automate"><img src="https://img.shields.io/nuget/dt/MartinCostello.BrowserStack.Automate.svg?label=NuGet%20Downloads" alt="NuGet Downloads"></a> <a href="http://www.nuget.org/packages/MartinCostello.BrowserStack.Automate"><img src="https://img.shields.io/nuget/v/MartinCostello.BrowserStack.Automate.svg?label=Latest%20NuGet%20Package" alt="Latest NuGet Package Version"></a></p>
-
-<p><a href="https://ci.appveyor.com/project/martincostello/browserstack-automate"><img src="https://ci-buildstats.azurewebsites.net/appveyor/chart/martincostello/browserstack-automate?branch=master&amp;includeBuildsFromPullRequest=false" alt="Build History"></a></p>
-
-<h2>
-<a id="overview" class="anchor" href="#overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview</h2>
+<a id="overview" class="anchor" href="#overview" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Overview</h2>
 
 <p>This repository contains a .NET client library/NuGet package for the <a href="https://www.browserstack.com/automate">BrowserStack Automate</a> REST API.</p>
 
@@ -54,37 +34,40 @@
 <ul>
 <li>Querying the status of a BrowserStack Automate plan.</li>
 <li>Querying the available browsers.</li>
-<li>Querying builds.</li>
-<li>Querying projects.</li>
-<li>Querying sessions.</li>
+<li>Querying and deleting builds.</li>
+<li>Querying and deleting projects.</li>
+<li>Querying and deleting sessions.</li>
+<li>Querying session log.</li>
 <li>Setting the status of a session.</li>
 <li>Regenerating the API access key.</li>
 </ul>
 
-<h2>
-<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
-
-<div class="highlight highlight-source-dosbatch"><pre>Install-Package MartinCostello.BrowserStack.Automate</pre></div>
+<p>The assembly supports .NET Core (via .NET Standard 1.3) and .NET Framework 4.5.1.</p>
 
 <h2>
-<a id="usage-examples" class="anchor" href="#usage-examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage Examples</h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
+
+<div class="highlight highlight-source-batchfile"><pre>Install-Package MartinCostello.BrowserStack.Automate</pre></div>
+
+<h2>
+<a id="usage-examples" class="anchor" href="#usage-examples" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage Examples</h2>
 
 <p>The following example shows a custom <a href="https://xunit.github.io/">xUnit.net</a> <code>[Trait]</code> that checks for an available BrowserStack Automate session before running the test, otherwise it is skipped.</p>
 
 <div class="highlight highlight-source-cs"><pre><span class="pl-k">namespace</span> <span class="pl-en">MyApp.Tests</span>
 {
-    <span class="pl-k">using</span> System;
-    <span class="pl-k">using</span> System.Configuration;
-    <span class="pl-k">using</span> MartinCostello.BrowserStack.Automate;
-    <span class="pl-k">using</span> Xunit;
+    <span class="pl-k">using</span> <span class="pl-en">System</span>;
+    <span class="pl-k">using</span> <span class="pl-en">System.Configuration</span>;
+    <span class="pl-k">using</span> <span class="pl-en">MartinCostello.BrowserStack.Automate</span>;
+    <span class="pl-k">using</span> <span class="pl-en">Xunit</span>;
 
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = <span class="pl-c1">false</span>)]
     <span class="pl-k">public</span> <span class="pl-k">sealed</span> <span class="pl-k">class</span> <span class="pl-en">RequiresBrowserStackAutomateAttribute</span> : <span class="pl-k">FactAttribute</span>
     {
         <span class="pl-k">public</span> <span class="pl-en">RequiresBrowserStackAutomateAttribute</span>()
         {
-            <span class="pl-k">string</span> userName = ConfigurationManager.AppSettings[<span class="pl-s"><span class="pl-pds">"</span>BrowserStack:UserName<span class="pl-pds">"</span></span>];
-            <span class="pl-k">string</span> accessKey = ConfigurationManager.AppSettings[<span class="pl-s"><span class="pl-pds">"</span>BrowserStack:AccessKey<span class="pl-pds">"</span></span>];
+            <span class="pl-k">string</span> userName = Environment.GetEnvironmentVariable(<span class="pl-s"><span class="pl-pds">"</span>BrowserStack_UserName<span class="pl-pds">"</span></span>);
+            <span class="pl-k">string</span> accessKey = Environment.GetEnvironmentVariable(<span class="pl-s"><span class="pl-pds">"</span>BrowserStack_AccessKey<span class="pl-pds">"</span></span>);
 
             <span class="pl-k">var</span> client = <span class="pl-k">new</span> BrowserStackAutomateClient(userName, accessKey);
             <span class="pl-k">var</span> plan = client.GetStatusAsync().Result;
@@ -99,52 +82,48 @@
 }</pre></div>
 
 <h2>
-<a id="prerequisites" class="anchor" href="#prerequisites" aria-hidden="true"><span class="octicon octicon-link"></span></a>Prerequisites</h2>
+<a id="feedback" class="anchor" href="#feedback" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Feedback</h2>
 
-<h3>
-<a id="compilation-and-debugging" class="anchor" href="#compilation-and-debugging" aria-hidden="true"><span class="octicon octicon-link"></span></a>Compilation and Debugging</h3>
-
-<ul>
-<li>Microsoft Windows 7 SP1 (or later);</li>
-<li>Visual Studio (Community, Professional or Enterprise) 2015 (or later).</li>
-</ul>
-
-<h3>
-<a id="runtime" class="anchor" href="#runtime" aria-hidden="true"><span class="octicon octicon-link"></span></a>Runtime</h3>
-
-<p>The following prerequisites are required to use the assembly:</p>
-
-<ul>
-<li>Microsoft Windows 7 SP1 (or later);</li>
-<li>Microsoft .NET Framework 4.5 (or later).</li>
-</ul>
+<p>Any feedback or issues can be added to the issues for this project in <a href="https://github.com/martincostello/browserstack-automate/issues">GitHub</a>.</p>
 
 <h2>
-<a id="compilation" class="anchor" href="#compilation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Compilation</h2>
+<a id="repository" class="anchor" href="#repository" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Repository</h2>
 
-<p>To compile the application, you can do any of the following:</p>
-
-<ul>
-<li>Open <code>src\MartinCostello.BrowserStack.Automate.sln</code> in Visual Studio;</li>
-<li>Run <code>Build.cmd</code> from the command prompt.</li>
-</ul>
+<p>The repository is hosted in <a href="https://github.com/martincostello/browserstack-automate">GitHub</a>: <a href="https://github.com/martincostello/browserstack-automate.git">https://github.com/martincostello/browserstack-automate.git</a></p>
 
 <h2>
-<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
 
-<p>Licensed under the Apache 2.0 license.</p>
-      </section>
-    </div>
+<p>This project is licensed under the <a href="https://github.com/martincostello/browserstack-automate/blob/master/LICENSE">Apache 2.0</a> license.</p>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">browserstack-automate maintained by <a href="https://github.com/martincostello">martincostello</a></p>
-        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+<h2>
+<a id="building-and-testing" class="anchor" href="#building-and-testing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Building and Testing</h2>
+
+<p>To build and test the assembly run one of the following set of commands:</p>
+
+<p><strong>Linux/OS X</strong></p>
+
+<div class="highlight highlight-source-shell"><pre>EXPORT BrowserStack_UserName  = <span class="pl-s"><span class="pl-pds">"</span>MyUserName<span class="pl-pds">"</span></span>
+EXPORT BrowserStack_AccessKey = <span class="pl-s"><span class="pl-pds">"</span>MyAccessKey<span class="pl-pds">"</span></span>
+./build.sh</pre></div>
+
+<p><strong>Windows</strong></p>
+
+<div class="highlight highlight-source-powershell"><pre><span class="pl-k">$</span><span class="pl-c1">env:</span><span class="pl-smi">BrowserStack_UserName</span>  <span class="pl-k">=</span> <span class="pl-s">"MyUserName"</span>
+<span class="pl-k">$</span><span class="pl-c1">env:</span><span class="pl-smi">BrowserStack_AccessKey</span> <span class="pl-k">=</span> <span class="pl-s">"MyAccessKey"</span>
+.\<span class="pl-c1">Build.ps1</span></pre></div>
+
+<p><em>If you do not have a BrowserStack Automate access key you can still just run the build script and the integration tests that require credentials will be skipped.</em></p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/martincostello/browserstack-automate">browserstack-automate</a> is maintained by <a href="https://github.com/martincostello">martincostello</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
       </footer>
-    </div>
 
-              <script type="text/javascript">
+    </section>
+
+            <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
           </script>
@@ -154,7 +133,6 @@
             pageTracker._trackPageview();
             } catch(err) {}
           </script>
-
 
   </body>
 </html>
