@@ -11,6 +11,7 @@ namespace MartinCostello.BrowserStack.Automate
     using System.Net.Http.Headers;
     using System.Text;
     using System.Threading.Tasks;
+    using Newtonsoft.Json;
 
     /// <summary>
     /// A class representing a client for the <c>BrowserStack</c> Automate REST API.
@@ -174,7 +175,7 @@ namespace MartinCostello.BrowserStack.Automate
                 using (var response = await client.GetAsync("browsers.json"))
                 {
                     await EnsureSuccessAsync(response);
-                    return await response.Content.ReadAsAsync<List<Browser>>();
+                    return await DeserializeAsync<List<Browser>>(response);
                 }
             }
         }
@@ -207,7 +208,7 @@ namespace MartinCostello.BrowserStack.Automate
                 using (var response = await client.GetAsync(requestUri))
                 {
                     await EnsureSuccessAsync(response);
-                    return await response.Content.ReadAsAsync<List<BuildItem>>();
+                    return await DeserializeAsync<List<BuildItem>>(response);
                 }
             }
         }
@@ -228,7 +229,7 @@ namespace MartinCostello.BrowserStack.Automate
                 using (var response = await client.GetAsync(requestUri))
                 {
                     await EnsureSuccessAsync(response);
-                    return await response.Content.ReadAsAsync<ProjectDetailItem>();
+                    return await DeserializeAsync<ProjectDetailItem>(response);
                 }
             }
         }
@@ -246,7 +247,7 @@ namespace MartinCostello.BrowserStack.Automate
                 using (var response = await client.GetAsync("projects.json"))
                 {
                     await EnsureSuccessAsync(response);
-                    return await response.Content.ReadAsAsync<List<ProjectItem>>();
+                    return await DeserializeAsync<List<ProjectItem>>(response);
                 }
             }
         }
@@ -278,7 +279,7 @@ namespace MartinCostello.BrowserStack.Automate
                 using (var response = await client.GetAsync(requestUri))
                 {
                     await EnsureSuccessAsync(response);
-                    return await response.Content.ReadAsAsync<SessionDetailItem>();
+                    return await DeserializeAsync<SessionDetailItem>(response);
                 }
             }
         }
@@ -370,7 +371,7 @@ namespace MartinCostello.BrowserStack.Automate
                 using (var response = await client.GetAsync(requestUri))
                 {
                     await EnsureSuccessAsync(response);
-                    return await response.Content.ReadAsAsync<List<SessionItem>>();
+                    return await DeserializeAsync<List<SessionItem>>(response);
                 }
             }
         }
@@ -388,7 +389,7 @@ namespace MartinCostello.BrowserStack.Automate
                 using (var response = await client.GetAsync("plan.json"))
                 {
                     await EnsureSuccessAsync(response);
-                    return await response.Content.ReadAsAsync<AutomatePlanStatus>();
+                    return await DeserializeAsync<AutomatePlanStatus>(response);
                 }
             }
         }
@@ -405,21 +406,25 @@ namespace MartinCostello.BrowserStack.Automate
         public virtual async Task<RecycleAccessKeyResult> RecycleAccessKeyAsync()
         {
             var value = new { };
+            var json = SerializeAsJson(value);
 
             using (var client = CreateClient())
             {
-                using (var response = await client.PutAsJsonAsync("recycle_key.json", value))
+                using (var content = new StringContent(json, Encoding.UTF8, "application/json"))
                 {
-                    await EnsureSuccessAsync(response);
-
-                    RecycleAccessKeyResult result = await response.Content.ReadAsAsync<RecycleAccessKeyResult>();
-
-                    if (result != null)
+                    using (var response = await client.PutAsync("recycle_key.json", content))
                     {
-                        SetAuthorization(UserName, result.NewKey);
-                    }
+                        await EnsureSuccessAsync(response);
 
-                    return result;
+                        RecycleAccessKeyResult result = await DeserializeAsync<RecycleAccessKeyResult>(response);
+
+                        if (result != null)
+                        {
+                            SetAuthorization(UserName, result.NewKey);
+                        }
+
+                        return result;
+                    }
                 }
             }
         }
@@ -459,12 +464,17 @@ namespace MartinCostello.BrowserStack.Automate
                 reason = reason,
             };
 
+            var json = SerializeAsJson(value);
+
             using (var client = CreateClient())
             {
-                using (var response = await client.PutAsJsonAsync(requestUri, value))
+                using (var content = new StringContent(json, Encoding.UTF8, "application/json"))
                 {
-                    await EnsureSuccessAsync(response);
-                    return await response.Content.ReadAsAsync<SessionItem>();
+                    using (var response = await client.PutAsync(requestUri, content))
+                    {
+                        await EnsureSuccessAsync(response);
+                        return await DeserializeAsync<SessionItem>(response);
+                    }
                 }
             }
         }
@@ -491,6 +501,37 @@ namespace MartinCostello.BrowserStack.Automate
                 client.Dispose();
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Deserializes the content of the specified <see cref="HttpResponseMessage"/> as an asychronous operation.
+        /// </summary>
+        /// <typeparam name="T">The type to deserialize the content as.</typeparam>
+        /// <param name="response">The HTTP response to deserialize.</param>
+        /// <returns>
+        /// A <see cref="Task{TResult}"/> representing the asychronous operation to deserialize the response.
+        /// </returns>
+        protected virtual async Task<T> DeserializeAsync<T>(HttpResponseMessage response)
+        {
+            if (response == null)
+            {
+                throw new ArgumentNullException(nameof(response));
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(json);
+        }
+
+        /// <summary>
+        /// Serializes the specified <see cref="object"/> as JSON.
+        /// </summary>
+        /// <param name="value">The value to serialize.</param>
+        /// <returns>
+        /// A <see cref="string"/> containing the JSON representation of <paramref name="value"/>.
+        /// </returns>
+        protected virtual string SerializeAsJson(object value)
+        {
+            return JsonConvert.SerializeObject(value);
         }
 
         /// <summary>
@@ -540,13 +581,13 @@ namespace MartinCostello.BrowserStack.Automate
         /// <returns>
         /// A <see cref="Task"/> representing the asynchronous operation to test the response for success.
         /// </returns>
-        private static async Task EnsureSuccessAsync(HttpResponseMessage response)
+        private async Task EnsureSuccessAsync(HttpResponseMessage response)
         {
             if (response.StatusCode == HttpStatusCode.NotFound)
             {
                 try
                 {
-                    var error = await response.Content.ReadAsAsync<BrowserStackAutomateError>();
+                    var error = await DeserializeAsync<BrowserStackAutomateError>(response);
                     throw new BrowserStackAutomateException(error);
                 }
                 catch (System.Runtime.Serialization.SerializationException)

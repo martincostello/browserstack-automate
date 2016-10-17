@@ -6,8 +6,6 @@
 
 [![NuGet](https://buildstats.info/nuget/MartinCostello.BrowserStack.Automate)](http://www.nuget.org/packages/MartinCostello.BrowserStack.Automate)
 
-[![Join the chat at https://gitter.im/martincostello/sqllocaldb](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/martincostello/browserstack-automate)
-
 [![Build History](https://buildstats.info/appveyor/chart/martincostello/browserstack-automate?branch=master&includeBuildsFromPullRequest=false)](https://ci.appveyor.com/project/martincostello/browserstack-automate)
 
 ## Overview
@@ -18,11 +16,14 @@ Features include:
 
  * Querying the status of a BrowserStack Automate plan.
  * Querying the available browsers.
- * Querying builds.
- * Querying projects.
- * Querying sessions.
+ * Querying and deleting builds.
+ * Querying and deleting projects.
+ * Querying and deleting sessions.
+ * Querying session log.
  * Setting the status of a session.
  * Regenerating the API access key.
+
+The assembly supports .NET Core 1.0 and .NET Framework 4.5.1.
 
 ## Installation
 
@@ -47,8 +48,8 @@ namespace MyApp.Tests
     {
         public RequiresBrowserStackAutomateAttribute()
         {
-            string userName = ConfigurationManager.AppSettings["BrowserStack:UserName"];
-            string accessKey = ConfigurationManager.AppSettings["BrowserStack:AccessKey"];
+            string userName = Environment.GetEnvironmentVariable("BrowserStack_UserName");
+            string accessKey = Environment.GetEnvironmentVariable("BrowserStack_AccessKey");
 
             var client = new BrowserStackAutomateClient(userName, accessKey);
             var plan = client.GetStatusAsync().Result;
@@ -63,27 +64,36 @@ namespace MyApp.Tests
 }
 ```
 
-## Prerequisites
+## Feedback
 
-### Compilation and Debugging
+Any feedback or issues can be added to the issues for this project in [GitHub](https://github.com/martincostello/browserstack-automate/issues).
 
- * Microsoft Windows 7 SP1 (or later);
- * Visual Studio (Community, Professional or Enterprise) 2015 (or later).
+## Repository
 
-### Runtime
-
-The following prerequisites are required to use the assembly:
-
- * Microsoft Windows 7 SP1 (or later);
- * Microsoft .NET Framework 4.5 (or later).
-
-## Compilation
-
-To compile the application, you can do any of the following:
-
- * Open ```src\MartinCostello.BrowserStack.Automate.sln``` in Visual Studio;
- * Run ```Build.cmd``` from the command prompt.
+The repository is hosted in [GitHub](https://github.com/martincostello/browserstack-automate): https://github.com/martincostello/browserstack-automate.git
 
 ## License
 
-Licensed under the Apache 2.0 license.
+This project is licensed under the [Apache 2.0](https://github.com/martincostello/browserstack-automate/blob/master/LICENSE) license.
+
+## Building and Testing
+
+To build and test the assembly run one of the following set of commands:
+
+**Linux/OS X**
+
+```sh
+EXPORT BrowserStack_UserName  = "MyUserName"
+EXPORT BrowserStack_AccessKey = "MyAccessKey"
+./build.sh
+```
+
+**Windows**
+
+```powershell
+$env:BrowserStack_UserName  = "MyUserName"
+$env:BrowserStack_AccessKey = "MyAccessKey"
+.\Build.ps1
+```
+
+_If you do not have a BrowserStack Automate access key you can still just run the build script and the integration tests that require credentials will be skipped._

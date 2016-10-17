@@ -1,3 +1,5 @@
 #!/bin/sh
-SOLUTIONDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-xbuild /verbosity:minimal $SOLUTIONDIR/src/MartinCostello.BrowserStack.Automate.msbuild "$@"
+dotnet restore --verbosity minimal
+dotnet build src/MartinCostello.BrowserStack.Automate
+dotnet test tests/MartinCostello.BrowserStack.Automate.Tests --framework "netcoreapp1.0"
+dotnet pack src/MartinCostello.BrowserStack.Automate

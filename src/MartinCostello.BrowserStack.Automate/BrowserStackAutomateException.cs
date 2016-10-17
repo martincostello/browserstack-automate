@@ -4,12 +4,16 @@
 namespace MartinCostello.BrowserStack.Automate
 {
     using System;
+#if NET451
     using System.Runtime.Serialization;
+#endif
 
     /// <summary>
     /// Represents an error from the BrowserStack Automate API.
     /// </summary>
+#if NET451
     [Serializable]
+#endif
     public class BrowserStackAutomateException : Exception
     {
         /// <summary>
@@ -82,6 +86,7 @@ namespace MartinCostello.BrowserStack.Automate
             ErrorDetail = errorDetail;
         }
 
+#if NET451
         /// <summary>
         /// Initializes a new instance of the <see cref="BrowserStackAutomateException"/> class with serialized data.
         /// </summary>
@@ -99,17 +104,20 @@ namespace MartinCostello.BrowserStack.Automate
         {
             ErrorDetail = (BrowserStackAutomateError)info.GetValue(nameof(ErrorDetail), typeof(BrowserStackAutomateError));
         }
+#endif
 
         /// <summary>
         /// Gets the error detail, if any, associated with the exception.
         /// </summary>
         public BrowserStackAutomateError ErrorDetail { get; }
 
+#if NET451
         /// <inheritdoc />
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
             info.AddValue(nameof(ErrorDetail), ErrorDetail);
         }
+#endif
     }
 }
