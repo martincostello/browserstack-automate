@@ -64,8 +64,8 @@ function DotNetBuild { param([string]$Project, [string]$Configuration, [string]$
     }
 }
 
-function DotNetTest { param([string]$Project, [string]$Framework)
-    & $dotnet test $Project --output (Join-Path $OutputPath $Framework) --framework $Framework
+function DotNetTest { param([string]$Project)
+    & $dotnet test $Project
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet test failed with exit code $LASTEXITCODE"
     }
@@ -127,7 +127,7 @@ ForEach ($project in $projects) {
 if ($RunTests -eq $true) {
     Write-Host "Testing $($testProjects.Count) project(s)..." -ForegroundColor Green
     ForEach ($project in $testProjects) {
-        DotNetTest $project "netcoreapp1.0"
+        DotNetTest $project
     }
 }
 
