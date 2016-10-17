@@ -128,7 +128,6 @@ if ($RunTests -eq $true) {
     Write-Host "Testing $($testProjects.Count) project(s)..." -ForegroundColor Green
     ForEach ($project in $testProjects) {
         DotNetTest $project "netcoreapp1.0"
-        DotNetTest $project "net451"
     }
 }
 
