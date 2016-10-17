@@ -24,7 +24,7 @@ Features include:
  * Setting the status of a session.
  * Regenerating the API access key.
 
-The assembly supports .NET Core 1.0 and .NET Framework 4.5.1.
+The assembly supports .NET Core (via .NET Standard 1.3) and .NET Framework 4.5.1.
 
 ## Installation
 
