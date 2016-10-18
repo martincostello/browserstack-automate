@@ -4,7 +4,7 @@
   "description": ".NET client for the BrowserStack Automate REST API.",
   "language": "en-US",
   "title": "BrowserStack Automate Client API",
-  "version": "2.0.1-*",
+  "version": "2.0.2-*",
 
   "buildOptions": {
     "additionalArguments": [ "/ruleset:../../MartinCostello.BrowserStack.Automate.ruleset", "/additionalfile:../../stylecop.json" ],

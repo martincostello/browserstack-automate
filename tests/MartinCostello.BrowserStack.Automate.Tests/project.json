@@ -3,7 +3,7 @@
   "copyright": "Martin Costello (c) 2015",
   "description": "Tests for MartinCostello.BrowserStack.Automate.",
   "title": "MartinCostello.BrowserStack.Automate.Tests",
-  "version": "2.0.1-*",
+  "version": "2.0.2-*",
 
   "buildOptions": {
     "additionalArguments": [ "/ruleset:../../MartinCostello.BrowserStack.Automate.ruleset", "/additionalfile:../../stylecop.json" ],
