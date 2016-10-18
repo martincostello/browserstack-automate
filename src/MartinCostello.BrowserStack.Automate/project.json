@@ -51,7 +51,7 @@
     "iconUrl": "https://martincostello.github.io/browserstack-automate/images/browserstack-logo.png",
     "licenseUrl": "https://github.com/martincostello/browserstack-automate/blob/master/LICENSE",
     "owners": [ "Martin Costello" ],
-    "projectUrl": "https://github.com/martincostello/browserstack-automater",
+    "projectUrl": "https://github.com/martincostello/browserstack-automate",
     "releaseNotes": "See https://github.com/martincostello/browserstack-automate/releases for details.",
     "repository": {
       "type": "git",
