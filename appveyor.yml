@@ -10,10 +10,6 @@ environment:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   NUGET_XMLDOC_MODE: skip
 
-branches:
-  only:
-    - master
-
 assembly_info:
   patch: true
   file: AssemblyVersion.cs
