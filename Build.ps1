@@ -30,7 +30,12 @@ if ($env:CI -ne $null) {
         $LastVersionBuild = (Get-Content ".\releases.txt" | Select -Last 1)
         $LastVersion = New-Object -TypeName System.Version -ArgumentList $LastVersionBuild
         $ThisVersion = $env:APPVEYOR_BUILD_NUMBER -as [int]
-        $ThisBuildNumber = $ThisVersion - $LastVersion.Build
+
+        if ($LastVersion.Revision -eq 0) {
+            $ThisBuildNumber = $ThisVersion - $LastVersion.Build
+        } else {
+            $ThisBuildNumber = $ThisVersion - $LastVersion.Revision
+        }
 
         $VersionSuffix = "beta-" + $ThisBuildNumber.ToString("0000")
     }
