@@ -59,7 +59,7 @@
     },
     "requireLicenseAcceptance": false,
     "summary": ".NET client for the BrowserStack Automate REST API.",
-    "tags": [ "BrowserStack", "BrowserStack Automate" ]
+    "tags": [ "BrowserStack", "Automate" ]
   },
 
   "tooling": {
