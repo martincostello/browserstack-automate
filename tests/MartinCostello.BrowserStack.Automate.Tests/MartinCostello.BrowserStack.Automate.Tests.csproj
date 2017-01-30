@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\MartinCostello.BrowserStack.Automate.Common.props" />
+  <PropertyGroup>
+    <AssemblyName>MartinCostello.BrowserStack.Automate.Tests</AssemblyName>
+    <AssemblyTitle>MartinCostello.BrowserStack.Automate.Tests</AssemblyTitle>
+    <Description>Tests for MartinCostello.BrowserStack.Automate.</Description>
+    <PackageId>MartinCostello.BrowserStack.Automate.Tests</PackageId>
+    <TargetFrameworks>netcoreapp1.0;net451</TargetFrameworks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\AssemblyVersion.cs;..\..\CommonAssemblyInfo.cs" />
+    <Content Include="xunit.runner.json" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\MartinCostello.BrowserStack.Automate\MartinCostello.BrowserStack.Automate.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="4.15.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0-preview-20170106-08" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="xunit" Version="2.2.0-beta5-build3474" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0-beta5-build1225" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
+    <PackageReference Include="Microsoft.NETCore.Platforms" Version="1.0.2" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+</Project>

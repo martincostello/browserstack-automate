@@ -1,0 +1,40 @@
+﻿<Project>
+  <PropertyGroup>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateNeutralResourcesLanguageAttribute>false</GenerateNeutralResourcesLanguageAttribute>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+
+    <DefineConstants>$(DefineConstants)</DefineConstants>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);SA1100;SA1101;SA1129;SA1309;SA1609;SA1633;SA1649;SA1652</NoWarn>
+
+    <Authors>Martin Costello</Authors>
+    <Company>https://github.com/martincostello/website</Company>
+    <Copyright>Martin Costello (c) 2015-2017</Copyright>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <VersionPrefix>2.0.2</VersionPrefix>
+    <VersionSuffix></VersionSuffix>
+    <WarningsAsErrors>true</WarningsAsErrors>
+
+    <PackageIconUrl>https://martincostello.github.io/browserstack-automate/images/browserstack-logo.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/martincostello/browserstack-automate</PackageProjectUrl>
+    <PackageLicenseUrl>$(PackageProjectUrl)/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageReleaseNotes>See $(PackageProjectUrl)/releases for details.</PackageReleaseNotes>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageTags>BrowserStack;Automate</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>$(PackageProjectUrl).git</RepositoryUrl>
+
+    <AssemblyOriginatorKeyFile>../../MartinCostello.BrowserStack.Automate.snk</AssemblyOriginatorKeyFile>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+    <SignAssembly>true</SignAssembly>
+
+  </PropertyGroup>
+</Project>

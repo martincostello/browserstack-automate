@@ -12,7 +12,7 @@ $ErrorActionPreference = "Stop"
 
 $solutionPath  = Split-Path $MyInvocation.MyCommand.Definition
 $getDotNet     = Join-Path $solutionPath "tools\install.ps1"
-$dotnetVersion = "1.0.0-preview2-003121"
+$dotnetVersion = "1.0.0-rc3-004530"
 
 if ($OutputPath -eq "") {
     $OutputPath = "$(Convert-Path "$PSScriptRoot")\artifacts"
@@ -27,7 +27,7 @@ if ($env:CI -ne $null) {
 
     if (($VersionSuffix -eq "" -and $env:APPVEYOR_REPO_TAG -eq "false" -and $env:APPVEYOR_BUILD_NUMBER -ne "") -eq $true) {
 
-        $LastVersionBuild = (Get-Content ".\releases.txt" | Select -Last 1)
+        $LastVersionBuild = (Get-Content ".\releases.txt" | Select-Object -Last 1)
         $LastVersion = New-Object -TypeName System.Version -ArgumentList $LastVersionBuild
         $ThisVersion = $env:APPVEYOR_BUILD_NUMBER -as [int]
 
@@ -78,9 +78,9 @@ function DotNetTest { param([string]$Project)
 
 function DotNetPack { param([string]$Project, [string]$Configuration, [string]$VersionSuffix)
     if ($VersionSuffix) {
-        & $dotnet pack $Project --output $OutputPath --configuration $Configuration --version-suffix "$VersionSuffix" --no-build
+        & $dotnet pack $Project --output $OutputPath --configuration $Configuration --version-suffix "$VersionSuffix" --no-build --include-symbols --include-source
     } else {
-        & $dotnet pack $Project --output $OutputPath --configuration $Configuration --no-build
+        & $dotnet pack $Project --output $OutputPath --configuration $Configuration --no-build --include-symbols --include-source
     }
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet pack failed with exit code $LASTEXITCODE"
@@ -100,20 +100,20 @@ if ($PatchVersion -eq $true) {
 }
 
 $projects = @(
-    (Join-Path $solutionPath "src\MartinCostello.BrowserStack.Automate\project.json")
+    (Join-Path $solutionPath "src\MartinCostello.BrowserStack.Automate\MartinCostello.BrowserStack.Automate.csproj")
 )
 
 $testProjects = @(
-    (Join-Path $solutionPath "tests\MartinCostello.BrowserStack.Automate.Tests\project.json")
+    (Join-Path $solutionPath "tests\MartinCostello.BrowserStack.Automate.Tests\MartinCostello.BrowserStack.Automate.Tests.csproj")
 )
 
 $packageProjects = @(
-    (Join-Path $solutionPath "src\MartinCostello.BrowserStack.Automate\project.json")
+    (Join-Path $solutionPath "src\MartinCostello.BrowserStack.Automate\MartinCostello.BrowserStack.Automate.csproj")
 )
 
 $restoreProjects = @(
-    (Join-Path $solutionPath "src\MartinCostello.BrowserStack.Automate\project.json"),
-    (Join-Path $solutionPath "tests\MartinCostello.BrowserStack.Automate.Tests\project.json")
+    (Join-Path $solutionPath "src\MartinCostello.BrowserStack.Automate\MartinCostello.BrowserStack.Automate.csproj"),
+    (Join-Path $solutionPath "tests\MartinCostello.BrowserStack.Automate.Tests\MartinCostello.BrowserStack.Automate.Tests.csproj")
 )
 
 if ($RestorePackages -eq $true) {
