@@ -11,8 +11,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 $solutionPath  = Split-Path $MyInvocation.MyCommand.Definition
-$getDotNet     = Join-Path $solutionPath "tools\install.ps1"
-$dotnetVersion = "1.0.0-rc3-004530"
+$dotnetVersion = "1.0.0-rc4-004788"
 
 if ($OutputPath -eq "") {
     $OutputPath = "$(Convert-Path "$PSScriptRoot")\artifacts"
@@ -51,14 +50,16 @@ if (!(Test-Path $env:DOTNET_INSTALL_DIR)) {
 $env:PATH = "$env:DOTNET_INSTALL_DIR;$env:PATH"
 $dotnet   = "$env:DOTNET_INSTALL_DIR\dotnet"
 
-function DotNetRestore { param([string]$Project)
+function DotNetRestore {
+    param([string]$Project)
     & $dotnet restore $Project --verbosity minimal
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet restore failed with exit code $LASTEXITCODE"
     }
 }
 
-function DotNetBuild { param([string]$Project, [string]$Configuration, [string]$Framework, [string]$VersionSuffix)
+function DotNetBuild {
+    param([string]$Project, [string]$Configuration, [string]$Framework, [string]$VersionSuffix)
     if ($VersionSuffix) {
         & $dotnet build $Project --output (Join-Path $OutputPath $Framework) --framework $Framework --configuration $Configuration --version-suffix "$VersionSuffix"
     } else {
@@ -69,14 +70,16 @@ function DotNetBuild { param([string]$Project, [string]$Configuration, [string]$
     }
 }
 
-function DotNetTest { param([string]$Project)
+function DotNetTest {
+    param([string]$Project)
     & $dotnet test $Project
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet test failed with exit code $LASTEXITCODE"
     }
 }
 
-function DotNetPack { param([string]$Project, [string]$Configuration, [string]$VersionSuffix)
+function DotNetPack {
+    param([string]$Project, [string]$Configuration, [string]$VersionSuffix)
     if ($VersionSuffix) {
         & $dotnet pack $Project --output $OutputPath --configuration $Configuration --version-suffix "$VersionSuffix" --no-build --include-symbols --include-source
     } else {

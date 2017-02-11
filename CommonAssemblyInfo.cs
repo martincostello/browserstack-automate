@@ -3,15 +3,10 @@
 
 using System;
 using System.Reflection;
-using System.Resources;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyCompany("https://github.com/martincostello/browserstack-automate")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyCopyright("Copyright (c) Martin Costello, 2015.")]
 [assembly: AssemblyProduct("MartinCostello.BrowserStack.Automate")]
 [assembly: AssemblyTrademark("")]
-
 [assembly: ComVisible(false)]
-[assembly: NeutralResourcesLanguage("en-US")]
