@@ -30,6 +30,8 @@ namespace MartinCostello.BrowserStack.Automate
 
             // Assert
             browsers.Should().NotBeNullOrEmpty();
+            browsers.Should().NotContainNulls();
+
             browsers.All((p) => !string.IsNullOrEmpty(p.BrowserVersion));
             browsers.All((p) => !string.IsNullOrEmpty(p.Device));
 
@@ -43,67 +45,66 @@ namespace MartinCostello.BrowserStack.Automate
             }
 
             // Act
-            ICollection<BuildItem> builds = await target.GetBuildsAsync();
+            ICollection<Build> builds = await target.GetBuildsAsync();
 
             // Assert
-            builds.Should().NotBeNullOrEmpty();
+            builds.Should().NotBeNull();
+            builds.Should().NotContainNulls();
 
             foreach (var build in builds)
             {
                 build.Should().NotBeNull();
-                build.Item.Should().NotBeNull();
-                build.Item.Duration.Should().BeGreaterOrEqualTo(1);
-                build.Item.HashedId.Should().NotBeNullOrEmpty();
-                build.Item.Name.Should().NotBeNullOrEmpty();
-                build.Item.Status.Should().NotBeNullOrEmpty();
+                build.Duration.Should().BeGreaterOrEqualTo(1);
+                build.HashedId.Should().NotBeNullOrEmpty();
+                build.Name.Should().NotBeNullOrEmpty();
+                build.Status.Should().NotBeNullOrEmpty();
             }
 
             // Arrange
             foreach (var build in builds)
             {
                 // Act
-                ICollection<SessionItem> sessions = await target.GetSessionsAsync(build.Item.HashedId);
+                ICollection<Session> sessions = await target.GetSessionsAsync(build.HashedId);
 
                 // Assert
                 sessions.Should().NotBeNull();
+                sessions.Should().NotContainNulls();
 
-                sessions.All((p) => !string.IsNullOrEmpty(p.Item.BrowserName));
-                sessions.All((p) => !string.IsNullOrEmpty(p.Item.BrowserVersion));
+                sessions.All((p) => !string.IsNullOrEmpty(p.BrowserName));
+                sessions.All((p) => !string.IsNullOrEmpty(p.BrowserVersion));
 
                 // Limit the sessions for performance
                 foreach (var session in sessions.Take(1))
                 {
-                    AssertSession(session, build.Item.Name);
+                    AssertSession(session, build.Name);
 
                     // Act
-                    var sessionDetail = await target.GetSessionAsync(session.Item.HashedId);
+                    var sessionDetail = await target.GetSessionAsync(session.HashedId);
 
                     // Assert
                     sessionDetail.Should().NotBeNull();
-                    sessionDetail.Item.Should().NotBeNull();
-                    sessionDetail.Item.BrowserUri.Should().NotBeNull();
-                    sessionDetail.Item.PublicUri.Should().NotBeNull();
-                    sessionDetail.Item.VideoUri.Should().NotBeNull();
-                    sessionDetail.Item.BrowserName.Should().Be(session.Item.BrowserName);
-                    sessionDetail.Item.BrowserVersion.Should().Be(session.Item.BrowserVersion);
-                    sessionDetail.Item.BuildName.Should().Be(session.Item.BuildName);
-                    sessionDetail.Item.Duration.Should().Be(session.Item.Duration);
-                    sessionDetail.Item.HashedId.Should().Be(session.Item.HashedId);
-                    sessionDetail.Item.LogsUri.Should().Be(session.Item.LogsUri);
-                    sessionDetail.Item.Name.Should().Be(session.Item.Name);
-                    sessionDetail.Item.OSName.Should().Be(session.Item.OSName);
-                    sessionDetail.Item.OSVersion.Should().Be(session.Item.OSVersion);
-                    sessionDetail.Item.ProjectName.Should().Be(session.Item.ProjectName);
-                    sessionDetail.Item.Reason.Should().Be(session.Item.Reason);
-                    sessionDetail.Item.Status.Should().Be(session.Item.Status);
+                    sessionDetail.BrowserUri.Should().NotBeNull();
+                    sessionDetail.PublicUri.Should().NotBeNull();
+                    sessionDetail.VideoUri.Should().NotBeNull();
+                    sessionDetail.BrowserName.Should().Be(session.BrowserName);
+                    sessionDetail.BrowserVersion.Should().Be(session.BrowserVersion);
+                    sessionDetail.BuildName.Should().Be(session.BuildName);
+                    sessionDetail.Duration.Should().Be(session.Duration);
+                    sessionDetail.HashedId.Should().Be(session.HashedId);
+                    sessionDetail.LogsUri.Should().Be(session.LogsUri);
+                    sessionDetail.Name.Should().Be(session.Name);
+                    sessionDetail.OSName.Should().Be(session.OSName);
+                    sessionDetail.OSVersion.Should().Be(session.OSVersion);
+                    sessionDetail.ProjectName.Should().Be(session.ProjectName);
+                    sessionDetail.Reason.Should().Be(session.Reason);
+                    sessionDetail.Status.Should().Be(session.Status);
 
                     // Act
-                    SessionItem updatedSession = await target.SetSessionCompletedAsync(session.Item.HashedId, string.Empty);
+                    Session updatedSession = await target.SetSessionCompletedAsync(session.HashedId, string.Empty);
 
                     // Assert
                     updatedSession.Should().NotBeNull();
-                    updatedSession.Item.Should().NotBeNull();
-                    updatedSession.Item.HashedId.Should().Be(session.Item.HashedId);
+                    updatedSession.HashedId.Should().Be(session.HashedId);
                 }
 
                 // Arrange
@@ -111,15 +112,16 @@ namespace MartinCostello.BrowserStack.Automate
                 status = null;
 
                 // Act
-                sessions = await target.GetSessionsAsync(build.Item.HashedId, limit, status);
+                sessions = await target.GetSessionsAsync(build.HashedId, limit, status);
 
                 // Assert
                 sessions.Should().NotBeNull();
+                sessions.Should().NotContainNulls();
                 sessions.Count.Should().BeLessOrEqualTo(limit.Value);
 
                 foreach (var session in sessions)
                 {
-                    AssertSession(session, build.Item.Name);
+                    AssertSession(session, build.Name);
                 }
 
                 // Arrange
@@ -127,14 +129,15 @@ namespace MartinCostello.BrowserStack.Automate
                 status = SessionStatuses.Done;
 
                 // Act
-                sessions = await target.GetSessionsAsync(build.Item.HashedId, limit, status);
+                sessions = await target.GetSessionsAsync(build.HashedId, limit, status);
 
                 // Assert
                 sessions.Should().NotBeNull();
+                sessions.Should().NotContainNulls();
 
                 foreach (var session in sessions)
                 {
-                    AssertSession(session, build.Item.Name);
+                    AssertSession(session, build.Name);
                 }
 
                 // Arrange
@@ -142,18 +145,19 @@ namespace MartinCostello.BrowserStack.Automate
                 status = SessionStatuses.Done;
 
                 // Act
-                sessions = await target.GetSessionsAsync(build.Item.HashedId, limit, status);
+                sessions = await target.GetSessionsAsync(build.HashedId, limit, status);
 
                 // Assert
                 sessions.Should().NotBeNull();
+                sessions.Should().NotContainNulls();
                 sessions.Count.Should().BeLessOrEqualTo(limit.Value);
 
                 foreach (var session in sessions)
                 {
-                    AssertSession(session, build.Item.Name);
+                    AssertSession(session, build.Name);
 
                     // Act (no Assert)
-                    await target.GetSessionLogsAsync(build.Item.HashedId, session.Item.HashedId);
+                    await target.GetSessionLogsAsync(build.HashedId, session.HashedId);
                 }
             }
 
@@ -166,6 +170,7 @@ namespace MartinCostello.BrowserStack.Automate
 
             // Assert
             builds.Should().NotBeNull();
+            builds.Should().NotContainNulls();
             builds.Count.Should().BeLessOrEqualTo(limit.Value);
 
             foreach (var build in builds)
@@ -182,6 +187,7 @@ namespace MartinCostello.BrowserStack.Automate
 
             // Assert
             builds.Should().NotBeNull();
+            builds.Should().NotContainNulls();
 
             foreach (var build in builds)
             {
@@ -189,60 +195,63 @@ namespace MartinCostello.BrowserStack.Automate
             }
 
             // Act
-            ICollection<ProjectItem> projects = await target.GetProjectsAsync();
+            ICollection<Project> projects = await target.GetProjectsAsync();
 
             // Assert
             projects.Should().NotBeNullOrEmpty();
+            projects.Should().NotContainNulls();
 
             DateTime minimumDate = new DateTime(2011, 1, 1, 0, 0, 0);
 
             foreach (var project in projects)
             {
                 project.Should().NotBeNull();
-                project.Item.Should().NotBeNull();
-                project.Item.GroupId.Should().BeGreaterThan(0);
-                project.Item.Id.Should().BeGreaterThan(0);
-                project.Item.CreatedAt.Should().BeAfter(minimumDate);
-                project.Item.UpdatedAt.Should().BeAfter(minimumDate);
-                project.Item.Name.Should().NotBeNullOrEmpty();
+                project.GroupId.Should().BeGreaterThan(0);
+                project.Id.Should().BeGreaterThan(0);
+                project.CreatedAt.Should().BeAfter(minimumDate);
+                project.UpdatedAt.Should().BeAfter(minimumDate);
+                project.Name.Should().NotBeNullOrEmpty();
 
-                if (project.Item.UserId.HasValue)
+                if (project.UserId.HasValue)
                 {
-                    project.Item.UserId.Should().BeGreaterThan(0);
+                    project.UserId.Should().BeGreaterThan(0);
                 }
             }
 
             // Arrange
-            foreach (int projectId in projects.Select((p) => p.Item.Id))
+            foreach (int projectId in projects.Select((p) => p.Id))
             {
                 // Act
-                ProjectDetailItem project = await target.GetProjectAsync(projectId);
+                ProjectDetailItem projectItem = await target.GetProjectAsync(projectId);
 
                 // Assert
-                project.Should().NotBeNull();
-                project.Item.Should().NotBeNull();
-                project.Item.GroupId.Should().BeGreaterThan(0);
-                project.Item.Id.Should().BeGreaterThan(0);
-                project.Item.CreatedAt.Should().BeAfter(minimumDate);
-                project.Item.UpdatedAt.Should().BeAfter(minimumDate);
-                project.Item.Name.Should().NotBeNullOrEmpty();
-                project.Item.Builds.Should().NotBeNull();
+                projectItem.Should().NotBeNull();
+                projectItem.Project.Should().NotBeNull();
 
-                foreach (var build in project.Item.Builds)
+                var project = projectItem.Project;
+                project.GroupId.Should().BeGreaterThan(0);
+                project.Id.Should().BeGreaterThan(0);
+                project.CreatedAt.Should().BeAfter(minimumDate);
+                project.UpdatedAt.Should().BeAfter(minimumDate);
+                project.Name.Should().NotBeNullOrEmpty();
+                project.Builds.Should().NotBeNull();
+                project.Builds.Should().NotContainNulls();
+
+                foreach (var build in project.Builds)
                 {
                     build.Should().NotBeNull();
-                    build.Item.Should().NotBeNull();
-                    build.Item.CreatedAt.Should().BeOnOrAfter(project.Item.CreatedAt);
-                    build.Item.Duration.Should().BeGreaterOrEqualTo(1);
-                    build.Item.Id.Should().BeGreaterThan(0);
-                    build.Item.HashedId.Should().NotBeNullOrEmpty();
-                    build.Item.Name.Should().NotBeNullOrEmpty();
-                    build.Item.Status.Should().NotBeNullOrEmpty();
-                    build.Item.UpdatedAt.Should().BeAfter(project.Item.CreatedAt);
-                    build.Item.UpdatedAt.Should().BeAfter(build.Item.CreatedAt);
-                    build.Item.GroupId.Should().Be(project.Item.GroupId);
-                    build.Item.ProjectId.Should().Be(project.Item.Id);
-                    build.Item.UserId.Should().BeGreaterThan(0);
+                    build.Should().NotBeNull();
+                    build.CreatedAt.Should().BeOnOrAfter(project.CreatedAt);
+                    build.Duration.Should().BeGreaterOrEqualTo(1);
+                    build.Id.Should().BeGreaterThan(0);
+                    build.HashedId.Should().NotBeNullOrEmpty();
+                    build.Name.Should().NotBeNullOrEmpty();
+                    build.Status.Should().NotBeNullOrEmpty();
+                    build.UpdatedAt.Should().BeAfter(project.CreatedAt);
+                    build.UpdatedAt.Should().BeAfter(build.CreatedAt);
+                    build.GroupId.Should().Be(project.GroupId);
+                    build.ProjectId.Should().Be(project.Id);
+                    build.UserId.Should().BeGreaterThan(0);
                 }
             }
 
@@ -593,43 +602,41 @@ namespace MartinCostello.BrowserStack.Automate
         }
 
         /// <summary>
-        /// Asserts that the specified <see cref="BuildItem"/> is correct.
+        /// Asserts that the specified <see cref="Build"/> is correct.
         /// </summary>
-        /// <param name="build">The <see cref="BuildItem"/> to assert on.</param>
+        /// <param name="build">The <see cref="Build"/> to assert on.</param>
         /// <param name="expectedStatus">The optional expected status.</param>
-        private static void AssertBuild(BuildItem build, string expectedStatus = null)
+        private static void AssertBuild(Build build, string expectedStatus = null)
         {
             build.Should().NotBeNull();
-            build.Item.Should().NotBeNull();
-            build.Item.Duration.Should().BeGreaterOrEqualTo(1);
-            build.Item.HashedId.Should().NotBeNullOrEmpty();
-            build.Item.Name.Should().NotBeNullOrEmpty();
-            build.Item.Status.Should().NotBeNullOrEmpty();
+            build.Duration.Should().BeGreaterOrEqualTo(1);
+            build.HashedId.Should().NotBeNullOrEmpty();
+            build.Name.Should().NotBeNullOrEmpty();
+            build.Status.Should().NotBeNullOrEmpty();
 
             if (expectedStatus != null)
             {
-                build.Item.Status.Should().Be(expectedStatus);
+                build.Status.Should().Be(expectedStatus);
             }
         }
 
         /// <summary>
-        /// Asserts that the specified <see cref="SessionItem"/> is correct.
+        /// Asserts that the specified <see cref="Session"/> is correct.
         /// </summary>
-        /// <param name="session">The <see cref="SessionItem"/> to assert on.</param>
+        /// <param name="session">The <see cref="Session"/> to assert on.</param>
         /// <param name="expectedName">The expected name of the session item.</param>
-        private static void AssertSession(SessionItem session, string expectedName)
+        private static void AssertSession(Session session, string expectedName)
         {
             session.Should().NotBeNull();
-            session.Item.Should().NotBeNull();
-            session.Item.BuildName.Should().Be(expectedName);
-            session.Item.HashedId.Should().NotBeNullOrEmpty();
-            session.Item.LogsUri.Should().NotBeNullOrEmpty();
-            session.Item.OSName.Should().NotBeNullOrEmpty();
-            session.Item.OSVersion.Should().NotBeNullOrEmpty();
-            session.Item.ProjectName.Should().NotBeNullOrEmpty();
-            session.Item.Reason.Should().NotBeNullOrEmpty();
-            session.Item.Status.Should().NotBeNullOrEmpty();
-            session.Item.Duration.Should().BeGreaterThan(0);
+            session.BuildName.Should().Be(expectedName);
+            session.HashedId.Should().NotBeNullOrEmpty();
+            session.LogsUri.Should().NotBeNullOrEmpty();
+            session.OSName.Should().NotBeNullOrEmpty();
+            session.OSVersion.Should().NotBeNullOrEmpty();
+            session.ProjectName.Should().NotBeNullOrEmpty();
+            session.Reason.Should().NotBeNullOrEmpty();
+            session.Status.Should().NotBeNullOrEmpty();
+            session.Duration.Should().BeGreaterThan(0);
         }
 
         /// <summary>
