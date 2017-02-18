@@ -262,7 +262,9 @@ namespace MartinCostello.BrowserStack.Automate
             plan.Should().NotBeNull();
             plan.AutomatePlan.Should().NotBeNullOrEmpty();
             plan.MaximumAllowedParallelSessions.Should().BeGreaterOrEqualTo(1);
+            plan.MaximumQueuedParallelSessions.Should().BeGreaterOrEqualTo(1);
             plan.ParallelSessionsRunning.Should().BeGreaterOrEqualTo(0);
+            plan.QueuedParallelSessions.Should().BeGreaterOrEqualTo(0);
             plan.TeamMaximumAllowedParallelSessions.Should().BeGreaterOrEqualTo(0);
         }
 
