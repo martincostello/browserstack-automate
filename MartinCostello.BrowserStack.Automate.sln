@@ -25,9 +25,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F0ED165C-03B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0F694B07-6EBF-45FB-99A0-266542E16DEE}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MartinCostello.BrowserStack.Automate", "src\MartinCostello.BrowserStack.Automate\MartinCostello.BrowserStack.Automate.xproj", "{DA306F05-7E38-43DA-9C48-674028A34577}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MartinCostello.BrowserStack.Automate", "src\MartinCostello.BrowserStack.Automate\MartinCostello.BrowserStack.Automate.csproj", "{DA306F05-7E38-43DA-9C48-674028A34577}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MartinCostello.BrowserStack.Automate.Tests", "tests\MartinCostello.BrowserStack.Automate.Tests\MartinCostello.BrowserStack.Automate.Tests.xproj", "{DC723DF1-5852-45B1-B2BD-71BA85CDED1E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MartinCostello.BrowserStack.Automate.Tests", "tests\MartinCostello.BrowserStack.Automate.Tests\MartinCostello.BrowserStack.Automate.Tests.csproj", "{DC723DF1-5852-45B1-B2BD-71BA85CDED1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
