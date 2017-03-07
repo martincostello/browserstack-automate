@@ -11,7 +11,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 $solutionPath  = Split-Path $MyInvocation.MyCommand.Definition
-$dotnetVersion = "1.0.0-rc4-004788"
+$dotnetVersion = "1.0.1"
 
 if ($OutputPath -eq "") {
     $OutputPath = "$(Convert-Path "$PSScriptRoot")\artifacts"
@@ -81,9 +81,9 @@ function DotNetTest {
 function DotNetPack {
     param([string]$Project, [string]$Configuration, [string]$VersionSuffix)
     if ($VersionSuffix) {
-        & $dotnet pack $Project --output $OutputPath --configuration $Configuration --version-suffix "$VersionSuffix" --no-build --include-symbols --include-source
+        & $dotnet pack $Project --output $OutputPath --configuration $Configuration --version-suffix "$VersionSuffix" --include-symbols --include-source
     } else {
-        & $dotnet pack $Project --output $OutputPath --configuration $Configuration --no-build --include-symbols --include-source
+        & $dotnet pack $Project --output $OutputPath --configuration $Configuration --include-symbols --include-source
     }
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet pack failed with exit code $LASTEXITCODE"

@@ -1,12 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\MartinCostello.BrowserStack.Automate.Common.props" />
   <PropertyGroup>
-    <AssemblyName>MartinCostello.BrowserStack.Automate</AssemblyName>
     <AssemblyTitle>BrowserStack Automate Client API</AssemblyTitle>
     <Description>.NET client for the BrowserStack Automate REST API.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <OutputType>Library</OutputType>
-    <PackageId>MartinCostello.BrowserStack.Automate</PackageId>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <TargetFrameworks>net451;netstandard1.3</TargetFrameworks>
   </PropertyGroup>
