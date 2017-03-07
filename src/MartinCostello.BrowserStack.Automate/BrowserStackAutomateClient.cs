@@ -186,7 +186,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the builds.
         /// </returns>
-        public virtual Task<ICollection<BuildItem>> GetBuildsAsync() => GetBuildsAsync(null, null);
+        public virtual Task<ICollection<Build>> GetBuildsAsync() => GetBuildsAsync(null, null);
 
         /// <summary>
         /// Gets the builds as an asynchronous operation.
@@ -196,7 +196,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the builds.
         /// </returns>
-        public virtual async Task<ICollection<BuildItem>> GetBuildsAsync(int? limit, string status)
+        public virtual async Task<ICollection<Build>> GetBuildsAsync(int? limit, string status)
         {
             string requestUri = string.Format(
                 CultureInfo.InvariantCulture,
@@ -208,7 +208,7 @@ namespace MartinCostello.BrowserStack.Automate
                 using (var response = await client.GetAsync(requestUri))
                 {
                     await EnsureSuccessAsync(response);
-                    return await DeserializeAsync<List<BuildItem>>(response);
+                    return await DeserializeAsync<List<Build>>(response);
                 }
             }
         }
@@ -240,14 +240,14 @@ namespace MartinCostello.BrowserStack.Automate
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the projects.
         /// </returns>
-        public virtual async Task<ICollection<ProjectItem>> GetProjectsAsync()
+        public virtual async Task<ICollection<Project>> GetProjectsAsync()
         {
             using (var client = CreateClient())
             {
                 using (var response = await client.GetAsync("projects.json"))
                 {
                     await EnsureSuccessAsync(response);
-                    return await DeserializeAsync<List<ProjectItem>>(response);
+                    return await DeserializeAsync<List<Project>>(response);
                 }
             }
         }
@@ -262,7 +262,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <exception cref="ArgumentException">
         /// <paramref name="sessionId"/> is <see langword="null"/> or white space.
         /// </exception>
-        public virtual async Task<SessionDetailItem> GetSessionAsync(string sessionId)
+        public virtual async Task<SessionDetail> GetSessionAsync(string sessionId)
         {
             if (string.IsNullOrWhiteSpace(sessionId))
             {
@@ -279,7 +279,7 @@ namespace MartinCostello.BrowserStack.Automate
                 using (var response = await client.GetAsync(requestUri))
                 {
                     await EnsureSuccessAsync(response);
-                    return await DeserializeAsync<SessionDetailItem>(response);
+                    return await DeserializeAsync<SessionDetail>(response);
                 }
             }
         }
@@ -339,7 +339,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <exception cref="ArgumentException">
         /// <paramref name="buildId"/> is <see langword="null"/> or white space.
         /// </exception>
-        public virtual Task<ICollection<SessionItem>> GetSessionsAsync(string buildId) => GetSessionsAsync(buildId, null, null);
+        public virtual Task<ICollection<Session>> GetSessionsAsync(string buildId) => GetSessionsAsync(buildId, null, null);
 
         /// <summary>
         /// Gets the sessions associated with the specified build Id as an asynchronous operation.
@@ -353,7 +353,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <exception cref="ArgumentException">
         /// <paramref name="buildId"/> is <see langword="null"/> or white space.
         /// </exception>
-        public virtual async Task<ICollection<SessionItem>> GetSessionsAsync(string buildId, int? limit, string status)
+        public virtual async Task<ICollection<Session>> GetSessionsAsync(string buildId, int? limit, string status)
         {
             if (string.IsNullOrWhiteSpace(buildId))
             {
@@ -371,7 +371,7 @@ namespace MartinCostello.BrowserStack.Automate
                 using (var response = await client.GetAsync(requestUri))
                 {
                     await EnsureSuccessAsync(response);
-                    return await DeserializeAsync<List<SessionItem>>(response);
+                    return await DeserializeAsync<List<Session>>(response);
                 }
             }
         }
@@ -441,7 +441,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <exception cref="ArgumentException">
         /// <paramref name="sessionId"/> or <paramref name="status"/> is <see langword="null"/> or white space.
         /// </exception>
-        public virtual async Task<SessionItem> SetSessionStatusAsync(string sessionId, string status, string reason)
+        public virtual async Task<Session> SetSessionStatusAsync(string sessionId, string status, string reason)
         {
             if (string.IsNullOrWhiteSpace(sessionId))
             {
@@ -473,7 +473,7 @@ namespace MartinCostello.BrowserStack.Automate
                     using (var response = await client.PutAsync(requestUri, content))
                     {
                         await EnsureSuccessAsync(response);
-                        return await DeserializeAsync<SessionItem>(response);
+                        return await DeserializeAsync<Session>(response);
                     }
                 }
             }

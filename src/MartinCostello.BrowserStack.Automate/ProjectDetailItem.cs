@@ -8,12 +8,12 @@ namespace MartinCostello.BrowserStack.Automate
     /// <summary>
     /// A class representing a project detail item.
     /// </summary>
-    public class ProjectDetailItem : IAutomateItem<ProjectDetail>
+    public class ProjectDetailItem
     {
         /// <summary>
         /// Gets or sets the project detail.
         /// </summary>
         [JsonProperty("project")]
-        public ProjectDetail Item { get; set; }
+        public ProjectDetail Project { get; set; }
     }
 }

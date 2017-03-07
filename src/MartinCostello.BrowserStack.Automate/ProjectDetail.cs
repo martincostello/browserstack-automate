@@ -15,6 +15,6 @@ namespace MartinCostello.BrowserStack.Automate
         /// Gets or sets the build details.
         /// </summary>
         [JsonProperty("builds")]
-        public ICollection<BuildDetailItem> Builds { get; set; }
+        public ICollection<BuildDetail> Builds { get; set; }
     }
 }

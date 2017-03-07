@@ -34,5 +34,17 @@ namespace MartinCostello.BrowserStack.Automate
         /// </summary>
         [JsonProperty("team_parallel_sessions_max_allowed")]
         public int TeamMaximumAllowedParallelSessions { get; set; }
+
+        /// <summary>
+        /// Gets or sets the number of parallel sessions currently queued.
+        /// </summary>
+        [JsonProperty("queued_sessions")]
+        public int QueuedParallelSessions { get; set; }
+
+        /// <summary>
+        /// Gets or sets the maximum allowed number of parallel sessions that can be queued.
+        /// </summary>
+        [JsonProperty("queued_sessions_max_allowed")]
+        public int MaximumQueuedParallelSessions { get; set; }
     }
 }
