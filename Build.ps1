@@ -11,8 +11,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 $solutionPath  = Split-Path $MyInvocation.MyCommand.Definition
-$getDotNet     = Join-Path $solutionPath "tools\install.ps1"
-$dotnetVersion = "1.0.0-preview2-003121"
+$dotnetVersion = "1.0.1"
 
 if ($OutputPath -eq "") {
     $OutputPath = "$(Convert-Path "$PSScriptRoot")\artifacts"
@@ -27,7 +26,7 @@ if ($env:CI -ne $null) {
 
     if (($VersionSuffix -eq "" -and $env:APPVEYOR_REPO_TAG -eq "false" -and $env:APPVEYOR_BUILD_NUMBER -ne "") -eq $true) {
 
-        $LastVersionBuild = (Get-Content ".\releases.txt" | Select -Last 1)
+        $LastVersionBuild = (Get-Content ".\releases.txt" | Select-Object -Last 1)
         $LastVersion = New-Object -TypeName System.Version -ArgumentList $LastVersionBuild
         $ThisVersion = $env:APPVEYOR_BUILD_NUMBER -as [int]
 
@@ -51,14 +50,16 @@ if (!(Test-Path $env:DOTNET_INSTALL_DIR)) {
 $env:PATH = "$env:DOTNET_INSTALL_DIR;$env:PATH"
 $dotnet   = "$env:DOTNET_INSTALL_DIR\dotnet"
 
-function DotNetRestore { param([string]$Project)
+function DotNetRestore {
+    param([string]$Project)
     & $dotnet restore $Project --verbosity minimal
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet restore failed with exit code $LASTEXITCODE"
     }
 }
 
-function DotNetBuild { param([string]$Project, [string]$Configuration, [string]$Framework, [string]$VersionSuffix)
+function DotNetBuild {
+    param([string]$Project, [string]$Configuration, [string]$Framework, [string]$VersionSuffix)
     if ($VersionSuffix) {
         & $dotnet build $Project --output (Join-Path $OutputPath $Framework) --framework $Framework --configuration $Configuration --version-suffix "$VersionSuffix"
     } else {
@@ -69,18 +70,20 @@ function DotNetBuild { param([string]$Project, [string]$Configuration, [string]$
     }
 }
 
-function DotNetTest { param([string]$Project)
+function DotNetTest {
+    param([string]$Project)
     & $dotnet test $Project
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet test failed with exit code $LASTEXITCODE"
     }
 }
 
-function DotNetPack { param([string]$Project, [string]$Configuration, [string]$VersionSuffix)
+function DotNetPack {
+    param([string]$Project, [string]$Configuration, [string]$VersionSuffix)
     if ($VersionSuffix) {
-        & $dotnet pack $Project --output $OutputPath --configuration $Configuration --version-suffix "$VersionSuffix" --no-build
+        & $dotnet pack $Project --output $OutputPath --configuration $Configuration --version-suffix "$VersionSuffix" --include-symbols --include-source
     } else {
-        & $dotnet pack $Project --output $OutputPath --configuration $Configuration --no-build
+        & $dotnet pack $Project --output $OutputPath --configuration $Configuration --include-symbols --include-source
     }
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet pack failed with exit code $LASTEXITCODE"
@@ -100,20 +103,20 @@ if ($PatchVersion -eq $true) {
 }
 
 $projects = @(
-    (Join-Path $solutionPath "src\MartinCostello.BrowserStack.Automate\project.json")
+    (Join-Path $solutionPath "src\MartinCostello.BrowserStack.Automate\MartinCostello.BrowserStack.Automate.csproj")
 )
 
 $testProjects = @(
-    (Join-Path $solutionPath "tests\MartinCostello.BrowserStack.Automate.Tests\project.json")
+    (Join-Path $solutionPath "tests\MartinCostello.BrowserStack.Automate.Tests\MartinCostello.BrowserStack.Automate.Tests.csproj")
 )
 
 $packageProjects = @(
-    (Join-Path $solutionPath "src\MartinCostello.BrowserStack.Automate\project.json")
+    (Join-Path $solutionPath "src\MartinCostello.BrowserStack.Automate\MartinCostello.BrowserStack.Automate.csproj")
 )
 
 $restoreProjects = @(
-    (Join-Path $solutionPath "src\MartinCostello.BrowserStack.Automate\project.json"),
-    (Join-Path $solutionPath "tests\MartinCostello.BrowserStack.Automate.Tests\project.json")
+    (Join-Path $solutionPath "src\MartinCostello.BrowserStack.Automate\MartinCostello.BrowserStack.Automate.csproj"),
+    (Join-Path $solutionPath "tests\MartinCostello.BrowserStack.Automate.Tests\MartinCostello.BrowserStack.Automate.Tests.csproj")
 )
 
 if ($RestorePackages -eq $true) {

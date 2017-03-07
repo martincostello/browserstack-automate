@@ -6,7 +6,7 @@ environment:
     secure: 1pPava/umi31t0fUJWpcaw==
   BrowserStack_AccessKey:
     secure: kTuv757nz0qovSIwBwGIIFeb2X3PXJuci0mJjGMJuIk=
-  CLI_VERSION: 1.0.0-preview2-003121
+  CLI_VERSION: 1.0.1
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   NUGET_XMLDOC_MODE: skip
 
