@@ -7,8 +7,12 @@ namespace MartinCostello.BrowserStack.Automate
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
+    using System.Net.Http;
     using System.Threading.Tasks;
     using FluentAssertions;
+    using Microsoft.Extensions.DependencyInjection;
+    using Polly;
+    using Polly.CircuitBreaker;
     using Xunit;
 
     /// <summary>
@@ -519,7 +523,7 @@ namespace MartinCostello.BrowserStack.Automate
                 .Should()
                 .Throw<ArgumentOutOfRangeException>()
                 .Where((p) => p.ParamName == "limit")
-                .Where((p) => p.Message.StartsWith("The limit value cannot be less than one."))
+                .Where((p) => p.Message.StartsWith("The limit value cannot be less than one.", StringComparison.Ordinal))
                 .And
                 .ActualValue.Should().Be(0);
         }
@@ -540,7 +544,7 @@ namespace MartinCostello.BrowserStack.Automate
                 .Should()
                 .Throw<ArgumentOutOfRangeException>()
                 .Where((p) => p.ParamName == "limit")
-                .Where((p) => p.Message.StartsWith("The limit value cannot be less than one."))
+                .Where((p) => p.Message.StartsWith("The limit value cannot be less than one.", StringComparison.Ordinal))
                 .And
                 .ActualValue.Should().Be(0);
         }
@@ -619,6 +623,36 @@ namespace MartinCostello.BrowserStack.Automate
             actual.Should().NotBeNull();
             actual.OldKey.Should().Be(expected);
             actual.NewKey.Should().NotBe(expected);
+        }
+
+        [Fact]
+        public static async Task Can_Configure_With_HttpClient_Factory()
+        {
+            // Arrange
+            var services = new ServiceCollection();
+
+            // Create a Polly policy that is a pre-isolated circuit breaker that is guaranteed to fail
+            var policy = Policy.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.MaxValue);
+            policy.Isolate();
+
+            services
+                .AddPolicyRegistry()
+                .Add(policy.PolicyKey, policy.AsAsyncPolicy<HttpResponseMessage>());
+
+            services
+                .AddSingleton<BrowserStackAutomateClient>()
+                .AddHttpClient("BrowserStack Automate")
+                .AddTypedClient((httpClient) => new BrowserStackAutomateClient("a", "b", httpClient))
+                .ConfigureHttpClient((httpClient) => httpClient.Timeout = TimeSpan.FromSeconds(10))
+                .AddPolicyHandlerFromRegistry(policy.PolicyKey);
+
+            using (var provider = services.BuildServiceProvider())
+            {
+                var client = provider.GetRequiredService<BrowserStackAutomateClient>();
+
+                // Act and Assert
+                await Assert.ThrowsAsync<IsolatedCircuitException>(() => client.GetBuildsAsync());
+            }
         }
 
         /// <summary>

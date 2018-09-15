@@ -9,6 +9,9 @@ namespace MartinCostello.BrowserStack.Automate
     /// A class representing a BrowserStack Automate error.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("{" + nameof(Message) + "}")]
+#if NET451
+    [System.Serializable]
+#endif
     public class BrowserStackAutomateError
     {
         /// <summary>

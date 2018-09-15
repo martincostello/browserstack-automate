@@ -28,14 +28,14 @@ namespace MartinCostello.BrowserStack.Automate
         /// <exception cref="ArgumentException">
         /// <paramref name="sessionId"/> is <see langword="null"/> or white space.
         /// </exception>
-        public static async Task<Session> SetSessionCompletedAsync(this BrowserStackAutomateClient client, string sessionId, string reason)
+        public static Task<Session> SetSessionCompletedAsync(this BrowserStackAutomateClient client, string sessionId, string reason)
         {
             if (client == null)
             {
                 throw new ArgumentNullException(nameof(client));
             }
 
-            return await client.SetSessionStatusAsync(sessionId, SessionStatuses.Completed, reason);
+            return client.SetSessionStatusAsync(sessionId, SessionStatuses.Completed, reason);
         }
 
         /// <summary>
@@ -53,14 +53,14 @@ namespace MartinCostello.BrowserStack.Automate
         /// <exception cref="ArgumentException">
         /// <paramref name="sessionId"/> is <see langword="null"/> or white space.
         /// </exception>
-        public static async Task<Session> SetSessionErrorAsync(this BrowserStackAutomateClient client, string sessionId, string reason)
+        public static Task<Session> SetSessionErrorAsync(this BrowserStackAutomateClient client, string sessionId, string reason)
         {
             if (client == null)
             {
                 throw new ArgumentNullException(nameof(client));
             }
 
-            return await client.SetSessionStatusAsync(sessionId, SessionStatuses.Error, reason);
+            return client.SetSessionStatusAsync(sessionId, SessionStatuses.Error, reason);
         }
     }
 }

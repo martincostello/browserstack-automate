@@ -4,6 +4,7 @@
     <DebugType>full</DebugType>
     <Description>.NET client for the BrowserStack Automate REST API.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CA1056</NoWarn>
     <OutputType>Library</OutputType>
     <TargetFrameworks>net451;netstandard1.3;netstandard2.0</TargetFrameworks>
   </PropertyGroup>
