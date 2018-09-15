@@ -27,6 +27,23 @@ namespace MartinCostello.BrowserStack.Automate
         /// <paramref name="userName"/> or <paramref name="accessKey"/> is <see langword="null"/> or white space.
         /// </exception>
         public BrowserStackAutomateClient(string userName, string accessKey)
+            : this(userName, accessKey, new HttpClient())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BrowserStackAutomateClient"/> class.
+        /// </summary>
+        /// <param name="userName">The user name to use to authenticate.</param>
+        /// <param name="accessKey">The access key to use to authenticate.</param>
+        /// <param name="httpClient">The <see cref="HttpClient"/> to use.</param>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="userName"/> or <paramref name="accessKey"/> is <see langword="null"/> or white space.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="httpClient"/> is <see langword="null"/>.
+        /// </exception>
+        public BrowserStackAutomateClient(string userName, string accessKey, HttpClient httpClient)
         {
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -38,12 +55,13 @@ namespace MartinCostello.BrowserStack.Automate
                 throw new ArgumentException("No access key specified.", nameof(accessKey));
             }
 
+            Client = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             UserName = userName;
             SetAuthorization(userName, accessKey);
         }
 
         /// <summary>
-        /// Gets the base URI of the <c>BrowserStack</c> Automate REST API.
+        /// Gets the base URI of the BrowserStack Automate REST API.
         /// </summary>
         public static Uri ApiBaseAddress => new Uri("https://www.browserstack.com/automate/", UriKind.Absolute);
 
@@ -56,6 +74,11 @@ namespace MartinCostello.BrowserStack.Automate
         /// Gets or sets the <c>Authorization</c> value to use.
         /// </summary>
         private string Authorization { get; set; }
+
+        /// <summary>
+        /// Gets the <see cref="HttpClient"/> in use.
+        /// </summary>
+        private HttpClient Client { get; }
 
         /// <summary>
         /// Creates an instance of <see cref="BrowserStackAutomateClient"/> using the specified <see cref="NetworkCredential"/>.
@@ -97,13 +120,13 @@ namespace MartinCostello.BrowserStack.Automate
                 throw new ArgumentException("No build Id specified.", nameof(buildId));
             }
 
-            string requestUri = string.Format(CultureInfo.InvariantCulture, "builds/{0}.json", Uri.EscapeDataString(buildId));
+            string relativeUri = string.Format(CultureInfo.InvariantCulture, "builds/{0}.json", Uri.EscapeDataString(buildId));
 
-            using (var client = CreateClient())
+            using (var request = CreateRequest(HttpMethod.Delete, relativeUri))
             {
-                using (var response = await client.DeleteAsync(requestUri))
+                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
                 {
-                    await EnsureSuccessAsync(response);
+                    await EnsureSuccessAsync(response).ConfigureAwait(false);
                 }
             }
         }
@@ -120,13 +143,13 @@ namespace MartinCostello.BrowserStack.Automate
         /// </exception>
         public virtual async Task DeleteProjectAsync(int projectId)
         {
-            string requestUri = string.Format(CultureInfo.InvariantCulture, "projects/{0}.json", projectId);
+            string relativeUri = string.Format(CultureInfo.InvariantCulture, "projects/{0}.json", projectId);
 
-            using (var client = CreateClient())
+            using (var request = CreateRequest(HttpMethod.Delete, relativeUri))
             {
-                using (var response = await client.DeleteAsync(requestUri))
+                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
                 {
-                    await EnsureSuccessAsync(response);
+                    await EnsureSuccessAsync(response).ConfigureAwait(false);
                 }
             }
         }
@@ -148,16 +171,16 @@ namespace MartinCostello.BrowserStack.Automate
                 throw new ArgumentException("No session Id specified.", nameof(sessionId));
             }
 
-            string requestUri = string.Format(
+            string relativeUri = string.Format(
                 CultureInfo.InvariantCulture,
                 "sessions/{0}.json",
                 Uri.EscapeDataString(sessionId));
 
-            using (var client = CreateClient())
+            using (var request = CreateRequest(HttpMethod.Delete, relativeUri))
             {
-                using (var response = await client.DeleteAsync(requestUri))
+                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
                 {
-                    await EnsureSuccessAsync(response);
+                    await EnsureSuccessAsync(response).ConfigureAwait(false);
                 }
             }
         }
@@ -170,12 +193,12 @@ namespace MartinCostello.BrowserStack.Automate
         /// </returns>
         public virtual async Task<ICollection<Browser>> GetBrowsersAsync()
         {
-            using (var client = CreateClient())
+            using (var request = CreateRequest(HttpMethod.Get, "browsers.json"))
             {
-                using (var response = await client.GetAsync("browsers.json"))
+                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
                 {
-                    await EnsureSuccessAsync(response);
-                    return await DeserializeAsync<List<Browser>>(response);
+                    await EnsureSuccessAsync(response).ConfigureAwait(false);
+                    return await DeserializeAsync<List<Browser>>(response).ConfigureAwait(false);
                 }
             }
         }
@@ -198,17 +221,17 @@ namespace MartinCostello.BrowserStack.Automate
         /// </returns>
         public virtual async Task<ICollection<Build>> GetBuildsAsync(int? limit, string status)
         {
-            string requestUri = string.Format(
+            string relativeUri = string.Format(
                 CultureInfo.InvariantCulture,
                 "builds.json{0}",
                 BuildQuery(limit, status));
 
-            using (var client = CreateClient())
+            using (var request = CreateRequest(HttpMethod.Get, relativeUri))
             {
-                using (var response = await client.GetAsync(requestUri))
+                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
                 {
-                    await EnsureSuccessAsync(response);
-                    return await DeserializeAsync<List<Build>>(response);
+                    await EnsureSuccessAsync(response).ConfigureAwait(false);
+                    return await DeserializeAsync<List<Build>>(response).ConfigureAwait(false);
                 }
             }
         }
@@ -222,14 +245,14 @@ namespace MartinCostello.BrowserStack.Automate
         /// </returns>
         public virtual async Task<ProjectDetailItem> GetProjectAsync(int projectId)
         {
-            string requestUri = string.Format(CultureInfo.InvariantCulture, "projects/{0}.json", projectId);
+            string relativeUri = string.Format(CultureInfo.InvariantCulture, "projects/{0}.json", projectId);
 
-            using (var client = CreateClient())
+            using (var request = CreateRequest(HttpMethod.Get, relativeUri))
             {
-                using (var response = await client.GetAsync(requestUri))
+                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
                 {
-                    await EnsureSuccessAsync(response);
-                    return await DeserializeAsync<ProjectDetailItem>(response);
+                    await EnsureSuccessAsync(response).ConfigureAwait(false);
+                    return await DeserializeAsync<ProjectDetailItem>(response).ConfigureAwait(false);
                 }
             }
         }
@@ -242,12 +265,12 @@ namespace MartinCostello.BrowserStack.Automate
         /// </returns>
         public virtual async Task<ICollection<Project>> GetProjectsAsync()
         {
-            using (var client = CreateClient())
+            using (var request = CreateRequest(HttpMethod.Get, "projects.json"))
             {
-                using (var response = await client.GetAsync("projects.json"))
+                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
                 {
-                    await EnsureSuccessAsync(response);
-                    return await DeserializeAsync<List<Project>>(response);
+                    await EnsureSuccessAsync(response).ConfigureAwait(false);
+                    return await DeserializeAsync<List<Project>>(response).ConfigureAwait(false);
                 }
             }
         }
@@ -269,17 +292,17 @@ namespace MartinCostello.BrowserStack.Automate
                 throw new ArgumentException("No session Id specified.", nameof(sessionId));
             }
 
-            string requestUri = string.Format(
+            string relativeUri = string.Format(
                 CultureInfo.InvariantCulture,
                 "sessions/{0}.json",
                 Uri.EscapeDataString(sessionId));
 
-            using (var client = CreateClient())
+            using (var request = CreateRequest(HttpMethod.Get, relativeUri))
             {
-                using (var response = await client.GetAsync(requestUri))
+                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
                 {
-                    await EnsureSuccessAsync(response);
-                    return await DeserializeAsync<SessionDetail>(response);
+                    await EnsureSuccessAsync(response).ConfigureAwait(false);
+                    return await DeserializeAsync<SessionDetail>(response).ConfigureAwait(false);
                 }
             }
         }
@@ -307,15 +330,15 @@ namespace MartinCostello.BrowserStack.Automate
                 throw new ArgumentException("No session Id specified.", nameof(sessionId));
             }
 
-            string requestUri = string.Format(
+            string relativeUri = string.Format(
                 CultureInfo.InvariantCulture,
                 "builds/{0}/sessions/{1}/logs.json",
                 Uri.EscapeDataString(buildId),
                 Uri.EscapeDataString(sessionId));
 
-            using (var client = CreateClient())
+            using (var request = CreateRequest(HttpMethod.Get, relativeUri))
             {
-                using (var response = await client.GetAsync(requestUri))
+                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
                 {
                     if (response.StatusCode == HttpStatusCode.NotFound)
                     {
@@ -324,7 +347,7 @@ namespace MartinCostello.BrowserStack.Automate
                     }
 
                     response.EnsureSuccessStatusCode();
-                    return await response.Content.ReadAsStringAsync();
+                    return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -360,18 +383,18 @@ namespace MartinCostello.BrowserStack.Automate
                 throw new ArgumentException("No build Id specified.", nameof(buildId));
             }
 
-            string requestUri = string.Format(
+            string relativeUri = string.Format(
                 CultureInfo.InvariantCulture,
                 "builds/{0}/sessions.json{1}",
                 Uri.EscapeDataString(buildId),
                 BuildQuery(limit, status));
 
-            using (var client = CreateClient())
+            using (var request = CreateRequest(HttpMethod.Get, relativeUri))
             {
-                using (var response = await client.GetAsync(requestUri))
+                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
                 {
-                    await EnsureSuccessAsync(response);
-                    return await DeserializeAsync<List<Session>>(response);
+                    await EnsureSuccessAsync(response).ConfigureAwait(false);
+                    return await DeserializeAsync<List<Session>>(response).ConfigureAwait(false);
                 }
             }
         }
@@ -384,12 +407,12 @@ namespace MartinCostello.BrowserStack.Automate
         /// </returns>
         public virtual async Task<AutomatePlanStatus> GetStatusAsync()
         {
-            using (var client = CreateClient())
+            using (var request = CreateRequest(HttpMethod.Get, "plan.json"))
             {
-                using (var response = await client.GetAsync("plan.json"))
+                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
                 {
-                    await EnsureSuccessAsync(response);
-                    return await DeserializeAsync<AutomatePlanStatus>(response);
+                    await EnsureSuccessAsync(response).ConfigureAwait(false);
+                    return await DeserializeAsync<AutomatePlanStatus>(response).ConfigureAwait(false);
                 }
             }
         }
@@ -408,23 +431,20 @@ namespace MartinCostello.BrowserStack.Automate
             var value = new { };
             var json = SerializeAsJson(value);
 
-            using (var client = CreateClient())
+            using (var request = CreateRequest(HttpMethod.Put, "recycle_key.json", json))
             {
-                using (var content = new StringContent(json, Encoding.UTF8, "application/json"))
+                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
                 {
-                    using (var response = await client.PutAsync("recycle_key.json", content))
+                    await EnsureSuccessAsync(response).ConfigureAwait(false);
+
+                    var result = await DeserializeAsync<RecycleAccessKeyResult>(response).ConfigureAwait(false);
+
+                    if (result != null)
                     {
-                        await EnsureSuccessAsync(response);
-
-                        RecycleAccessKeyResult result = await DeserializeAsync<RecycleAccessKeyResult>(response);
-
-                        if (result != null)
-                        {
-                            SetAuthorization(UserName, result.NewKey);
-                        }
-
-                        return result;
+                        SetAuthorization(UserName, result.NewKey);
                     }
+
+                    return result;
                 }
             }
         }
@@ -453,53 +473,26 @@ namespace MartinCostello.BrowserStack.Automate
                 throw new ArgumentException("No status specified.", nameof(status));
             }
 
-            string requestUri = string.Format(
+            string relativeUri = string.Format(
                 CultureInfo.InvariantCulture,
                 "sessions/{0}.json",
                 Uri.EscapeDataString(sessionId));
 
             var value = new
             {
-                status = status,
-                reason = reason,
+                status,
+                reason,
             };
 
             var json = SerializeAsJson(value);
 
-            using (var client = CreateClient())
+            using (var request = CreateRequest(HttpMethod.Put, relativeUri, json))
             {
-                using (var content = new StringContent(json, Encoding.UTF8, "application/json"))
+                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
                 {
-                    using (var response = await client.PutAsync(requestUri, content))
-                    {
-                        await EnsureSuccessAsync(response);
-                        return await DeserializeAsync<Session>(response);
-                    }
+                    await EnsureSuccessAsync(response).ConfigureAwait(false);
+                    return await DeserializeAsync<Session>(response).ConfigureAwait(false);
                 }
-            }
-        }
-
-        /// <summary>
-        /// Creates the <see cref="HttpClient"/> to use.
-        /// </summary>
-        /// <returns>
-        /// The created instance of <see cref="HttpClient"/>.
-        /// </returns>
-        protected virtual HttpClient CreateClient()
-        {
-            HttpClient client = new HttpClient();
-
-            try
-            {
-                client.BaseAddress = ApiBaseAddress;
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Authorization);
-
-                return client;
-            }
-            catch (Exception)
-            {
-                client.Dispose();
-                throw;
             }
         }
 
@@ -518,7 +511,7 @@ namespace MartinCostello.BrowserStack.Automate
                 throw new ArgumentNullException(nameof(response));
             }
 
-            var json = await response.Content.ReadAsStringAsync();
+            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             return JsonConvert.DeserializeObject<T>(json);
         }
 
@@ -530,9 +523,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// A <see cref="string"/> containing the JSON representation of <paramref name="value"/>.
         /// </returns>
         protected virtual string SerializeAsJson(object value)
-        {
-            return JsonConvert.SerializeObject(value);
-        }
+            => JsonConvert.SerializeObject(value);
 
         /// <summary>
         /// Builds the query string parameters to use, if any, for the specified parameters.
@@ -544,7 +535,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// </returns>
         private static string BuildQuery(int? limit, string status)
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
 
             if (limit.HasValue)
             {
@@ -587,14 +578,14 @@ namespace MartinCostello.BrowserStack.Automate
             {
                 try
                 {
-                    var error = await DeserializeAsync<BrowserStackAutomateError>(response);
+                    var error = await DeserializeAsync<BrowserStackAutomateError>(response).ConfigureAwait(false);
                     throw new BrowserStackAutomateException(error);
                 }
                 catch (System.Runtime.Serialization.SerializationException)
                 {
                     // Just fall-through to EnsureSuccessStatusCode() if deserialization fails
                 }
-                catch (Newtonsoft.Json.JsonReaderException)
+                catch (JsonReaderException)
                 {
                     // Just fall-through to EnsureSuccessStatusCode() if deserialization fails
                 }
@@ -611,6 +602,38 @@ namespace MartinCostello.BrowserStack.Automate
         private void SetAuthorization(string userName, string accessKey)
         {
             Authorization = Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format(CultureInfo.InvariantCulture, "{0}:{1}", userName, accessKey)));
+        }
+
+        /// <summary>
+        /// Creates a new HTTP request message.
+        /// </summary>
+        /// <param name="method">The HTTP method to use.</param>
+        /// <param name="relativeUri">The relative URI of the request.</param>
+        /// <param name="json">The optional HTTP JSON content to send.</param>
+        /// <returns>
+        /// The <see cref="HttpRequestMessage"/> to send.
+        /// </returns>
+        private HttpRequestMessage CreateRequest(HttpMethod method, string relativeUri, string json = null)
+        {
+            var requestUri = new Uri(ApiBaseAddress, relativeUri);
+            var request = new HttpRequestMessage(method, requestUri);
+
+            try
+            {
+                request.Headers.Authorization = new AuthenticationHeaderValue("Basic", Authorization);
+
+                if (json != null)
+                {
+                    request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+                }
+
+                return request;
+            }
+            catch (Exception)
+            {
+                request.Dispose();
+                throw;
+            }
         }
     }
 }
