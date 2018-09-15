@@ -523,7 +523,7 @@ namespace MartinCostello.BrowserStack.Automate
                 .Should()
                 .Throw<ArgumentOutOfRangeException>()
                 .Where((p) => p.ParamName == "limit")
-                .Where((p) => p.Message.StartsWith("The limit value cannot be less than one."))
+                .Where((p) => p.Message.StartsWith("The limit value cannot be less than one.", StringComparison.Ordinal))
                 .And
                 .ActualValue.Should().Be(0);
         }
@@ -544,7 +544,7 @@ namespace MartinCostello.BrowserStack.Automate
                 .Should()
                 .Throw<ArgumentOutOfRangeException>()
                 .Where((p) => p.ParamName == "limit")
-                .Where((p) => p.Message.StartsWith("The limit value cannot be less than one."))
+                .Where((p) => p.Message.StartsWith("The limit value cannot be less than one.", StringComparison.Ordinal))
                 .And
                 .ActualValue.Should().Be(0);
         }

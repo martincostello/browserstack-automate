@@ -1,6 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>Tests for MartinCostello.BrowserStack.Automate.</Description>
+    <IsPackable>false</IsPackable>
+    <NoWarn>$(NoWarn);CA1707;CA2007</NoWarn>
+    <RootNamespace>MartinCostello.BrowserStack.Automate</RootNamespace>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <!-- HACK: https://github.com/Microsoft/vstest/issues/1607#issuecomment-394521170 -->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
