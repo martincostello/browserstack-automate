@@ -6,6 +6,7 @@ namespace MartinCostello.BrowserStack.Automate
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Linq;
     using System.Net;
     using System.Net.Http;
     using System.Net.Http.Headers;
@@ -64,7 +65,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <summary>
         /// Gets the base URI of the BrowserStack Automate REST API.
         /// </summary>
-        public static Uri ApiBaseAddress => new Uri("https://www.browserstack.com/automate/", UriKind.Absolute);
+        public static Uri ApiBaseAddress => new Uri("https://api.browserstack.com/automate/", UriKind.Absolute);
 
         /// <summary>
         /// Gets the user name in use.
@@ -134,6 +135,48 @@ namespace MartinCostello.BrowserStack.Automate
         }
 
         /// <summary>
+        /// Deletes the builds with the specified Ids as an asynchronous operation.
+        /// </summary>
+        /// <param name="buildIds">The Ids of the builds to delete.</param>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
+        /// <returns>
+        /// A <see cref="Task"/> representing the asynchronous operation to delete the build with the specified Id.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="buildIds"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="buildIds"/> is empty.
+        /// </exception>
+        /// <exception cref="BrowserStackAutomateException">
+        /// The builds could not be deleted.
+        /// </exception>
+        public virtual async Task DeleteBuildsAsync(ICollection<string> buildIds, CancellationToken cancellationToken = default)
+        {
+            if (buildIds == null)
+            {
+                throw new ArgumentNullException(nameof(buildIds));
+            }
+
+            if (buildIds.Count < 1)
+            {
+                throw new ArgumentException("No build Ids specified.", nameof(buildIds));
+            }
+
+            string query = string.Join("&", buildIds.Select((p) => $"buildId={Uri.EscapeDataString(p)}"));
+
+            string relativeUri = string.Format(CultureInfo.InvariantCulture, "builds?{0}", query);
+
+            using (var request = CreateRequest(HttpMethod.Delete, relativeUri))
+            {
+                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
+                {
+                    await EnsureSuccessAsync(response).ConfigureAwait(false);
+                }
+            }
+        }
+
+        /// <summary>
         /// Deletes the project with the specified Id as an asynchronous operation.
         /// </summary>
         /// <param name="projectId">The Id of the project to delete.</param>
@@ -190,6 +233,48 @@ namespace MartinCostello.BrowserStack.Automate
         }
 
         /// <summary>
+        /// Deletes the sessions with the specified Ids as an asynchronous operation.
+        /// </summary>
+        /// <param name="sessionIds">The Ids of the sessions to delete.</param>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
+        /// <returns>
+        /// A <see cref="Task"/> representing the asynchronous operation to delete the sessions with the specified Ids.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="sessionIds"/> is <see langword="null"/>.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="sessionIds"/> is empty.
+        /// </exception>
+        /// <exception cref="BrowserStackAutomateException">
+        /// The sessions could not be deleted.
+        /// </exception>
+        public virtual async Task DeleteSessionsAsync(ICollection<string> sessionIds, CancellationToken cancellationToken = default)
+        {
+            if (sessionIds == null)
+            {
+                throw new ArgumentNullException(nameof(sessionIds));
+            }
+
+            if (sessionIds.Count < 1)
+            {
+                throw new ArgumentException("No session Ids specified.", nameof(sessionIds));
+            }
+
+            string query = string.Join("&", sessionIds.Select((p) => $"sessionId={Uri.EscapeDataString(p)}"));
+
+            string relativeUri = string.Format(CultureInfo.InvariantCulture, "session?{0}", query);
+
+            using (var request = CreateRequest(HttpMethod.Delete, relativeUri))
+            {
+                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
+                {
+                    await EnsureSuccessAsync(response).ConfigureAwait(false);
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets the browsers as an asynchronous operation.
         /// </summary>
         /// <param name="cancellationToken">The optional cancellation token to use.</param>
@@ -216,23 +301,28 @@ namespace MartinCostello.BrowserStack.Automate
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the builds.
         /// </returns>
         public virtual Task<ICollection<Build>> GetBuildsAsync(CancellationToken cancellationToken = default)
-            => GetBuildsAsync(null, null, cancellationToken);
+            => GetBuildsAsync(null, null, null, cancellationToken);
 
         /// <summary>
         /// Gets the builds as an asynchronous operation.
         /// </summary>
         /// <param name="limit">The optional number of builds to return. The default value is 10.</param>
+        /// <param name="offset">The optional offset for builds to return. The default value is 0.</param>
         /// <param name="status">The optional status to filter builds to.</param>
         /// <param name="cancellationToken">The optional cancellation token to use.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the builds.
         /// </returns>
-        public virtual async Task<ICollection<Build>> GetBuildsAsync(int? limit, string status, CancellationToken cancellationToken = default)
+        public virtual async Task<ICollection<Build>> GetBuildsAsync(
+            int? limit,
+            int? offset,
+            string status,
+            CancellationToken cancellationToken = default)
         {
             string relativeUri = string.Format(
                 CultureInfo.InvariantCulture,
                 "builds.json{0}",
-                BuildQuery(limit, status));
+                BuildQuery(limit, offset, status));
 
             using (var request = CreateRequest(HttpMethod.Get, relativeUri))
             {
@@ -325,44 +415,62 @@ namespace MartinCostello.BrowserStack.Automate
         /// <param name="sessionId">The session Id to return the logs for.</param>
         /// <param name="cancellationToken">The optional cancellation token to use.</param>
         /// <returns>
-        /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the logs for the build and session with the specified Ids.
+        /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the logs for the build and
+        /// session with the specified Ids as a string.
         /// </returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="buildId"/> or <paramref name="sessionId"/> is <see langword="null"/> or white space.
         /// </exception>
-        public virtual async Task<string> GetSessionLogsAsync(string buildId, string sessionId, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrWhiteSpace(buildId))
-            {
-                throw new ArgumentException("No build Id specified.", nameof(buildId));
-            }
+        public virtual Task<string> GetSessionLogsAsync(string buildId, string sessionId, CancellationToken cancellationToken = default)
+            => GetLogsAsync(buildId, sessionId, "logs", cancellationToken);
 
-            if (string.IsNullOrWhiteSpace(sessionId))
-            {
-                throw new ArgumentException("No session Id specified.", nameof(sessionId));
-            }
+        /// <summary>
+        /// Gets the raw session Appium logs associated with the specified build and session Id as an asynchronous operation.
+        /// </summary>
+        /// <param name="buildId">The build Id to return the logs for.</param>
+        /// <param name="sessionId">The session Id to return the logs for.</param>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
+        /// <returns>
+        /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the logs for the build and session
+        /// with the specified Ids as a string.
+        /// </returns>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="buildId"/> or <paramref name="sessionId"/> is <see langword="null"/> or white space.
+        /// </exception>
+        public virtual Task<string> GetSessionAppiumLogsAsync(string buildId, string sessionId, CancellationToken cancellationToken = default)
+            => GetLogsAsync(buildId, sessionId, "appiumlogs", cancellationToken);
 
-            string relativeUri = string.Format(
-                CultureInfo.InvariantCulture,
-                "builds/{0}/sessions/{1}/logs.json",
-                Uri.EscapeDataString(buildId),
-                Uri.EscapeDataString(sessionId));
+        /// <summary>
+        /// Gets the session console logs associated with the specified build and session Id as an asynchronous operation.
+        /// </summary>
+        /// <param name="buildId">The build Id to return the logs for.</param>
+        /// <param name="sessionId">The session Id to return the logs for.</param>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
+        /// <returns>
+        /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the logs for the build and session
+        /// with the specified Ids as a string.
+        /// </returns>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="buildId"/> or <paramref name="sessionId"/> is <see langword="null"/> or white space.
+        /// </exception>
+        public virtual Task<string> GetSessionConsoleLogsAsync(string buildId, string sessionId, CancellationToken cancellationToken = default)
+            => GetLogsAsync(buildId, sessionId, "consolelogs", cancellationToken);
 
-            using (var request = CreateRequest(HttpMethod.Get, relativeUri))
-            {
-                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
-                {
-                    if (response.StatusCode == HttpStatusCode.NotFound)
-                    {
-                        // Returns an HTML error page, so just return empty if there are no logs
-                        return string.Empty;
-                    }
-
-                    response.EnsureSuccessStatusCode();
-                    return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                }
-            }
-        }
+        /// <summary>
+        /// Gets the session network logs associated with the specified build and session Id as an asynchronous operation.
+        /// </summary>
+        /// <param name="buildId">The build Id to return the logs for.</param>
+        /// <param name="sessionId">The session Id to return the logs for.</param>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
+        /// <returns>
+        /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the logs for the build and session
+        /// with the specified Ids as a string in HAR (HTTP Archive) format.
+        /// </returns>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="buildId"/> or <paramref name="sessionId"/> is <see langword="null"/> or white space.
+        /// </exception>
+        public virtual Task<string> GetSessionNetworkLogsAsync(string buildId, string sessionId, CancellationToken cancellationToken = default)
+            => GetLogsAsync(buildId, sessionId, "networklogs", cancellationToken);
 
         /// <summary>
         /// Gets the sessions associated with the specified build Id as an asynchronous operation.
@@ -376,14 +484,15 @@ namespace MartinCostello.BrowserStack.Automate
         /// <paramref name="buildId"/> is <see langword="null"/> or white space.
         /// </exception>
         public virtual Task<ICollection<Session>> GetSessionsAsync(string buildId, CancellationToken cancellationToken = default)
-            => GetSessionsAsync(buildId, null, null, cancellationToken);
+            => GetSessionsAsync(buildId, null, null, null, cancellationToken);
 
         /// <summary>
         /// Gets the sessions associated with the specified build Id as an asynchronous operation.
         /// </summary>
         /// <param name="buildId">The build Id of the sessions to return.</param>
-        /// <param name="limit">The optional number of builds to return. The default value is 10.</param>
-        /// <param name="status">The optional status to filter builds to.</param>
+        /// <param name="limit">The optional number of sessions to return. The default value is 10.</param>
+        /// <param name="offset">The optional offset for sessions to return. The default value is 0.</param>
+        /// <param name="status">The optional status to filter sessions to.</param>
         /// <param name="cancellationToken">The optional cancellation token to use.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the sessions for the specified build Id.
@@ -394,6 +503,7 @@ namespace MartinCostello.BrowserStack.Automate
         public virtual async Task<ICollection<Session>> GetSessionsAsync(
             string buildId,
             int? limit,
+            int? offset,
             string status,
             CancellationToken cancellationToken = default)
         {
@@ -406,7 +516,7 @@ namespace MartinCostello.BrowserStack.Automate
                 CultureInfo.InvariantCulture,
                 "builds/{0}/sessions.json{1}",
                 Uri.EscapeDataString(buildId),
-                BuildQuery(limit, status));
+                BuildQuery(limit, offset, status));
 
             using (var request = CreateRequest(HttpMethod.Get, relativeUri))
             {
@@ -471,6 +581,87 @@ namespace MartinCostello.BrowserStack.Automate
         }
 
         /// <summary>
+        /// Sets the name of the build with the specified Id as an asynchronous operation.
+        /// </summary>
+        /// <param name="buildId">The build Id to set the name of.</param>
+        /// <param name="name">The new name.</param>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
+        /// <returns>
+        /// A <see cref="Task{TResult}"/> representing the asynchronous operation to set the name for the specified build Id.
+        /// </returns>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="name"/> is <see langword="null"/> or white space.
+        /// </exception>
+        public virtual Task<Build> SetBuildNameAsync(
+            int buildId,
+            string name,
+            CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("No name specified.", nameof(name));
+            }
+
+            string relativeUri = string.Format(CultureInfo.InvariantCulture, "builds/{0}.json", buildId);
+
+            return SetNameAsync<Build>(relativeUri, name, cancellationToken);
+        }
+
+        /// <summary>
+        /// Sets the name of the project with the specified Id as an asynchronous operation.
+        /// </summary>
+        /// <param name="projectId">The project Id to set the name of.</param>
+        /// <param name="name">The new name.</param>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
+        /// <returns>
+        /// A <see cref="Task{TResult}"/> representing the asynchronous operation to set the name for the specified project Id.
+        /// </returns>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="name"/> is <see langword="null"/> or white space.
+        /// </exception>
+        public virtual Task<Project> SetProjectNameAsync(
+            int projectId,
+            string name,
+            CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("No name specified.", nameof(name));
+            }
+
+            string relativeUri = string.Format(CultureInfo.InvariantCulture, "projects/{0}.json", projectId);
+
+            return SetNameAsync<Project>(relativeUri, name, cancellationToken);
+        }
+
+        /// <summary>
+        /// Sets the name of the session with the specified Id as an asynchronous operation.
+        /// </summary>
+        /// <param name="sessionId">The session Id to set the name of.</param>
+        /// <param name="name">The new name.</param>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
+        /// <returns>
+        /// A <see cref="Task{TResult}"/> representing the asynchronous operation to set the name for the specified session Id.
+        /// </returns>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="name"/> is <see langword="null"/> or white space.
+        /// </exception>
+        public virtual Task<Session> SetSessionNameAsync(
+            string sessionId,
+            string name,
+            CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("No name specified.", nameof(name));
+            }
+
+            string relativeUri = string.Format(CultureInfo.InvariantCulture, "sessions/{0}.json", sessionId);
+
+            return SetNameAsync<Session>(relativeUri, name, cancellationToken);
+        }
+
+        /// <summary>
         /// Sets the status of the session with the specified Id as an asynchronous operation.
         /// </summary>
         /// <param name="sessionId">The session Id to set the status of.</param>
@@ -478,7 +669,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <param name="reason">An optional reason to specify.</param>
         /// <param name="cancellationToken">The optional cancellation token to use.</param>
         /// <returns>
-        /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the sessions for the specified build Id.
+        /// A <see cref="Task{TResult}"/> representing the asynchronous operation to set the status for the specified session Id.
         /// </returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="sessionId"/> or <paramref name="status"/> is <see langword="null"/> or white space.
@@ -555,11 +746,12 @@ namespace MartinCostello.BrowserStack.Automate
         /// Builds the query string parameters to use, if any, for the specified parameters.
         /// </summary>
         /// <param name="limit">The limit to use, if any.</param>
+        /// <param name="offset">The offset to use, if any.</param>
         /// <param name="status">The status to filter to, if any.</param>
         /// <returns>
         /// The query string to use, if any.
         /// </returns>
-        private static string BuildQuery(int? limit, string status)
+        private static string BuildQuery(int? limit, int? offset, string status)
         {
             var builder = new StringBuilder();
 
@@ -571,6 +763,16 @@ namespace MartinCostello.BrowserStack.Automate
                 }
 
                 builder.AppendFormat(CultureInfo.InvariantCulture, "limit={0}", limit.Value);
+            }
+
+            if (offset.HasValue)
+            {
+                if (offset < 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(offset), offset.Value, "The offset value cannot be less than zero.");
+                }
+
+                builder.AppendFormat(CultureInfo.InvariantCulture, "offset={0}", offset.Value);
             }
 
             if (!string.IsNullOrEmpty(status))
@@ -659,6 +861,85 @@ namespace MartinCostello.BrowserStack.Automate
             {
                 request.Dispose();
                 throw;
+            }
+        }
+
+        /// <summary>
+        /// Gets the specified type of logs associated with the specified build and session Id as an asynchronous operation.
+        /// </summary>
+        /// <param name="buildId">The build Id to return the logs for.</param>
+        /// <param name="sessionId">The session Id to return the logs for.</param>
+        /// <param name="logType">The log type to retrieve.</param>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
+        /// <returns>
+        /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the logs for the build and session with the specified Ids.
+        /// </returns>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="buildId"/> or <paramref name="sessionId"/> is <see langword="null"/> or white space.
+        /// </exception>
+        private async Task<string> GetLogsAsync(
+            string buildId,
+            string sessionId,
+            string logType,
+            CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(buildId))
+            {
+                throw new ArgumentException("No build Id specified.", nameof(buildId));
+            }
+
+            if (string.IsNullOrWhiteSpace(sessionId))
+            {
+                throw new ArgumentException("No session Id specified.", nameof(sessionId));
+            }
+
+            string relativeUri = string.Format(
+                CultureInfo.InvariantCulture,
+                "builds/{0}/sessions/{1}/{2}",
+                Uri.EscapeDataString(buildId),
+                Uri.EscapeDataString(sessionId),
+                Uri.EscapeDataString(logType));
+
+            using (var request = CreateRequest(HttpMethod.Get, relativeUri))
+            {
+                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
+                {
+                    if (response.StatusCode == HttpStatusCode.NotFound)
+                    {
+                        // Returns an HTML error page, so just return empty if there are no logs
+                        return string.Empty;
+                    }
+
+                    response.EnsureSuccessStatusCode();
+                    return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the name of the session with the specified Id as an asynchronous operation.
+        /// </summary>
+        /// <typeparam name="T">The type of the resource.</typeparam>
+        /// <param name="relativeUri">The relative URI of the resource to set the name of.</param>
+        /// <param name="name">The new name.</param>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
+        /// <returns>
+        /// A <see cref="Task{TResult}"/> representing the asynchronous operation to set the name for the specified resource.
+        /// </returns>
+        private async Task<T> SetNameAsync<T>(
+            string relativeUri,
+            string name,
+            CancellationToken cancellationToken = default)
+        {
+            var json = SerializeAsJson(new { name });
+
+            using (var request = CreateRequest(HttpMethod.Put, relativeUri, json))
+            {
+                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
+                {
+                    await EnsureSuccessAsync(response).ConfigureAwait(false);
+                    return await DeserializeAsync<T>(response).ConfigureAwait(false);
+                }
             }
         }
     }
