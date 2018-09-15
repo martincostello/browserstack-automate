@@ -5,6 +5,8 @@ trigger:
   branches:
     include:
     - master
+    exclude:
+    - gh-pages
 
 phases:
 - template: build-template.yml
