@@ -24,7 +24,8 @@ namespace MartinCostello.BrowserStack.Automate
             // Act and Assert
             client
                 .Awaiting((p) => p.SetSessionCompletedAsync(sessionId, reason))
-                .ShouldThrow<ArgumentNullException>()
+                .Should()
+                .Throw<ArgumentNullException>()
                 .And
                 .ParamName
                 .Should()
@@ -43,7 +44,8 @@ namespace MartinCostello.BrowserStack.Automate
             // Act and Assert
             client
                 .Awaiting((p) => p.SetSessionErrorAsync(sessionId, reason))
-                .ShouldThrow<ArgumentNullException>()
+                .Should()
+                .Throw<ArgumentNullException>()
                 .And
                 .ParamName
                 .Should()

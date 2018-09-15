@@ -272,12 +272,12 @@ namespace MartinCostello.BrowserStack.Automate
         public static void Constructor_Validates_Parameters()
         {
             // Act and Assert
-            Constructor(() => new BrowserStackAutomateClient(null, "MyAccessKey")).ShouldThrow<ArgumentException>().And.ParamName.Should().Be("userName");
-            Constructor(() => new BrowserStackAutomateClient(string.Empty, "MyAccessKey")).ShouldThrow<ArgumentException>().And.ParamName.Should().Be("userName");
-            Constructor(() => new BrowserStackAutomateClient("          ", "MyAccessKey")).ShouldThrow<ArgumentException>().And.ParamName.Should().Be("userName");
-            Constructor(() => new BrowserStackAutomateClient("MyUserName", null)).ShouldThrow<ArgumentException>().And.ParamName.Should().Be("accessKey");
-            Constructor(() => new BrowserStackAutomateClient("MyUserName", string.Empty)).ShouldThrow<ArgumentException>().And.ParamName.Should().Be("accessKey");
-            Constructor(() => new BrowserStackAutomateClient("MyUserName", "          ")).ShouldThrow<ArgumentException>().And.ParamName.Should().Be("accessKey");
+            Constructor(() => new BrowserStackAutomateClient(null, "MyAccessKey")).Should().Throw<ArgumentException>().And.ParamName.Should().Be("userName");
+            Constructor(() => new BrowserStackAutomateClient(string.Empty, "MyAccessKey")).Should().Throw<ArgumentException>().And.ParamName.Should().Be("userName");
+            Constructor(() => new BrowserStackAutomateClient("          ", "MyAccessKey")).Should().Throw<ArgumentException>().And.ParamName.Should().Be("userName");
+            Constructor(() => new BrowserStackAutomateClient("MyUserName", null)).Should().Throw<ArgumentException>().And.ParamName.Should().Be("accessKey");
+            Constructor(() => new BrowserStackAutomateClient("MyUserName", string.Empty)).Should().Throw<ArgumentException>().And.ParamName.Should().Be("accessKey");
+            Constructor(() => new BrowserStackAutomateClient("MyUserName", "          ")).Should().Throw<ArgumentException>().And.ParamName.Should().Be("accessKey");
         }
 
         [Fact]
@@ -288,7 +288,8 @@ namespace MartinCostello.BrowserStack.Automate
 
             // Act and Assert
             Invoking(() => BrowserStackAutomateClient.FromCredential(credential))
-                .ShouldThrow<ArgumentNullException>()
+                .Should()
+                .Throw<ArgumentNullException>()
                 .And
                 .ParamName.Should().Be("credential");
         }
@@ -304,7 +305,8 @@ namespace MartinCostello.BrowserStack.Automate
             // Act and Assert
             target
                 .Awaiting((p) => p.DeleteBuildAsync(buildId))
-                .ShouldThrow<ArgumentException>()
+                .Should()
+                .Throw<ArgumentException>()
                 .And
                 .ParamName.Should().Be("buildId");
         }
@@ -320,7 +322,8 @@ namespace MartinCostello.BrowserStack.Automate
             // Act and Assert
             target
                 .Awaiting((p) => p.DeleteBuildAsync(buildId))
-                .ShouldThrow<BrowserStackAutomateException>()
+                .Should()
+                .Throw<BrowserStackAutomateException>()
                 .And
                 .ErrorDetail.Should().NotBeNull();
         }
@@ -336,7 +339,8 @@ namespace MartinCostello.BrowserStack.Automate
             // Act and Assert
             target
                 .Awaiting((p) => p.DeleteProjectAsync(projectId))
-                .ShouldThrow<BrowserStackAutomateException>()
+                .Should()
+                .Throw<BrowserStackAutomateException>()
                 .And
                 .ErrorDetail.Should().NotBeNull();
         }
@@ -352,7 +356,8 @@ namespace MartinCostello.BrowserStack.Automate
             // Act and Assert
             target
                 .Awaiting((p) => p.DeleteSessionAsync(sessionId))
-                .ShouldThrow<ArgumentException>()
+                .Should()
+                .Throw<ArgumentException>()
                 .And
                 .ParamName.Should().Be("sessionId");
         }
@@ -368,7 +373,8 @@ namespace MartinCostello.BrowserStack.Automate
             // Act and Assert
             target
                 .Awaiting((p) => p.DeleteSessionAsync(sessionId))
-                .ShouldThrow<BrowserStackAutomateException>()
+                .Should()
+                .Throw<BrowserStackAutomateException>()
                 .And
                 .ErrorDetail.Should().NotBeNull();
         }
@@ -384,7 +390,8 @@ namespace MartinCostello.BrowserStack.Automate
             // Act and Assert
             target
                 .Awaiting((p) => p.GetSessionAsync(sessionId))
-                .ShouldThrow<ArgumentException>()
+                .Should()
+                .Throw<ArgumentException>()
                 .And
                 .ParamName.Should().Be("sessionId");
         }
@@ -400,7 +407,8 @@ namespace MartinCostello.BrowserStack.Automate
             // Act and Assert
             target
                 .Awaiting((p) => p.GetSessionAsync(sessionId))
-                .ShouldThrow<BrowserStackAutomateException>()
+                .Should()
+                .Throw<BrowserStackAutomateException>()
                 .And
                 .ErrorDetail.Should().NotBeNull();
         }
@@ -417,7 +425,8 @@ namespace MartinCostello.BrowserStack.Automate
             // Act and Assert
             target
                 .Awaiting((p) => p.GetSessionLogsAsync(buildId, sessionId))
-                .ShouldThrow<ArgumentException>()
+                .Should()
+                .Throw<ArgumentException>()
                 .And
                 .ParamName.Should().Be("buildId");
         }
@@ -434,7 +443,8 @@ namespace MartinCostello.BrowserStack.Automate
             // Act and Assert
             target
                 .Awaiting((p) => p.GetSessionLogsAsync(buildId, sessionId))
-                .ShouldThrow<ArgumentException>()
+                .Should()
+                .Throw<ArgumentException>()
                 .And
                 .ParamName.Should().Be("sessionId");
         }
@@ -450,7 +460,8 @@ namespace MartinCostello.BrowserStack.Automate
             // Act and Assert
             target
                 .Awaiting((p) => p.GetSessionsAsync(buildId))
-                .ShouldThrow<ArgumentException>()
+                .Should()
+                .Throw<ArgumentException>()
                 .And
                 .ParamName.Should().Be("buildId");
         }
@@ -468,7 +479,8 @@ namespace MartinCostello.BrowserStack.Automate
             // Act and Assert
             target
                 .Awaiting((p) => p.SetSessionStatusAsync(sessionId, status, reason))
-                .ShouldThrow<ArgumentException>()
+                .Should()
+                .Throw<ArgumentException>()
                 .And
                 .ParamName.Should().Be("sessionId");
         }
@@ -486,7 +498,8 @@ namespace MartinCostello.BrowserStack.Automate
             // Act and Assert
             target
                 .Awaiting((p) => p.SetSessionStatusAsync(sessionId, status, reason))
-                .ShouldThrow<ArgumentException>()
+                .Should()
+                .Throw<ArgumentException>()
                 .And
                 .ParamName.Should().Be("status");
         }
@@ -503,7 +516,8 @@ namespace MartinCostello.BrowserStack.Automate
             // Act and Assert
             target
                 .Awaiting((p) => p.GetBuildsAsync(limit, status))
-                .ShouldThrow<ArgumentOutOfRangeException>()
+                .Should()
+                .Throw<ArgumentOutOfRangeException>()
                 .Where((p) => p.ParamName == "limit")
                 .Where((p) => p.Message.StartsWith("The limit value cannot be less than one."))
                 .And
@@ -523,7 +537,8 @@ namespace MartinCostello.BrowserStack.Automate
             // Act and Assert
             target
                 .Awaiting((p) => p.GetSessionsAsync(sessionId, limit, status))
-                .ShouldThrow<ArgumentOutOfRangeException>()
+                .Should()
+                .Throw<ArgumentOutOfRangeException>()
                 .Where((p) => p.ParamName == "limit")
                 .Where((p) => p.Message.StartsWith("The limit value cannot be less than one."))
                 .And
@@ -544,7 +559,8 @@ namespace MartinCostello.BrowserStack.Automate
             // Assert
             target
                 .Awaiting((p) => p.DeleteBuildAsync(buildId))
-                .ShouldThrow<BrowserStackAutomateException>()
+                .Should()
+                .Throw<BrowserStackAutomateException>()
                 .And
                 .ErrorDetail.Should().NotBeNull();
         }
@@ -563,7 +579,8 @@ namespace MartinCostello.BrowserStack.Automate
             // Assert
             target
                 .Awaiting((p) => p.DeleteProjectAsync(projectId))
-                .ShouldThrow<BrowserStackAutomateException>()
+                .Should()
+                .Throw<BrowserStackAutomateException>()
                 .And
                 .ErrorDetail.Should().NotBeNull();
         }
@@ -582,7 +599,8 @@ namespace MartinCostello.BrowserStack.Automate
             // Assert
             target
                 .Awaiting((p) => p.DeleteSessionAsync(sessionId))
-                .ShouldThrow<BrowserStackAutomateException>()
+                .Should()
+                .Throw<BrowserStackAutomateException>()
                 .And
                 .ErrorDetail.Should().NotBeNull();
         }

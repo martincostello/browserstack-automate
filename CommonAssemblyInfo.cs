@@ -5,7 +5,6 @@ using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyProduct("MartinCostello.BrowserStack.Automate")]
 [assembly: AssemblyTrademark("")]

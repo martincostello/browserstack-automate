@@ -1,85 +1,86 @@
 param(
-    [Parameter(Mandatory=$false)][bool]   $RestorePackages  = $false,
-    [Parameter(Mandatory=$false)][string] $Configuration    = "Release",
-    [Parameter(Mandatory=$false)][string] $VersionSuffix    = "",
-    [Parameter(Mandatory=$false)][string] $OutputPath       = "",
-    [Parameter(Mandatory=$false)][bool]   $PatchVersion     = $false,
-    [Parameter(Mandatory=$false)][bool]   $RunTests         = $true,
-    [Parameter(Mandatory=$false)][bool]   $CreatePackages   = $true
+    [Parameter(Mandatory = $false)][string] $Configuration = "Release",
+    [Parameter(Mandatory = $false)][string] $VersionSuffix = "",
+    [Parameter(Mandatory = $false)][string] $OutputPath = "",
+    [Parameter(Mandatory = $false)][switch] $SkipTests,
+    [Parameter(Mandatory = $false)][switch] $DisableCodeCoverage
 )
 
 $ErrorActionPreference = "Stop"
 
-$solutionPath  = Split-Path $MyInvocation.MyCommand.Definition
-$dotnetVersion = "1.0.1"
+$solutionPath = Split-Path $MyInvocation.MyCommand.Definition
+$solutionFile = Join-Path $solutionPath "MartinCostello.BrowserStack.Automate.sln"
+$sdkFile = Join-Path $solutionPath "global.json"
+
+$libraryProject = Join-Path $solutionPath "src\MartinCostello.BrowserStack.Automate\MartinCostello.BrowserStack.Automate.csproj"
+
+$testProjects = @(
+    (Join-Path $solutionPath "tests\MartinCostello.BrowserStack.Automate.Tests\MartinCostello.BrowserStack.Automate.Tests.csproj")
+)
+
+$dotnetVersion = (Get-Content $sdkFile | Out-String | ConvertFrom-Json).sdk.version
 
 if ($OutputPath -eq "") {
-    $OutputPath = "$(Convert-Path "$PSScriptRoot")\artifacts"
+    $OutputPath = Join-Path "$(Convert-Path "$PSScriptRoot")" "artifacts"
 }
 
-$env:DOTNET_INSTALL_DIR = "$(Convert-Path "$PSScriptRoot")\.dotnetcli"
+$installDotNetSdk = $false;
 
-if ($env:CI -ne $null) {
+if (($null -eq (Get-Command "dotnet.exe" -ErrorAction SilentlyContinue)) -and ($null -eq (Get-Command "dotnet" -ErrorAction SilentlyContinue))) {
+    Write-Host "The .NET Core SDK is not installed."
+    $installDotNetSdk = $true
+}
+else {
+    Try {
+        $installedDotNetVersion = (dotnet --version 2>&1 | Out-String).Trim()
+    }
+    Catch {
+        $installedDotNetVersion = "?"
+    }
 
-    $RestorePackages = $true
-    $PatchVersion = $true
+    if ($installedDotNetVersion -ne $dotnetVersion) {
+        Write-Host "The required version of the .NET Core SDK is not installed. Expected $dotnetVersion."
+        $installDotNetSdk = $true
+    }
+}
 
-    if (($VersionSuffix -eq "" -and $env:APPVEYOR_REPO_TAG -eq "false" -and $env:APPVEYOR_BUILD_NUMBER -ne "") -eq $true) {
+if ($installDotNetSdk -eq $true) {
+    $env:DOTNET_INSTALL_DIR = Join-Path "$(Convert-Path "$PSScriptRoot")" ".dotnetcli"
+    $sdkPath = Join-Path $env:DOTNET_INSTALL_DIR "sdk\$dotnetVersion"
 
-        $LastVersionBuild = (Get-Content ".\releases.txt" | Select-Object -Last 1)
-        $LastVersion = New-Object -TypeName System.Version -ArgumentList $LastVersionBuild
-        $ThisVersion = $env:APPVEYOR_BUILD_NUMBER -as [int]
-
-        if ($LastVersion.Revision -eq 0) {
-            $ThisBuildNumber = $ThisVersion - $LastVersion.Build
-        } else {
-            $ThisBuildNumber = $ThisVersion - $LastVersion.Revision
+    if (!(Test-Path $sdkPath)) {
+        if (!(Test-Path $env:DOTNET_INSTALL_DIR)) {
+            mkdir $env:DOTNET_INSTALL_DIR | Out-Null
         }
-
-        $VersionSuffix = "beta-" + $ThisBuildNumber.ToString("0000")
+        $installScript = Join-Path $env:DOTNET_INSTALL_DIR "install.ps1"
+        Invoke-WebRequest "https://dot.net/v1/dotnet-install.ps1" -OutFile $installScript -UseBasicParsing
+        & $installScript -Version "$dotnetVersion" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
     }
+
+    $env:PATH = "$env:DOTNET_INSTALL_DIR;$env:PATH"
+    $dotnet = Join-Path "$env:DOTNET_INSTALL_DIR" "dotnet.exe"
 }
-
-if (!(Test-Path $env:DOTNET_INSTALL_DIR)) {
-    mkdir $env:DOTNET_INSTALL_DIR | Out-Null
-    $installScript = Join-Path $env:DOTNET_INSTALL_DIR "install.ps1"
-    Invoke-WebRequest "https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.ps1" -OutFile $installScript
-    & $installScript -Version "$dotnetVersion" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
-}
-
-$env:PATH = "$env:DOTNET_INSTALL_DIR;$env:PATH"
-$dotnet   = "$env:DOTNET_INSTALL_DIR\dotnet"
-
-function DotNetRestore {
-    param([string]$Project)
-    & $dotnet restore $Project --verbosity minimal
-    if ($LASTEXITCODE -ne 0) {
-        throw "dotnet restore failed with exit code $LASTEXITCODE"
-    }
+else {
+    $dotnet = "dotnet"
 }
 
 function DotNetBuild {
-    param([string]$Project, [string]$Configuration, [string]$Framework, [string]$VersionSuffix)
+    param([string]$Project)
+
     if ($VersionSuffix) {
-        & $dotnet build $Project --output (Join-Path $OutputPath $Framework) --framework $Framework --configuration $Configuration --version-suffix "$VersionSuffix"
-    } else {
-        & $dotnet build $Project --output (Join-Path $OutputPath $Framework) --framework $Framework --configuration $Configuration
+        & $dotnet build $Project --output $OutputPath --configuration $Configuration --version-suffix "$VersionSuffix"
+    }
+    else {
+        & $dotnet build $Project --output $OutputPath --configuration $Configuration
     }
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet build failed with exit code $LASTEXITCODE"
     }
 }
 
-function DotNetTest {
-    param([string]$Project)
-    & $dotnet test $Project
-    if ($LASTEXITCODE -ne 0) {
-        throw "dotnet test failed with exit code $LASTEXITCODE"
-    }
-}
-
 function DotNetPack {
-    param([string]$Project, [string]$Configuration, [string]$VersionSuffix)
+    param([string]$Project)
+
     if ($VersionSuffix) {
         & $dotnet pack $Project --output $OutputPath --configuration $Configuration --version-suffix "$VersionSuffix" --include-symbols --include-source
     } else {
@@ -90,62 +91,88 @@ function DotNetPack {
     }
 }
 
-if ($PatchVersion -eq $true) {
+function DotNetTest {
+    param([string]$Project)
 
-    $gitRevision = (git rev-parse HEAD | Out-String).Trim()
-    $gitBranch   = (git rev-parse --abbrev-ref HEAD | Out-String).Trim()
-    $timestamp   = [DateTime]::UtcNow.ToString("yyyy-MM-ddTHH:mm:ssK")
+    if ($DisableCodeCoverage -eq $true) {
+        if ($null -ne $env:TF_BUILD) {
+            & $dotnet test $Project --output $OutputPath --framework $framework --no-build --logger trx
+        }
+        else {
+            & $dotnet test $Project --output $OutputPath --framework $framework --no-build
+        }
+    }
+    else {
 
-    $assemblyVersion = Get-Content ".\AssemblyVersion.cs" -Raw
-    $assemblyVersionWithMetadata = "{0}[assembly: AssemblyMetadata(""CommitHash"", ""{1}"")]`r`n[assembly: AssemblyMetadata(""CommitBranch"", ""{2}"")]`r`n[assembly: AssemblyMetadata(""BuildTimestamp"", ""{3}"")]" -f $assemblyVersion, $gitRevision, $gitBranch, $timestamp
+        if ($installDotNetSdk -eq $true) {
+            $dotnetPath = $dotnet
+        }
+        else {
+            $dotnetPath = (Get-Command "dotnet.exe").Source
+        }
 
-    Set-Content ".\AssemblyVersion.cs" $assemblyVersionWithMetadata -Encoding utf8
-}
+        $nugetPath = Join-Path $env:USERPROFILE ".nuget\packages"
 
-$projects = @(
-    (Join-Path $solutionPath "src\MartinCostello.BrowserStack.Automate\MartinCostello.BrowserStack.Automate.csproj")
-)
+        $openCoverVersion = "4.6.519"
+        $openCoverPath = Join-Path $nugetPath "OpenCover\$openCoverVersion\tools\OpenCover.Console.exe"
 
-$testProjects = @(
-    (Join-Path $solutionPath "tests\MartinCostello.BrowserStack.Automate.Tests\MartinCostello.BrowserStack.Automate.Tests.csproj")
-)
+        $reportGeneratorVersion = "4.0.0-rc4"
+        $reportGeneratorPath = Join-Path $nugetPath "ReportGenerator\$reportGeneratorVersion\tools\netcoreapp2.0\ReportGenerator.dll"
 
-$packageProjects = @(
-    (Join-Path $solutionPath "src\MartinCostello.BrowserStack.Automate\MartinCostello.BrowserStack.Automate.csproj")
-)
+        $coverageOutput = Join-Path $OutputPath "code-coverage.xml"
+        $reportOutput = Join-Path $OutputPath "coverage"
 
-$restoreProjects = @(
-    (Join-Path $solutionPath "src\MartinCostello.BrowserStack.Automate\MartinCostello.BrowserStack.Automate.csproj"),
-    (Join-Path $solutionPath "tests\MartinCostello.BrowserStack.Automate.Tests\MartinCostello.BrowserStack.Automate.Tests.csproj")
-)
+        if ($null -ne $env:TF_BUILD) {
+            & $openCoverPath `
+                `"-target:$dotnetPath`" `
+                `"-targetargs:test $Project --output $OutputPath --logger trx`" `
+                -output:$coverageOutput `
+                `"-excludebyattribute:System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage*`" `
+                -hideskipped:All `
+                -mergebyhash `
+                -mergeoutput `
+                -oldstyle `
+                -register:user `
+                -skipautoprops `
+                `"-filter:+[MartinCostello.BrowserStack.Automate]* -[MartinCostello.BrowserStack.Automate.Tests]*`"
+        }
+        else {
+            & $openCoverPath `
+                `"-target:$dotnetPath`" `
+                `"-targetargs:test $Project --output $OutputPath`" `
+                -output:$coverageOutput `
+                `"-excludebyattribute:System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage*`" `
+                -hideskipped:All `
+                -mergebyhash `
+                -mergeoutput `
+                -oldstyle `
+                -register:user `
+                -skipautoprops `
+                `"-filter:+[MartinCostello.BrowserStack.Automate]* -[MartinCostello.BrowserStack.Automate.Tests]*`"
+        }
 
-if ($RestorePackages -eq $true) {
-    Write-Host "Restoring NuGet packages for $($restoreProjects.Count) projects..." -ForegroundColor Green
-    ForEach ($project in $restoreProjects) {
-        DotNetRestore $project
+        $dotNetTestExitCode = $LASTEXITCODE
+
+        & $dotnet `
+            $reportGeneratorPath `
+            `"-reports:$coverageOutput`" `
+            `"-targetdir:$reportOutput`" `
+            -reporttypes:HTML`;Cobertura `
+            -verbosity:Warning
+    }
+
+    if ($dotNetTestExitCode -ne 0) {
+        throw "dotnet test failed with exit code $dotNetTestExitCode"
     }
 }
 
-Write-Host "Building $($projects.Count) projects..." -ForegroundColor Green
-ForEach ($project in $projects) {
-    DotNetBuild $project $Configuration "netstandard1.3" $VersionSuffix
-    DotNetBuild $project $Configuration "net451" $VersionSuffix
-}
+Write-Host "Building solution..." -ForegroundColor Green
+DotNetBuild $solutionFile
 
-if ($RunTests -eq $true) {
-    Write-Host "Testing $($testProjects.Count) project(s)..." -ForegroundColor Green
-    ForEach ($project in $testProjects) {
-        DotNetTest $project
-    }
-}
+Write-Host "Packaging library..." -ForegroundColor Green
+DotNetPack $libraryProject
 
-if ($CreatePackages -eq $true) {
-    Write-Host "Creating $($packageProjects.Count) package(s)..." -ForegroundColor Green
-    ForEach ($project in $packageProjects) {
-        DotNetPack $project $Configuration $VersionSuffix
-    }
-}
-
-if ($PatchVersion -eq $true) {
-    Set-Content ".\AssemblyVersion.cs" $assemblyVersion.Trim() -Encoding utf8
+Write-Host "Running tests..." -ForegroundColor Green
+ForEach ($testProject in $testProjects) {
+    DotNetTest $testProject
 }
