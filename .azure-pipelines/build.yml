@@ -1,0 +1,20 @@
+name: CI_$(Date:yyyyMMdd)$(Rev:.r)
+
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+    exclude:
+    - gh-pages
+
+phases:
+- template: build-template.yml
+  parameters:
+    agentOS: Linux
+- template: build-template.yml
+  parameters:
+    agentOS: macOS
+- template: build-template.yml
+  parameters:
+    agentOS: Windows
