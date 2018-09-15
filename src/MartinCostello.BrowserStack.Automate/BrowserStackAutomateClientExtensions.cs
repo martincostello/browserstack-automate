@@ -5,6 +5,7 @@ namespace MartinCostello.BrowserStack.Automate
 {
     using System;
     using System.ComponentModel;
+    using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -19,6 +20,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <param name="client">The <c>BrowserStack</c> Automate client.</param>
         /// <param name="sessionId">The session Id to set the status of.</param>
         /// <param name="reason">An optional reason to specify.</param>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to set the status of the session with the specified Id as having completed.
         /// </returns>
@@ -28,14 +30,18 @@ namespace MartinCostello.BrowserStack.Automate
         /// <exception cref="ArgumentException">
         /// <paramref name="sessionId"/> is <see langword="null"/> or white space.
         /// </exception>
-        public static Task<Session> SetSessionCompletedAsync(this BrowserStackAutomateClient client, string sessionId, string reason)
+        public static Task<Session> SetSessionCompletedAsync(
+            this BrowserStackAutomateClient client,
+            string sessionId,
+            string reason,
+            CancellationToken cancellationToken = default)
         {
             if (client == null)
             {
                 throw new ArgumentNullException(nameof(client));
             }
 
-            return client.SetSessionStatusAsync(sessionId, SessionStatuses.Completed, reason);
+            return client.SetSessionStatusAsync(sessionId, SessionStatuses.Completed, reason, cancellationToken);
         }
 
         /// <summary>
@@ -44,6 +50,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <param name="client">The <c>BrowserStack</c> Automate client.</param>
         /// <param name="sessionId">The session Id to set the status of.</param>
         /// <param name="reason">An optional reason to specify.</param>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to set the status of the session with the specified Id as having an error.
         /// </returns>
@@ -53,14 +60,18 @@ namespace MartinCostello.BrowserStack.Automate
         /// <exception cref="ArgumentException">
         /// <paramref name="sessionId"/> is <see langword="null"/> or white space.
         /// </exception>
-        public static Task<Session> SetSessionErrorAsync(this BrowserStackAutomateClient client, string sessionId, string reason)
+        public static Task<Session> SetSessionErrorAsync(
+            this BrowserStackAutomateClient client,
+            string sessionId,
+            string reason,
+            CancellationToken cancellationToken = default)
         {
             if (client == null)
             {
                 throw new ArgumentNullException(nameof(client));
             }
 
-            return client.SetSessionStatusAsync(sessionId, SessionStatuses.Error, reason);
+            return client.SetSessionStatusAsync(sessionId, SessionStatuses.Error, reason, cancellationToken);
         }
     }
 }
