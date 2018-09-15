@@ -44,7 +44,7 @@ if [ "$dotnet_version" != "$CLI_VERSION" ]; then
     curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --version "$CLI_VERSION" --install-dir "$DOTNET_INSTALL_DIR"
 fi
 
-dotnet build ./MartinCostello.BrowserStack.Automate.sln --output $artifacts --configuration $configuration --framework netstandard2.0 || exit 1
+dotnet build ./src/MartinCostello.BrowserStack.Automate/MartinCostello.BrowserStack.Automate.csproj --output $artifacts --configuration $configuration --framework netstandard2.0 || exit 1
 
 if [ $skipTests == 0 ]; then
     if [ "$TF_BUILD" != "" ]; then
