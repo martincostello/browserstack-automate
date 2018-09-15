@@ -39,6 +39,8 @@ phases:
           name: BuildAndTest
           displayName: Build and test
           env:
+            BrowserStack_UserName: $(BrowserStack.UserName)
+            BrowserStack_AccessKey: $(BrowserStack.AccessKey)
             DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
             NUGET_XMLDOC_MODE: skip
       - ${{ if ne(parameters.agentOS, 'Windows') }}:
@@ -47,6 +49,8 @@ phases:
           name: BuildAndTest
           displayName: Build and test
           env:
+            BrowserStack_UserName: $(BrowserStack.UserName)
+            BrowserStack_AccessKey: $(BrowserStack.AccessKey)
             DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
             NUGET_XMLDOC_MODE: skip
       - task: PublishTestResults@2
