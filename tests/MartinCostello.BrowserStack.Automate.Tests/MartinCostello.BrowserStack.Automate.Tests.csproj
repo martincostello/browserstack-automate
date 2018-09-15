@@ -2,6 +2,8 @@
   <PropertyGroup>
     <Description>Tests for MartinCostello.BrowserStack.Automate.</Description>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <!-- HACK: https://github.com/Microsoft/vstest/issues/1607#issuecomment-394521170 -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="xunit.runner.json" CopyToPublishDirectory="PreserveNewest" />
