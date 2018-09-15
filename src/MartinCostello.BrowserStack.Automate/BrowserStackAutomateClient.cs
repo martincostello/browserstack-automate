@@ -10,6 +10,7 @@ namespace MartinCostello.BrowserStack.Automate
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using Newtonsoft.Json;
 
@@ -104,6 +105,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// Deletes the build with the specified Id as an asynchronous operation.
         /// </summary>
         /// <param name="buildId">The Id of the build to delete.</param>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
         /// <returns>
         /// A <see cref="Task"/> representing the asynchronous operation to delete the build with the specified Id.
         /// </returns>
@@ -113,7 +115,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <exception cref="BrowserStackAutomateException">
         /// The build could not be deleted.
         /// </exception>
-        public virtual async Task DeleteBuildAsync(string buildId)
+        public virtual async Task DeleteBuildAsync(string buildId, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(buildId))
             {
@@ -124,7 +126,7 @@ namespace MartinCostello.BrowserStack.Automate
 
             using (var request = CreateRequest(HttpMethod.Delete, relativeUri))
             {
-                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
+                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
                 {
                     await EnsureSuccessAsync(response).ConfigureAwait(false);
                 }
@@ -135,19 +137,20 @@ namespace MartinCostello.BrowserStack.Automate
         /// Deletes the project with the specified Id as an asynchronous operation.
         /// </summary>
         /// <param name="projectId">The Id of the project to delete.</param>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
         /// <returns>
         /// A <see cref="Task"/> representing the asynchronous operation to delete the project with the specified Id.
         /// </returns>
         /// <exception cref="BrowserStackAutomateException">
         /// The project could not be deleted.
         /// </exception>
-        public virtual async Task DeleteProjectAsync(int projectId)
+        public virtual async Task DeleteProjectAsync(int projectId, CancellationToken cancellationToken = default)
         {
             string relativeUri = string.Format(CultureInfo.InvariantCulture, "projects/{0}.json", projectId);
 
             using (var request = CreateRequest(HttpMethod.Delete, relativeUri))
             {
-                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
+                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
                 {
                     await EnsureSuccessAsync(response).ConfigureAwait(false);
                 }
@@ -158,13 +161,14 @@ namespace MartinCostello.BrowserStack.Automate
         /// Deletes the session with the specified Id as an asynchronous operation.
         /// </summary>
         /// <param name="sessionId">The Id of the session to delete.</param>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
         /// <returns>
         /// A <see cref="Task"/> representing the asynchronous operation to delete the session with the specified Id.
         /// </returns>
         /// <exception cref="BrowserStackAutomateException">
         /// The session could not be deleted.
         /// </exception>
-        public virtual async Task DeleteSessionAsync(string sessionId)
+        public virtual async Task DeleteSessionAsync(string sessionId, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(sessionId))
             {
@@ -178,7 +182,7 @@ namespace MartinCostello.BrowserStack.Automate
 
             using (var request = CreateRequest(HttpMethod.Delete, relativeUri))
             {
-                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
+                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
                 {
                     await EnsureSuccessAsync(response).ConfigureAwait(false);
                 }
@@ -188,14 +192,15 @@ namespace MartinCostello.BrowserStack.Automate
         /// <summary>
         /// Gets the browsers as an asynchronous operation.
         /// </summary>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the browsers.
         /// </returns>
-        public virtual async Task<ICollection<Browser>> GetBrowsersAsync()
+        public virtual async Task<ICollection<Browser>> GetBrowsersAsync(CancellationToken cancellationToken = default)
         {
             using (var request = CreateRequest(HttpMethod.Get, "browsers.json"))
             {
-                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
+                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
                 {
                     await EnsureSuccessAsync(response).ConfigureAwait(false);
                     return await DeserializeAsync<List<Browser>>(response).ConfigureAwait(false);
@@ -206,20 +211,23 @@ namespace MartinCostello.BrowserStack.Automate
         /// <summary>
         /// Gets the builds as an asynchronous operation.
         /// </summary>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the builds.
         /// </returns>
-        public virtual Task<ICollection<Build>> GetBuildsAsync() => GetBuildsAsync(null, null);
+        public virtual Task<ICollection<Build>> GetBuildsAsync(CancellationToken cancellationToken = default)
+            => GetBuildsAsync(null, null, cancellationToken);
 
         /// <summary>
         /// Gets the builds as an asynchronous operation.
         /// </summary>
         /// <param name="limit">The optional number of builds to return. The default value is 10.</param>
         /// <param name="status">The optional status to filter builds to.</param>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the builds.
         /// </returns>
-        public virtual async Task<ICollection<Build>> GetBuildsAsync(int? limit, string status)
+        public virtual async Task<ICollection<Build>> GetBuildsAsync(int? limit, string status, CancellationToken cancellationToken = default)
         {
             string relativeUri = string.Format(
                 CultureInfo.InvariantCulture,
@@ -228,7 +236,7 @@ namespace MartinCostello.BrowserStack.Automate
 
             using (var request = CreateRequest(HttpMethod.Get, relativeUri))
             {
-                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
+                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
                 {
                     await EnsureSuccessAsync(response).ConfigureAwait(false);
                     return await DeserializeAsync<List<Build>>(response).ConfigureAwait(false);
@@ -240,16 +248,17 @@ namespace MartinCostello.BrowserStack.Automate
         /// Gets the project with the specified Id as an asynchronous operation.
         /// </summary>
         /// <param name="projectId">The Id of the project to return.</param>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the project with the specified Id.
         /// </returns>
-        public virtual async Task<ProjectDetailItem> GetProjectAsync(int projectId)
+        public virtual async Task<ProjectDetailItem> GetProjectAsync(int projectId, CancellationToken cancellationToken = default)
         {
             string relativeUri = string.Format(CultureInfo.InvariantCulture, "projects/{0}.json", projectId);
 
             using (var request = CreateRequest(HttpMethod.Get, relativeUri))
             {
-                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
+                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
                 {
                     await EnsureSuccessAsync(response).ConfigureAwait(false);
                     return await DeserializeAsync<ProjectDetailItem>(response).ConfigureAwait(false);
@@ -260,14 +269,15 @@ namespace MartinCostello.BrowserStack.Automate
         /// <summary>
         /// Gets the projects as an asynchronous operation.
         /// </summary>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the projects.
         /// </returns>
-        public virtual async Task<ICollection<Project>> GetProjectsAsync()
+        public virtual async Task<ICollection<Project>> GetProjectsAsync(CancellationToken cancellationToken = default)
         {
             using (var request = CreateRequest(HttpMethod.Get, "projects.json"))
             {
-                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
+                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
                 {
                     await EnsureSuccessAsync(response).ConfigureAwait(false);
                     return await DeserializeAsync<List<Project>>(response).ConfigureAwait(false);
@@ -279,13 +289,14 @@ namespace MartinCostello.BrowserStack.Automate
         /// Gets the session associated with the specified Id as an asynchronous operation.
         /// </summary>
         /// <param name="sessionId">The session Id to return.</param>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the session with the specified Id.
         /// </returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="sessionId"/> is <see langword="null"/> or white space.
         /// </exception>
-        public virtual async Task<SessionDetail> GetSessionAsync(string sessionId)
+        public virtual async Task<SessionDetail> GetSessionAsync(string sessionId, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(sessionId))
             {
@@ -299,7 +310,7 @@ namespace MartinCostello.BrowserStack.Automate
 
             using (var request = CreateRequest(HttpMethod.Get, relativeUri))
             {
-                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
+                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
                 {
                     await EnsureSuccessAsync(response).ConfigureAwait(false);
                     return await DeserializeAsync<SessionDetail>(response).ConfigureAwait(false);
@@ -312,13 +323,14 @@ namespace MartinCostello.BrowserStack.Automate
         /// </summary>
         /// <param name="buildId">The build Id to return the logs for.</param>
         /// <param name="sessionId">The session Id to return the logs for.</param>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the logs for the build and session with the specified Ids.
         /// </returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="buildId"/> or <paramref name="sessionId"/> is <see langword="null"/> or white space.
         /// </exception>
-        public virtual async Task<string> GetSessionLogsAsync(string buildId, string sessionId)
+        public virtual async Task<string> GetSessionLogsAsync(string buildId, string sessionId, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(buildId))
             {
@@ -338,7 +350,7 @@ namespace MartinCostello.BrowserStack.Automate
 
             using (var request = CreateRequest(HttpMethod.Get, relativeUri))
             {
-                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
+                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
                 {
                     if (response.StatusCode == HttpStatusCode.NotFound)
                     {
@@ -356,13 +368,15 @@ namespace MartinCostello.BrowserStack.Automate
         /// Gets the sessions associated with the specified build Id as an asynchronous operation.
         /// </summary>
         /// <param name="buildId">The build Id of the sessions to return.</param>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the sessions for the specified build Id.
         /// </returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="buildId"/> is <see langword="null"/> or white space.
         /// </exception>
-        public virtual Task<ICollection<Session>> GetSessionsAsync(string buildId) => GetSessionsAsync(buildId, null, null);
+        public virtual Task<ICollection<Session>> GetSessionsAsync(string buildId, CancellationToken cancellationToken = default)
+            => GetSessionsAsync(buildId, null, null, cancellationToken);
 
         /// <summary>
         /// Gets the sessions associated with the specified build Id as an asynchronous operation.
@@ -370,13 +384,18 @@ namespace MartinCostello.BrowserStack.Automate
         /// <param name="buildId">The build Id of the sessions to return.</param>
         /// <param name="limit">The optional number of builds to return. The default value is 10.</param>
         /// <param name="status">The optional status to filter builds to.</param>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the sessions for the specified build Id.
         /// </returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="buildId"/> is <see langword="null"/> or white space.
         /// </exception>
-        public virtual async Task<ICollection<Session>> GetSessionsAsync(string buildId, int? limit, string status)
+        public virtual async Task<ICollection<Session>> GetSessionsAsync(
+            string buildId,
+            int? limit,
+            string status,
+            CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(buildId))
             {
@@ -391,7 +410,7 @@ namespace MartinCostello.BrowserStack.Automate
 
             using (var request = CreateRequest(HttpMethod.Get, relativeUri))
             {
-                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
+                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
                 {
                     await EnsureSuccessAsync(response).ConfigureAwait(false);
                     return await DeserializeAsync<List<Session>>(response).ConfigureAwait(false);
@@ -402,14 +421,15 @@ namespace MartinCostello.BrowserStack.Automate
         /// <summary>
         /// Gets the status of the <c>BrowserStack</c> Automate plan as an asynchronous operation.
         /// </summary>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the status of the Automate plan.
         /// </returns>
-        public virtual async Task<AutomatePlanStatus> GetStatusAsync()
+        public virtual async Task<AutomatePlanStatus> GetStatusAsync(CancellationToken cancellationToken = default)
         {
             using (var request = CreateRequest(HttpMethod.Get, "plan.json"))
             {
-                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
+                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
                 {
                     await EnsureSuccessAsync(response).ConfigureAwait(false);
                     return await DeserializeAsync<AutomatePlanStatus>(response).ConfigureAwait(false);
@@ -420,20 +440,21 @@ namespace MartinCostello.BrowserStack.Automate
         /// <summary>
         /// Recycles the current access key as an asynchronous operation.
         /// </summary>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to recycle the access key which returns the new and old access keys.
         /// </returns>
         /// <remarks>
         /// The credentials used by the current instance are automatically updated if successful.
         /// </remarks>
-        public virtual async Task<RecycleAccessKeyResult> RecycleAccessKeyAsync()
+        public virtual async Task<RecycleAccessKeyResult> RecycleAccessKeyAsync(CancellationToken cancellationToken = default)
         {
             var value = new { };
             var json = SerializeAsJson(value);
 
             using (var request = CreateRequest(HttpMethod.Put, "recycle_key.json", json))
             {
-                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
+                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
                 {
                     await EnsureSuccessAsync(response).ConfigureAwait(false);
 
@@ -455,13 +476,18 @@ namespace MartinCostello.BrowserStack.Automate
         /// <param name="sessionId">The session Id to set the status of.</param>
         /// <param name="status">The new status.</param>
         /// <param name="reason">An optional reason to specify.</param>
+        /// <param name="cancellationToken">The optional cancellation token to use.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the sessions for the specified build Id.
         /// </returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="sessionId"/> or <paramref name="status"/> is <see langword="null"/> or white space.
         /// </exception>
-        public virtual async Task<Session> SetSessionStatusAsync(string sessionId, string status, string reason)
+        public virtual async Task<Session> SetSessionStatusAsync(
+            string sessionId,
+            string status,
+            string reason,
+            CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(sessionId))
             {
@@ -488,7 +514,7 @@ namespace MartinCostello.BrowserStack.Automate
 
             using (var request = CreateRequest(HttpMethod.Put, relativeUri, json))
             {
-                using (var response = await Client.SendAsync(request).ConfigureAwait(false))
+                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
                 {
                     await EnsureSuccessAsync(response).ConfigureAwait(false);
                     return await DeserializeAsync<Session>(response).ConfigureAwait(false);
