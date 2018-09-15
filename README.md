@@ -4,10 +4,10 @@
 
 ## Build Status
 
-| | Linux | Windows |
-|:-:|:-:|:-:|
-| **Build Status** | [![Build status](https://img.shields.io/travis/martincostello/browserstack-automate/master.svg)](https://travis-ci.org/martincostello/browserstack-automate) | [![Build status](https://img.shields.io/appveyor/ci/martincostello/browserstack-automate/master.svg)](https://ci.appveyor.com/project/martincostello/browserstack-automate) |
-| **Build History** | [![Build history](https://buildstats.info/travisci/chart/martincostello/browserstack-automate?branch=master&includeBuildsFromPullRequest=false)](https://travis-ci.org/martincostello/browserstack-automate) |  [![Build history](https://buildstats.info/appveyor/chart/martincostello/browserstack-automate?branch=master&includeBuildsFromPullRequest=false)](https://ci.appveyor.com/project/martincostello/browserstack-automate) |
+| | Linux/OS X | Windows | Linux/macOS/Windows |
+|:-:|:-:|:-:|:-:|
+| **Build Status** | [![Build status](https://img.shields.io/travis/martincostello/browserstack-automate/master.svg)](https://travis-ci.org/martincostello/browserstack-automate) | [![Build status](https://img.shields.io/appveyor/ci/martincostello/browserstack-automate/master.svg)](https://ci.appveyor.com/project/martincostello/browserstack-automate) | [![Azure Pipelines build status](https://dev.azure.com/martincostello/browserstack-automate/_apis/build/status/CI)](https://dev.azure.com/martincostello/browserstack-automate/_build/latest?definitionId=70) |
+| **Build History** | [![Build history](https://buildstats.info/travisci/chart/martincostello/browserstack-automate?branch=master&includeBuildsFromPullRequest=false)](https://travis-ci.org/martincostello/browserstack-automate) |  [![Build history](https://buildstats.info/appveyor/chart/martincostello/browserstack-automate?branch=master&includeBuildsFromPullRequest=false)](https://ci.appveyor.com/project/martincostello/browserstack-automate) | _Not supported_ |
 
 ## Overview
 
