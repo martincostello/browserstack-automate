@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyTitle>BrowserStack Automate Client API</AssemblyTitle>
+    <DebugType>full</DebugType>
     <Description>.NET client for the BrowserStack Automate REST API.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <OutputType>Library</OutputType>
