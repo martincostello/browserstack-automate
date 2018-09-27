@@ -83,7 +83,8 @@ function DotNetPack {
 
     if ($VersionSuffix) {
         & $dotnet pack $Project --output $OutputPath --configuration $Configuration --version-suffix "$VersionSuffix" --include-symbols --include-source
-    } else {
+    }
+    else {
         & $dotnet pack $Project --output $OutputPath --configuration $Configuration --include-symbols --include-source
     }
     if ($LASTEXITCODE -ne 0) {

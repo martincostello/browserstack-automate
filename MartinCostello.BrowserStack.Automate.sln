@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		browserstack-logo.png = browserstack-logo.png
 		Build.ps1 = Build.ps1
 		build.sh = build.sh
+		CODE_OF_CONDUCT.md = CODE_OF_CONDUCT.md
 		CommonAssemblyInfo.cs = CommonAssemblyInfo.cs
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
@@ -45,6 +46,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".vscode", ".vscode", "{4CF8
 		.vscode\tasks.json = .vscode\tasks.json
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{11A7E733-D158-4529-B060-F16D1E4EC9E9}"
+	ProjectSection(SolutionItems) = preProject
+		.github\CONTRIBUTING.md = .github\CONTRIBUTING.md
+		.github\ISSUE_TEMPLATE.md = .github\ISSUE_TEMPLATE.md
+		.github\PULL_REQUEST_TEMPLATE.md = .github\PULL_REQUEST_TEMPLATE.md
+		.github\stale.yml = .github\stale.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ISSUE_TEMPLATE", "ISSUE_TEMPLATE", "{89AEF2C7-E8BE-471D-9B59-7F3878A6B542}"
+	ProjectSection(SolutionItems) = preProject
+		.github\ISSUE_TEMPLATE\bug_report.md = .github\ISSUE_TEMPLATE\bug_report.md
+		.github\ISSUE_TEMPLATE\feature_request.md = .github\ISSUE_TEMPLATE\feature_request.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +83,8 @@ Global
 		{DC723DF1-5852-45B1-B2BD-71BA85CDED1E} = {0F694B07-6EBF-45FB-99A0-266542E16DEE}
 		{73B410DF-CD59-407E-A8C3-2990F4ADA94C} = {14426345-2DE8-4450-A2F6-D23107D62989}
 		{4CF8E4EC-32C8-46DB-BDBF-4CEE57614DFE} = {14426345-2DE8-4450-A2F6-D23107D62989}
+		{11A7E733-D158-4529-B060-F16D1E4EC9E9} = {14426345-2DE8-4450-A2F6-D23107D62989}
+		{89AEF2C7-E8BE-471D-9B59-7F3878A6B542} = {11A7E733-D158-4529-B060-F16D1E4EC9E9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9E9EECDD-AA72-44DC-BA85-0CF401B72A99}
