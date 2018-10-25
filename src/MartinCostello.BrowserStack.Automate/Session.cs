@@ -26,7 +26,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <summary>
         /// Gets or sets the duration of the session in seconds.
         /// </summary>
-        [JsonProperty("duration")]
+        [JsonProperty("duration", NullValueHandling = NullValueHandling.Ignore)] // TODO Should be nullable, but don't want to break binary compatibility
         public int Duration { get; set; }
 
         /// <summary>

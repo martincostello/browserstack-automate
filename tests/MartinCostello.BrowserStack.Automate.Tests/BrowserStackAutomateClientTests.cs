@@ -978,7 +978,7 @@ namespace MartinCostello.BrowserStack.Automate
             session.ProjectName.Should().NotBeNullOrEmpty();
             session.Reason.Should().NotBeNullOrEmpty();
             session.Status.Should().NotBeNullOrEmpty();
-            session.Duration.Should().BeGreaterThan(0);
+            session.Duration.Should().BeGreaterThan(-1);
         }
 
         /// <summary>
