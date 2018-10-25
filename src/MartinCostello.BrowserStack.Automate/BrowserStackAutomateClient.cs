@@ -329,7 +329,11 @@ namespace MartinCostello.BrowserStack.Automate
                 using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
                 {
                     await EnsureSuccessAsync(response).ConfigureAwait(false);
-                    return await DeserializeAsync<List<Build>>(response).ConfigureAwait(false);
+                    var builds = await DeserializeAsync<List<AutomationBuild>>(response).ConfigureAwait(false);
+
+                    return builds
+                        .Select((p) => p.Build)
+                        .ToList();
                 }
             }
         }
@@ -403,7 +407,9 @@ namespace MartinCostello.BrowserStack.Automate
                 using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
                 {
                     await EnsureSuccessAsync(response).ConfigureAwait(false);
-                    return await DeserializeAsync<SessionDetail>(response).ConfigureAwait(false);
+                    var result = await DeserializeAsync<AutomationSessionDetail>(response).ConfigureAwait(false);
+
+                    return result?.SessionDetail;
                 }
             }
         }
@@ -523,7 +529,11 @@ namespace MartinCostello.BrowserStack.Automate
                 using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
                 {
                     await EnsureSuccessAsync(response).ConfigureAwait(false);
-                    return await DeserializeAsync<List<Session>>(response).ConfigureAwait(false);
+                    var sessions = await DeserializeAsync<List<AutomationSession>>(response).ConfigureAwait(false);
+
+                    return sessions
+                        .Select((p) => p.Session)
+                        .ToList();
                 }
             }
         }
@@ -708,7 +718,9 @@ namespace MartinCostello.BrowserStack.Automate
                 using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
                 {
                     await EnsureSuccessAsync(response).ConfigureAwait(false);
-                    return await DeserializeAsync<Session>(response).ConfigureAwait(false);
+                    var session = await DeserializeAsync<AutomationSession>(response).ConfigureAwait(false);
+
+                    return session?.Session;
                 }
             }
         }
@@ -941,6 +953,42 @@ namespace MartinCostello.BrowserStack.Automate
                     return await DeserializeAsync<T>(response).ConfigureAwait(false);
                 }
             }
+        }
+
+        /// <summary>
+        /// A class representing a BrowserStack Automate build. This class cannot be inherited.
+        /// </summary>
+        private sealed class AutomationBuild
+        {
+            /// <summary>
+            /// Gets or sets the build.
+            /// </summary>
+            [JsonProperty("automation_build")]
+            public Build Build { get; set; }
+        }
+
+        /// <summary>
+        /// A class representing a BrowserStack Automate session. This class cannot be inherited.
+        /// </summary>
+        private sealed class AutomationSession
+        {
+            /// <summary>
+            /// Gets or sets the session.
+            /// </summary>
+            [JsonProperty("automation_session")]
+            public Session Session { get; set; }
+        }
+
+        /// <summary>
+        /// A class representing a BrowserStack Automate session's details. This class cannot be inherited.
+        /// </summary>
+        private sealed class AutomationSessionDetail
+        {
+            /// <summary>
+            /// Gets or sets the session.
+            /// </summary>
+            [JsonProperty("automation_session")]
+            public SessionDetail SessionDetail { get; set; }
         }
     }
 }
