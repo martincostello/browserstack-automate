@@ -27,7 +27,6 @@
     <LangVersion>latest</LangVersion>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <NoWarn>$(NoWarn);CA1054;CA2234</NoWarn>
     <NoWarn Condition=" '$(GenerateDocumentationFile)' != 'true' ">$(NoWarn);SA0001</NoWarn>
     <PackageIconUrl>https://martincostello.github.io/browserstack-automate/images/browserstack-logo.png</PackageIconUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
