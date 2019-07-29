@@ -215,7 +215,6 @@ namespace MartinCostello.BrowserStack.Automate
             ICollection<Project> projects = await target.GetProjectsAsync();
 
             // Assert
-            projects.Should().NotBeNullOrEmpty();
             projects.Should().NotContainNulls();
 
             var minimumDate = new DateTime(2011, 1, 1, 0, 0, 0);
