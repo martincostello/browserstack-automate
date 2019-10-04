@@ -48,8 +48,8 @@ dotnet build ./src/MartinCostello.BrowserStack.Automate/MartinCostello.BrowserSt
 
 if [ $skipTests == 0 ]; then
     if [ "$TF_BUILD" != "" ]; then
-        dotnet test ./tests/MartinCostello.BrowserStack.Automate.Tests/MartinCostello.BrowserStack.Automate.Tests.csproj --output $artifacts --configuration $configuration --framework netcoreapp2.2 --logger trx || exit 1
+        dotnet test ./tests/MartinCostello.BrowserStack.Automate.Tests/MartinCostello.BrowserStack.Automate.Tests.csproj --output $artifacts --configuration $configuration --framework netcoreapp3.0 --logger trx || exit 1
     else
-        dotnet test ./tests/MartinCostello.BrowserStack.Automate.Tests/MartinCostello.BrowserStack.Automate.Tests.csproj --output $artifacts --configuration $configuration --framework netcoreapp2.2 || exit 1
+        dotnet test ./tests/MartinCostello.BrowserStack.Automate.Tests/MartinCostello.BrowserStack.Automate.Tests.csproj --output $artifacts --configuration $configuration --framework netcoreapp3.0 || exit 1
     fi
 fi
