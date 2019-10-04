@@ -6,7 +6,6 @@ param(
 )
 
 # These make CI builds faster
-$env:DOTNET_MULTILEVEL_LOOKUP = "0"
 $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = "true"
 $env:NUGET_XMLDOC_MODE = "skip"
 
