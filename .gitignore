@@ -11,12 +11,15 @@ artifacts/
 Backup*/
 bin
 Bin
+coverage
+coverage.*
 obj
 packages
 project.lock.json
 TestResults
 UpgradeLog*.htm
 UpgradeLog*.XML
+*.coverage
 *.DotSettings
 *.GhostDoc.xml
 *.log
