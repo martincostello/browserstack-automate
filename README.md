@@ -94,7 +94,7 @@ EXPORT BrowserStack_AccessKey = "MyAccessKey"
 ```powershell
 $env:BrowserStack_UserName  = "MyUserName"
 $env:BrowserStack_AccessKey = "MyAccessKey"
-.\Build.ps1
+.\build.ps1
 ```
 
 _If you do not have a BrowserStack Automate access key you can still just run the build script and the integration tests that require credentials will be skipped._
