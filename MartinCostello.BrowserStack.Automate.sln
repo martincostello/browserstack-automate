@@ -1,18 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2026
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{14426345-2DE8-4450-A2F6-D23107D62989}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
-		.travis.yml = .travis.yml
-		appveyor.yml = appveyor.yml
+		.vsconfig = .vsconfig
 		browserstack-logo.png = browserstack-logo.png
 		build.ps1 = build.ps1
-		build.sh = build.sh
 		CODE_OF_CONDUCT.md = CODE_OF_CONDUCT.md
 		CommonAssemblyInfo.cs = CommonAssemblyInfo.cs
 		Directory.Build.props = Directory.Build.props
@@ -34,12 +32,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MartinCostello.BrowserStack
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MartinCostello.BrowserStack.Automate.Tests", "tests\MartinCostello.BrowserStack.Automate.Tests\MartinCostello.BrowserStack.Automate.Tests.csproj", "{DC723DF1-5852-45B1-B2BD-71BA85CDED1E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".azure-pipelines", ".azure-pipelines", "{73B410DF-CD59-407E-A8C3-2990F4ADA94C}"
-	ProjectSection(SolutionItems) = preProject
-		.azure-pipelines\build-template.yml = .azure-pipelines\build-template.yml
-		.azure-pipelines\build.yml = .azure-pipelines\build.yml
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".vscode", ".vscode", "{4CF8E4EC-32C8-46DB-BDBF-4CEE57614DFE}"
 	ProjectSection(SolutionItems) = preProject
 		.vscode\launch.json = .vscode\launch.json
@@ -58,6 +50,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ISSUE_TEMPLATE", "ISSUE_TEM
 	ProjectSection(SolutionItems) = preProject
 		.github\ISSUE_TEMPLATE\bug_report.md = .github\ISSUE_TEMPLATE\bug_report.md
 		.github\ISSUE_TEMPLATE\feature_request.md = .github\ISSUE_TEMPLATE\feature_request.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{FE784E9A-7C93-4030-BD97-BAAA9B362022}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build.yml = .github\workflows\build.yml
+		.github\workflows\update-dotnet-sdk.yml = .github\workflows\update-dotnet-sdk.yml
 	EndProjectSection
 EndProject
 Global
@@ -81,10 +79,10 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{DA306F05-7E38-43DA-9C48-674028A34577} = {F0ED165C-03B3-4578-8B19-64B15F673E76}
 		{DC723DF1-5852-45B1-B2BD-71BA85CDED1E} = {0F694B07-6EBF-45FB-99A0-266542E16DEE}
-		{73B410DF-CD59-407E-A8C3-2990F4ADA94C} = {14426345-2DE8-4450-A2F6-D23107D62989}
 		{4CF8E4EC-32C8-46DB-BDBF-4CEE57614DFE} = {14426345-2DE8-4450-A2F6-D23107D62989}
 		{11A7E733-D158-4529-B060-F16D1E4EC9E9} = {14426345-2DE8-4450-A2F6-D23107D62989}
 		{89AEF2C7-E8BE-471D-9B59-7F3878A6B542} = {11A7E733-D158-4529-B060-F16D1E4EC9E9}
+		{FE784E9A-7C93-4030-BD97-BAAA9B362022} = {11A7E733-D158-4529-B060-F16D1E4EC9E9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9E9EECDD-AA72-44DC-BA85-0CF401B72A99}
