@@ -4,7 +4,7 @@
 
 ## Build Status
 
-[![Build status](https://github.com/martincostello/browserstack-automate/workflows/build/badge.svg?branch=master&event=push)](https://github.com/martincostello/browserstack-automate/actions?query=workflow%3Abuild+branch%3Amaster+event%3Apush)
+[![Build status](https://github.com/martincostello/browserstack-automate/workflows/build/badge.svg?branch=main&event=push)](https://github.com/martincostello/browserstack-automate/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush)
 
 ## Overview
 
@@ -72,7 +72,7 @@ The repository is hosted in [GitHub](https://github.com/martincostello/browserst
 
 ## License
 
-This project is licensed under the [Apache 2.0](https://github.com/martincostello/browserstack-automate/blob/master/LICENSE) license.
+This project is licensed under the [Apache 2.0](https://github.com/martincostello/browserstack-automate/blob/main/LICENSE) license.
 
 ## Building and Testing
 
