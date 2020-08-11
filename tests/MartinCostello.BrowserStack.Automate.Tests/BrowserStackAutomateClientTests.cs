@@ -37,14 +37,13 @@ namespace MartinCostello.BrowserStack.Automate
             browsers.Should().NotBeNullOrEmpty();
             browsers.Should().NotContainNulls();
 
-            browsers.All((p) => !string.IsNullOrEmpty(p.BrowserVersion));
-            browsers.All((p) => !string.IsNullOrEmpty(p.Device));
-
             foreach (var browser in browsers)
             {
                 browser.Should().NotBeNull();
                 browser.BrowserName.Should().NotBeNullOrEmpty();
                 browser.BrowserName.Should().NotBeNullOrEmpty();
+                browser.BrowserVersion.Should().NotBeNullOrEmpty();
+                browser.Device.Should().NotBeNullOrEmpty();
                 browser.OSName.Should().NotBeNullOrEmpty();
                 browser.OSVersion.Should().NotBeNullOrEmpty();
             }
@@ -75,9 +74,6 @@ namespace MartinCostello.BrowserStack.Automate
                 sessions.Should().NotBeNull();
                 sessions.Should().NotContainNulls();
 
-                sessions.All((p) => !string.IsNullOrEmpty(p.BrowserName));
-                sessions.All((p) => !string.IsNullOrEmpty(p.BrowserVersion));
-
                 // Limit the sessions for performance
                 foreach (var session in sessions.Take(1))
                 {
@@ -91,7 +87,9 @@ namespace MartinCostello.BrowserStack.Automate
                     sessionDetail.BrowserUri.Should().NotBeNull();
                     sessionDetail.PublicUri.Should().NotBeNull();
                     sessionDetail.VideoUri.Should().NotBeNull();
+                    sessionDetail.BrowserName.Should().NotBeNullOrEmpty();
                     sessionDetail.BrowserName.Should().Be(session.BrowserName);
+                    sessionDetail.BrowserVersion.Should().NotBeNullOrEmpty();
                     sessionDetail.BrowserVersion.Should().Be(session.BrowserVersion);
                     sessionDetail.BuildName.Should().Be(session.BuildName);
                     sessionDetail.Duration.Should().Be(session.Duration);
