@@ -41,9 +41,6 @@ namespace MartinCostello.BrowserStack.Automate
             {
                 browser.Should().NotBeNull();
                 browser.BrowserName.Should().NotBeNullOrEmpty();
-                browser.BrowserName.Should().NotBeNullOrEmpty();
-                browser.BrowserVersion.Should().NotBeNullOrEmpty();
-                browser.Device.Should().NotBeNullOrEmpty();
                 browser.OSName.Should().NotBeNullOrEmpty();
                 browser.OSVersion.Should().NotBeNullOrEmpty();
             }
