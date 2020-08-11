@@ -791,7 +791,7 @@ namespace MartinCostello.BrowserStack.Automate
             {
                 if (builder.Length > 0)
                 {
-                    builder.Append("&");
+                    builder.Append('&');
                 }
 
                 builder.AppendFormat(CultureInfo.InvariantCulture, "status={0}", Uri.EscapeDataString(status));
