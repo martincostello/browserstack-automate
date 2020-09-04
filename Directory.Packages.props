@@ -13,7 +13,7 @@
     <PackageVersion Include="Newtonsoft.Json" Version="9.0.1" Condition=" '$()' != 'true' " />
     <PackageVersion Include="Newtonsoft.Json" Version="12.0.3" Condition=" '$()' == 'true' " />
     <PackageVersion Include="Polly" Version="7.2.1" />
-    <PackageVersion Include="ReportGenerator" Version="4.6.5" />
+    <PackageVersion Include="ReportGenerator" Version="4.6.6" />
     <PackageVersion Include="Shouldly" Version="3.0.2" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.1.118" />
     <PackageVersion Include="xunit" Version="2.4.1" />
