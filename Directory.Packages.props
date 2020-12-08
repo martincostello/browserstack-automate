@@ -3,9 +3,9 @@
     <PackageVersion Include="coverlet.msbuild" Version="2.9.0" />
     <PackageVersion Include="FluentAssertions" Version="5.10.3" />
     <PackageVersion Include="MartinCostello.Logging.XUnit" Version="0.1.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="5.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Http.Polly" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Polly" Version="5.0.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.0.0" />
     <PackageVersion Include="Moq" Version="4.15.2" />
