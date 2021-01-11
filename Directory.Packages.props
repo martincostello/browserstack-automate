@@ -1,6 +1,6 @@
 <Project>
   <ItemGroup>
-    <PackageVersion Include="coverlet.msbuild" Version="2.9.0" />
+    <PackageVersion Include="coverlet.msbuild" Version="3.0.0" />
     <PackageVersion Include="FluentAssertions" Version="5.10.3" />
     <PackageVersion Include="MartinCostello.Logging.XUnit" Version="0.1.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
