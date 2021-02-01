@@ -26,7 +26,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <summary>
         /// Gets or sets the number of parallel sessions currently running.
         /// </summary>
-        [JsonProperty("parallel_sessions_running")]
+        [JsonProperty("parallel_sessions_running", NullValueHandling = NullValueHandling.Ignore)]
         public int ParallelSessionsRunning { get; set; }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <summary>
         /// Gets or sets the number of parallel sessions currently queued.
         /// </summary>
-        [JsonProperty("queued_sessions")]
+        [JsonProperty("queued_sessions", NullValueHandling = NullValueHandling.Ignore)]
         public int QueuedParallelSessions { get; set; }
 
         /// <summary>

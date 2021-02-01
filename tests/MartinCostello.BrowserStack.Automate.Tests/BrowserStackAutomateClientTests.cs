@@ -253,7 +253,7 @@ namespace MartinCostello.BrowserStack.Automate
                     build.Should().NotBeNull();
                     build.Should().NotBeNull();
                     build.CreatedAt.Should().BeOnOrAfter(project.CreatedAt);
-                    build.Duration.Should().BeGreaterOrEqualTo(1);
+                    build.Duration.Should().BeGreaterOrEqualTo(0);
                     build.Id.Should().BeGreaterThan(0);
                     build.HashedId.Should().NotBeNullOrEmpty();
                     build.Name.Should().NotBeNullOrEmpty();
