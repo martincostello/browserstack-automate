@@ -26,7 +26,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <summary>
         /// Gets or sets the duration of the build, in seconds.
         /// </summary>
-        [JsonProperty("duration")]
+        [JsonProperty("duration", NullValueHandling = NullValueHandling.Ignore)]
         public int Duration { get; set; }
 
         /// <summary>
