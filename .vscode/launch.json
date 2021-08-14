@@ -10,7 +10,7 @@
       "args": [
         "test"
       ],
-      "cwd": "${workspaceRoot}/tests/MartinCostello.BrowserStack.Automate.Tests",
+      "cwd": "${workspaceFolder}/tests/MartinCostello.BrowserStack.Automate.Tests",
       "console": "internalConsole",
       "stopAtEntry": false,
       "internalConsoleOptions": "openOnSessionStart"
