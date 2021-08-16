@@ -2,7 +2,7 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System;
-using FluentAssertions;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace MartinCostello.BrowserStack.Automate
@@ -13,7 +13,7 @@ namespace MartinCostello.BrowserStack.Automate
     public static class BrowserStackAutomateClientExtensionsTests
     {
         [Fact]
-        public static void SetSessionCompletedAsync_Throws_If_Client_Is_Null()
+        public static async Task SetSessionCompletedAsync_Throws_If_Client_Is_Null()
         {
             // Arrange
             BrowserStackAutomateClient client = null;
@@ -22,18 +22,11 @@ namespace MartinCostello.BrowserStack.Automate
             string reason = "My reason";
 
             // Act and Assert
-            client
-                .Awaiting((p) => p.SetSessionCompletedAsync(sessionId, reason))
-                .Should()
-                .Throw<ArgumentNullException>()
-                .And
-                .ParamName
-                .Should()
-                .Be("client");
+            await Assert.ThrowsAsync<ArgumentNullException>("client", () => client.SetSessionCompletedAsync(sessionId, reason));
         }
 
         [Fact]
-        public static void SetSessionErrorAsync_Throws_If_Client_Is_Null()
+        public static async Task SetSessionErrorAsync_Throws_If_Client_Is_Null()
         {
             // Arrange
             BrowserStackAutomateClient client = null;
@@ -42,14 +35,7 @@ namespace MartinCostello.BrowserStack.Automate
             string reason = "My reason";
 
             // Act and Assert
-            client
-                .Awaiting((p) => p.SetSessionErrorAsync(sessionId, reason))
-                .Should()
-                .Throw<ArgumentNullException>()
-                .And
-                .ParamName
-                .Should()
-                .Be("client");
+            await Assert.ThrowsAsync<ArgumentNullException>("client", () => client.SetSessionErrorAsync(sessionId, reason));
         }
     }
 }

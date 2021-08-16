@@ -65,7 +65,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <summary>
         /// Gets the base URI of the BrowserStack Automate REST API.
         /// </summary>
-        public static Uri ApiBaseAddress => new Uri("https://api.browserstack.com/automate/", UriKind.Absolute);
+        public static Uri ApiBaseAddress => new ("https://api.browserstack.com/automate/", UriKind.Absolute);
 
         /// <summary>
         /// Gets the user name in use.
@@ -125,13 +125,10 @@ namespace MartinCostello.BrowserStack.Automate
 
             string relativeUri = string.Format(CultureInfo.InvariantCulture, "builds/{0}.json", Uri.EscapeDataString(buildId));
 
-            using (var request = CreateRequest(HttpMethod.Delete, relativeUri))
-            {
-                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
-                {
-                    await EnsureSuccessAsync(response).ConfigureAwait(false);
-                }
-            }
+            using var request = CreateRequest(HttpMethod.Delete, relativeUri);
+            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessAsync(response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -167,13 +164,10 @@ namespace MartinCostello.BrowserStack.Automate
 
             string relativeUri = string.Format(CultureInfo.InvariantCulture, "builds?{0}", query);
 
-            using (var request = CreateRequest(HttpMethod.Delete, relativeUri))
-            {
-                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
-                {
-                    await EnsureSuccessAsync(response).ConfigureAwait(false);
-                }
-            }
+            using var request = CreateRequest(HttpMethod.Delete, relativeUri);
+            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessAsync(response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -191,13 +185,10 @@ namespace MartinCostello.BrowserStack.Automate
         {
             string relativeUri = string.Format(CultureInfo.InvariantCulture, "projects/{0}.json", projectId);
 
-            using (var request = CreateRequest(HttpMethod.Delete, relativeUri))
-            {
-                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
-                {
-                    await EnsureSuccessAsync(response).ConfigureAwait(false);
-                }
-            }
+            using var request = CreateRequest(HttpMethod.Delete, relativeUri);
+            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessAsync(response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -223,13 +214,10 @@ namespace MartinCostello.BrowserStack.Automate
                 "sessions/{0}.json",
                 Uri.EscapeDataString(sessionId));
 
-            using (var request = CreateRequest(HttpMethod.Delete, relativeUri))
-            {
-                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
-                {
-                    await EnsureSuccessAsync(response).ConfigureAwait(false);
-                }
-            }
+            using var request = CreateRequest(HttpMethod.Delete, relativeUri);
+            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessAsync(response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -265,13 +253,10 @@ namespace MartinCostello.BrowserStack.Automate
 
             string relativeUri = string.Format(CultureInfo.InvariantCulture, "session?{0}", query);
 
-            using (var request = CreateRequest(HttpMethod.Delete, relativeUri))
-            {
-                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
-                {
-                    await EnsureSuccessAsync(response).ConfigureAwait(false);
-                }
-            }
+            using var request = CreateRequest(HttpMethod.Delete, relativeUri);
+            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessAsync(response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -283,14 +268,11 @@ namespace MartinCostello.BrowserStack.Automate
         /// </returns>
         public virtual async Task<ICollection<Browser>> GetBrowsersAsync(CancellationToken cancellationToken = default)
         {
-            using (var request = CreateRequest(HttpMethod.Get, "browsers.json"))
-            {
-                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
-                {
-                    await EnsureSuccessAsync(response).ConfigureAwait(false);
-                    return await DeserializeAsync<List<Browser>>(response).ConfigureAwait(false);
-                }
-            }
+            using var request = CreateRequest(HttpMethod.Get, "browsers.json");
+            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessAsync(response).ConfigureAwait(false);
+            return await DeserializeAsync<List<Browser>>(response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -324,18 +306,16 @@ namespace MartinCostello.BrowserStack.Automate
                 "builds.json{0}",
                 BuildQuery(limit, offset, status));
 
-            using (var request = CreateRequest(HttpMethod.Get, relativeUri))
-            {
-                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
-                {
-                    await EnsureSuccessAsync(response).ConfigureAwait(false);
-                    var builds = await DeserializeAsync<List<AutomationBuild>>(response).ConfigureAwait(false);
+            using var request = CreateRequest(HttpMethod.Get, relativeUri);
+            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-                    return builds
-                        .Select((p) => p.Build)
-                        .ToList();
-                }
-            }
+            await EnsureSuccessAsync(response).ConfigureAwait(false);
+
+            var builds = await DeserializeAsync<List<AutomationBuild>>(response).ConfigureAwait(false);
+
+            return builds
+                .Select((p) => p.Build)
+                .ToList();
         }
 
         /// <summary>
@@ -350,14 +330,11 @@ namespace MartinCostello.BrowserStack.Automate
         {
             string relativeUri = string.Format(CultureInfo.InvariantCulture, "projects/{0}.json", projectId);
 
-            using (var request = CreateRequest(HttpMethod.Get, relativeUri))
-            {
-                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
-                {
-                    await EnsureSuccessAsync(response).ConfigureAwait(false);
-                    return await DeserializeAsync<ProjectDetailItem>(response).ConfigureAwait(false);
-                }
-            }
+            using var request = CreateRequest(HttpMethod.Get, relativeUri);
+            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessAsync(response).ConfigureAwait(false);
+            return await DeserializeAsync<ProjectDetailItem>(response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -369,14 +346,11 @@ namespace MartinCostello.BrowserStack.Automate
         /// </returns>
         public virtual async Task<ICollection<Project>> GetProjectsAsync(CancellationToken cancellationToken = default)
         {
-            using (var request = CreateRequest(HttpMethod.Get, "projects.json"))
-            {
-                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
-                {
-                    await EnsureSuccessAsync(response).ConfigureAwait(false);
-                    return await DeserializeAsync<List<Project>>(response).ConfigureAwait(false);
-                }
-            }
+            using var request = CreateRequest(HttpMethod.Get, "projects.json");
+            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessAsync(response).ConfigureAwait(false);
+            return await DeserializeAsync<List<Project>>(response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -402,16 +376,13 @@ namespace MartinCostello.BrowserStack.Automate
                 "sessions/{0}.json",
                 Uri.EscapeDataString(sessionId));
 
-            using (var request = CreateRequest(HttpMethod.Get, relativeUri))
-            {
-                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
-                {
-                    await EnsureSuccessAsync(response).ConfigureAwait(false);
-                    var result = await DeserializeAsync<AutomationSessionDetail>(response).ConfigureAwait(false);
+            using var request = CreateRequest(HttpMethod.Get, relativeUri);
+            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-                    return result?.SessionDetail;
-                }
-            }
+            await EnsureSuccessAsync(response).ConfigureAwait(false);
+            var result = await DeserializeAsync<AutomationSessionDetail>(response).ConfigureAwait(false);
+
+            return result?.SessionDetail;
         }
 
         /// <summary>
@@ -524,18 +495,15 @@ namespace MartinCostello.BrowserStack.Automate
                 Uri.EscapeDataString(buildId),
                 BuildQuery(limit, offset, status));
 
-            using (var request = CreateRequest(HttpMethod.Get, relativeUri))
-            {
-                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
-                {
-                    await EnsureSuccessAsync(response).ConfigureAwait(false);
-                    var sessions = await DeserializeAsync<List<AutomationSession>>(response).ConfigureAwait(false);
+            using var request = CreateRequest(HttpMethod.Get, relativeUri);
+            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-                    return sessions
-                        .Select((p) => p.Session)
-                        .ToList();
-                }
-            }
+            await EnsureSuccessAsync(response).ConfigureAwait(false);
+            var sessions = await DeserializeAsync<List<AutomationSession>>(response).ConfigureAwait(false);
+
+            return sessions
+                .Select((p) => p.Session)
+                .ToList();
         }
 
         /// <summary>
@@ -547,14 +515,11 @@ namespace MartinCostello.BrowserStack.Automate
         /// </returns>
         public virtual async Task<AutomatePlanStatus> GetStatusAsync(CancellationToken cancellationToken = default)
         {
-            using (var request = CreateRequest(HttpMethod.Get, "plan.json"))
-            {
-                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
-                {
-                    await EnsureSuccessAsync(response).ConfigureAwait(false);
-                    return await DeserializeAsync<AutomatePlanStatus>(response).ConfigureAwait(false);
-                }
-            }
+            using var request = CreateRequest(HttpMethod.Get, "plan.json");
+            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessAsync(response).ConfigureAwait(false);
+            return await DeserializeAsync<AutomatePlanStatus>(response).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -572,22 +537,19 @@ namespace MartinCostello.BrowserStack.Automate
             var value = new { };
             var json = SerializeAsJson(value);
 
-            using (var request = CreateRequest(HttpMethod.Put, "recycle_key.json", json))
+            using var request = CreateRequest(HttpMethod.Put, "recycle_key.json", json);
+            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessAsync(response).ConfigureAwait(false);
+
+            var result = await DeserializeAsync<RecycleAccessKeyResult>(response).ConfigureAwait(false);
+
+            if (result != null)
             {
-                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
-                {
-                    await EnsureSuccessAsync(response).ConfigureAwait(false);
-
-                    var result = await DeserializeAsync<RecycleAccessKeyResult>(response).ConfigureAwait(false);
-
-                    if (result != null)
-                    {
-                        SetAuthorization(UserName, result.NewKey);
-                    }
-
-                    return result;
-                }
+                SetAuthorization(UserName, result.NewKey);
             }
+
+            return result;
         }
 
         /// <summary>
@@ -713,16 +675,13 @@ namespace MartinCostello.BrowserStack.Automate
 
             var json = SerializeAsJson(value);
 
-            using (var request = CreateRequest(HttpMethod.Put, relativeUri, json))
-            {
-                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
-                {
-                    await EnsureSuccessAsync(response).ConfigureAwait(false);
-                    var session = await DeserializeAsync<AutomationSession>(response).ConfigureAwait(false);
+            using var request = CreateRequest(HttpMethod.Put, relativeUri, json);
+            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-                    return session?.Session;
-                }
-            }
+            await EnsureSuccessAsync(response).ConfigureAwait(false);
+            var session = await DeserializeAsync<AutomationSession>(response).ConfigureAwait(false);
+
+            return session?.Session;
         }
 
         /// <summary>
@@ -912,20 +871,17 @@ namespace MartinCostello.BrowserStack.Automate
                 Uri.EscapeDataString(sessionId),
                 Uri.EscapeDataString(logType));
 
-            using (var request = CreateRequest(HttpMethod.Get, relativeUri))
-            {
-                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
-                {
-                    if (response.StatusCode == HttpStatusCode.NotFound)
-                    {
-                        // Returns an HTML error page, so just return empty if there are no logs
-                        return string.Empty;
-                    }
+            using var request = CreateRequest(HttpMethod.Get, relativeUri);
+            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-                    response.EnsureSuccessStatusCode();
-                    return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                }
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                // Returns an HTML error page, so just return empty if there are no logs
+                return string.Empty;
             }
+
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -945,14 +901,11 @@ namespace MartinCostello.BrowserStack.Automate
         {
             var json = SerializeAsJson(new { name });
 
-            using (var request = CreateRequest(HttpMethod.Put, relativeUri, json))
-            {
-                using (var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false))
-                {
-                    await EnsureSuccessAsync(response).ConfigureAwait(false);
-                    return await DeserializeAsync<T>(response).ConfigureAwait(false);
-                }
-            }
+            using var request = CreateRequest(HttpMethod.Put, relativeUri, json);
+            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessAsync(response).ConfigureAwait(false);
+            return await DeserializeAsync<T>(response).ConfigureAwait(false);
         }
 
         /// <summary>
