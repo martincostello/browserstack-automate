@@ -10,7 +10,7 @@
     <PackageVersion Include="Moq" Version="4.16.1" />
     <PackageVersion Include="Newtonsoft.Json" Version="9.0.1" Condition=" '$(IsTestProject)' != 'true' " />
     <PackageVersion Include="Newtonsoft.Json" Version="12.0.3" Condition=" '$(IsTestProject)' == 'true' " />
-    <PackageVersion Include="Polly" Version="7.2.2" />
+    <PackageVersion Include="Polly" Version="7.2.3" />
     <PackageVersion Include="ReportGenerator" Version="5.0.2" />
     <PackageVersion Include="Shouldly" Version="4.0.3" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.1.118" />
