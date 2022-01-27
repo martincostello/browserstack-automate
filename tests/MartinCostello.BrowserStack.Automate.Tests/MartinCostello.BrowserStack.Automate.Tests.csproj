@@ -14,6 +14,7 @@
     <ProjectReference Include="..\..\src\MartinCostello.BrowserStack.Automate\MartinCostello.BrowserStack.Automate.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="GitHubActionsTestLogger" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.Http" />
     <PackageReference Include="Microsoft.Extensions.Http.Polly" />
