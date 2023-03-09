@@ -9,7 +9,7 @@
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
     <PackageVersion Include="Moq" Version="4.18.4" />
-    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" Condition=" '$(IsTestProject)' != 'true' " />
+    <PackageVersion Include="Newtonsoft.Json" Version="9.0.1" Condition=" '$(IsTestProject)' != 'true' " />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" Condition=" '$(IsTestProject)' == 'true' " />
     <PackageVersion Include="Polly" Version="7.2.3" />
     <PackageVersion Include="ReportGenerator" Version="5.1.18" />
