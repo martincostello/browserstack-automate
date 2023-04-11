@@ -12,21 +12,21 @@ This repository contains a .NET client library/NuGet package for the [BrowserSta
 
 Features include:
 
- * Querying the status of a BrowserStack Automate plan.
- * Querying the available browsers.
- * Querying and deleting builds.
- * Querying and deleting projects.
- * Querying and deleting sessions.
- * Querying session log.
- * Setting the status of a session.
- * Regenerating the API access key.
+- Querying the status of a BrowserStack Automate plan.
+- Querying the available browsers.
+- Querying and deleting builds.
+- Querying and deleting projects.
+- Querying and deleting sessions.
+- Querying session log.
+- Setting the status of a session.
+- Regenerating the API access key.
 
-The assembly supports .NET Core (via .NET Standard 1.3 and .NET Standard 2.0) and .NET Framework 4.5.1.
+The assembly supports .NET Standard 2.0.
 
 ## Installation
 
-```batchfile
-Install-Package MartinCostello.BrowserStack.Automate
+```powershell
+dotnet add package MartinCostello.BrowserStack.Automate
 ```
 
 ## Usage Examples
@@ -34,29 +34,28 @@ Install-Package MartinCostello.BrowserStack.Automate
 The following example shows a custom [xUnit.net](https://xunit.github.io/) ```[Trait]``` that checks for an available BrowserStack Automate session before running the test, otherwise it is skipped.
 
 ```csharp
-namespace MyApp.Tests
+namespace MyApp.Tests;
+
+using System;
+using System.Configuration;
+using MartinCostello.BrowserStack.Automate;
+using Xunit;
+
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+public sealed class RequiresBrowserStackAutomateAttribute : FactAttribute
 {
-    using System;
-    using System.Configuration;
-    using MartinCostello.BrowserStack.Automate;
-    using Xunit;
-
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public sealed class RequiresBrowserStackAutomateAttribute : FactAttribute
+    public RequiresBrowserStackAutomateAttribute()
     {
-        public RequiresBrowserStackAutomateAttribute()
+        string userName = Environment.GetEnvironmentVariable("BrowserStack_UserName");
+        string accessKey = Environment.GetEnvironmentVariable("BrowserStack_AccessKey");
+
+        var client = new BrowserStackAutomateClient(userName, accessKey);
+        var plan = client.GetStatusAsync().Result;
+
+        if (plan.MaximumAllowedParallelSessions < 1 ||
+            plan.ParallelSessionsRunning == plan.MaximumAllowedParallelSessions)
         {
-            string userName = Environment.GetEnvironmentVariable("BrowserStack_UserName");
-            string accessKey = Environment.GetEnvironmentVariable("BrowserStack_AccessKey");
-
-            var client = new BrowserStackAutomateClient(userName, accessKey);
-            var plan = client.GetStatusAsync().Result;
-
-            if (plan.MaximumAllowedParallelSessions < 1 ||
-                plan.ParallelSessionsRunning == plan.MaximumAllowedParallelSessions)
-            {
-                Skip = "No BrowserStack Automate sessions are currently available.";
-            }
+            Skip = "No BrowserStack Automate sessions are currently available.";
         }
     }
 }
