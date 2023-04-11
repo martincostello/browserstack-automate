@@ -35,7 +35,7 @@ jobs:
         user-name: ${{ vars.GIT_COMMIT_USER_NAME }}
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@607fce577a46308457984d59e4954e075820f10a # v3.0.3
       if : ${{ steps.update-dotnet-sdk.outputs.sdk-updated == 'true' }}
 
     - name: Update NuGet packages
