@@ -5,6 +5,8 @@
 ## Build Status
 
 [![Build status](https://github.com/martincostello/browserstack-automate/workflows/build/badge.svg?branch=main&event=push)](https://github.com/martincostello/browserstack-automate/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush)
+[![codecov](https://codecov.io/gh/martincostello/browserstack-automate/branch/main/graph/badge.svg)](https://codecov.io/gh/martincostello/browserstack-automate)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/martincostello/browserstack-automate/badge)](https://api.securityscorecards.dev/projects/github.com/martincostello/browserstack-automate)
 
 ## Overview
 
