@@ -81,20 +81,6 @@ if ($installDotNetSdk -eq $true) {
     $env:PATH = "$env:DOTNET_INSTALL_DIR;$env:PATH"
 }
 
-function DotNetBuild {
-    param([string]$Project)
-
-    if ($VersionSuffix) {
-        & $dotnet build $Project --configuration $Configuration --version-suffix "$VersionSuffix"
-    }
-    else {
-        & $dotnet build $Project --configuration $Configuration
-    }
-    if ($LASTEXITCODE -ne 0) {
-        throw "dotnet build failed with exit code $LASTEXITCODE"
-    }
-}
-
 function DotNetPack {
     param([string]$Project)
 
