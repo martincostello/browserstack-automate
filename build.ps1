@@ -1,7 +1,6 @@
 #! /usr/bin/env pwsh
 param(
     [Parameter(Mandatory = $false)][string] $Configuration = "Release",
-    [Parameter(Mandatory = $false)][string] $VersionSuffix = "",
     [Parameter(Mandatory = $false)][string] $OutputPath = "",
     [Parameter(Mandatory = $false)][switch] $SkipTests
 )
@@ -14,7 +13,6 @@ $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 
 $solutionPath = $PSScriptRoot
-$solutionFile = Join-Path $solutionPath "MartinCostello.BrowserStack.Automate.sln"
 $sdkFile = Join-Path $solutionPath "global.json"
 
 $libraryProject = Join-Path $solutionPath "src\MartinCostello.BrowserStack.Automate\MartinCostello.BrowserStack.Automate.csproj"
@@ -100,12 +98,8 @@ function DotNetBuild {
 function DotNetPack {
     param([string]$Project)
 
-    if ($VersionSuffix) {
-        & $dotnet pack $Project --output (Join-Path $OutputPath "packages") --configuration $Configuration --version-suffix "$VersionSuffix" --include-symbols --include-source
-    }
-    else {
-        & $dotnet pack $Project --output (Join-Path $OutputPath "packages") --configuration $Configuration --include-symbols --include-source
-    }
+    & $dotnet pack $Project --output (Join-Path $OutputPath "packages") --configuration $Configuration --include-symbols --include-source
+
     if ($LASTEXITCODE -ne 0) {
         throw "dotnet pack failed with exit code $LASTEXITCODE"
     }
@@ -128,9 +122,6 @@ function DotNetTest {
     }
 }
 
-Write-Host "Building solution..." -ForegroundColor Green
-DotNetBuild $solutionFile
-
 Write-Host "Packaging library..." -ForegroundColor Green
 DotNetPack $libraryProject
 
@@ -138,4 +129,3 @@ Write-Host "Running tests..." -ForegroundColor Green
 ForEach ($testProject in $testProjects) {
     DotNetTest $testProject
 }
-
