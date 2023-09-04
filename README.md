@@ -1,6 +1,6 @@
 # ![Alt text](browserstack-logo.png) BrowserStack Automate REST API .NET Client
 
-[![NuGet](https://buildstats.info/nuget/MartinCostello.BrowserStack.Automate)](http://www.nuget.org/packages/MartinCostello.BrowserStack.Automate)
+[![NuGet](https://buildstats.info/nuget/MartinCostello.BrowserStack.Automate)](https://www.nuget.org/packages/MartinCostello.BrowserStack.Automate)
 
 ## Build Status
 
