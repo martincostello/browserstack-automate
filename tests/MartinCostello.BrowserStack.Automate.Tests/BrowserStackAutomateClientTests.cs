@@ -842,6 +842,6 @@ namespace MartinCostello.BrowserStack.Automate
         /// <returns>
         /// The instance of <see cref="BrowserStackAutomateClient"/>.
         /// </returns>
-        private static BrowserStackAutomateClient CreateClient() => new ("x", "x");
+        private static BrowserStackAutomateClient CreateClient() => new("x", "x");
     }
 }
