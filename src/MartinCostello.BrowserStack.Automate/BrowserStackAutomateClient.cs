@@ -679,12 +679,12 @@ namespace MartinCostello.BrowserStack.Automate
         }
 
         /// <summary>
-        /// Deserializes the content of the specified <see cref="HttpResponseMessage"/> as an asychronous operation.
+        /// Deserializes the content of the specified <see cref="HttpResponseMessage"/> as an asynchronous operation.
         /// </summary>
         /// <typeparam name="T">The type to deserialize the content as.</typeparam>
         /// <param name="response">The HTTP response to deserialize.</param>
         /// <returns>
-        /// A <see cref="Task{TResult}"/> representing the asychronous operation to deserialize the response.
+        /// A <see cref="Task{TResult}"/> representing the asynchronous operation to deserialize the response.
         /// </returns>
         protected virtual async Task<T> DeserializeAsync<T>(HttpResponseMessage response)
         {
