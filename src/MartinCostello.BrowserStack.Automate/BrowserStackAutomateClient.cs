@@ -65,7 +65,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <summary>
         /// Gets the base URI of the BrowserStack Automate REST API.
         /// </summary>
-        public static Uri ApiBaseAddress => new ("https://api.browserstack.com/automate/", UriKind.Absolute);
+        public static Uri ApiBaseAddress => new("https://api.browserstack.com/automate/", UriKind.Absolute);
 
         /// <summary>
         /// Gets the user name in use.
