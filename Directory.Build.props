@@ -8,6 +8,7 @@
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)MartinCostello.BrowserStack.Automate.snk</AssemblyOriginatorKeyFile>
     <Authors>martin_costello</Authors>
+    <ChecksumAlgorithm>SHA256</ChecksumAlgorithm>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)MartinCostello.BrowserStack.Automate.ruleset</CodeAnalysisRuleSet>
     <Company>https://github.com/martincostello/browserstack-automate</Company>
     <ContinuousIntegrationBuild Condition=" '$(CI)' != '' ">true</ContinuousIntegrationBuild>
