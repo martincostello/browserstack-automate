@@ -10,4 +10,11 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" />
   </ItemGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.CLSCompliant">
+      <_Parameter1>true</_Parameter1>
+      <_Parameter1_IsLiteral>true</_Parameter1_IsLiteral>
+    </AssemblyAttribute>
+    <InternalsVisibleTo Include="MartinCostello.BrowserStack.Automate.Tests" PublicKey="$(StrongNamePublicKey)" />
+  </ItemGroup>
 </Project>
