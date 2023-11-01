@@ -10,7 +10,7 @@
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.1" Condition=" '$(IsTestProject)' != 'true' " />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" Condition=" '$(IsTestProject)' == 'true' " />
-    <PackageVersion Include="Polly" Version="8.0.0" />
+    <PackageVersion Include="Polly" Version="8.1.0" />
     <PackageVersion Include="ReportGenerator" Version="5.1.26" />
     <PackageVersion Include="Shouldly" Version="4.2.1" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.507" />
