@@ -3,7 +3,7 @@
 
 using System.Net;
 using Microsoft.Extensions.DependencyInjection;
-using Polly;
+using Microsoft.Extensions.Http.Resilience;
 using Polly.CircuitBreaker;
 using Shouldly;
 using Xunit;
@@ -755,20 +755,15 @@ namespace MartinCostello.BrowserStack.Automate
             // Arrange
             var services = new ServiceCollection();
 
-            // Create a Polly policy that is a pre-isolated circuit breaker that is guaranteed to fail
-            var policy = Policy.Handle<Exception>().CircuitBreakerAsync(1, TimeSpan.MaxValue);
-            policy.Isolate();
-
-            services
-                .AddPolicyRegistry()
-                .Add(policy.PolicyKey, policy.AsAsyncPolicy<HttpResponseMessage>());
+            // Create a pre-isolated circuit breaker that is guaranteed to fail
+            var manualControl = new CircuitBreakerManualControl(isIsolated: true);
 
             services
                 .AddSingleton<BrowserStackAutomateClient>()
                 .AddHttpClient("BrowserStack Automate")
                 .AddTypedClient((httpClient) => new BrowserStackAutomateClient("a", "b", httpClient))
                 .ConfigureHttpClient((httpClient) => httpClient.Timeout = TimeSpan.FromSeconds(10))
-                .AddPolicyHandlerFromRegistry(policy.PolicyKey);
+                .AddStandardResilienceHandler((options) => options.CircuitBreakerOptions.ManualControl = manualControl);
 
             using var provider = services.BuildServiceProvider();
             var client = provider.GetRequiredService<BrowserStackAutomateClient>();
