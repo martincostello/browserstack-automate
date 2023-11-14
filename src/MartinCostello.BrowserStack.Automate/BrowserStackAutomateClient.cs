@@ -1,16 +1,10 @@
 ﻿// Copyright (c) Martin Costello, 2015. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace MartinCostello.BrowserStack.Automate
@@ -685,12 +679,12 @@ namespace MartinCostello.BrowserStack.Automate
         }
 
         /// <summary>
-        /// Deserializes the content of the specified <see cref="HttpResponseMessage"/> as an asychronous operation.
+        /// Deserializes the content of the specified <see cref="HttpResponseMessage"/> as an asynchronous operation.
         /// </summary>
         /// <typeparam name="T">The type to deserialize the content as.</typeparam>
         /// <param name="response">The HTTP response to deserialize.</param>
         /// <returns>
-        /// A <see cref="Task{TResult}"/> representing the asychronous operation to deserialize the response.
+        /// A <see cref="Task{TResult}"/> representing the asynchronous operation to deserialize the response.
         /// </returns>
         protected virtual async Task<T> DeserializeAsync<T>(HttpResponseMessage response)
         {
