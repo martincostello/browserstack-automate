@@ -763,7 +763,7 @@ namespace MartinCostello.BrowserStack.Automate
                 .AddHttpClient("BrowserStack Automate")
                 .AddTypedClient((httpClient) => new BrowserStackAutomateClient("a", "b", httpClient))
                 .ConfigureHttpClient((httpClient) => httpClient.Timeout = TimeSpan.FromSeconds(10))
-                .AddStandardResilienceHandler((options) => options.CircuitBreakerOptions.ManualControl = manualControl);
+                .AddStandardResilienceHandler((options) => options.CircuitBreaker.ManualControl = manualControl);
 
             using var provider = services.BuildServiceProvider();
             var client = provider.GetRequiredService<BrowserStackAutomateClient>();
