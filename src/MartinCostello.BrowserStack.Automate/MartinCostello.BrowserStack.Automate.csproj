@@ -8,7 +8,7 @@
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Newtonsoft.Json" VersionOverride="13.0.1" />
   </ItemGroup>
   <ItemGroup>
     <AssemblyAttribute Include="System.CLSCompliant">
