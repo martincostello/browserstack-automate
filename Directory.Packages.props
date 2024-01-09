@@ -3,7 +3,7 @@
     <PackageVersion Include="coverlet.msbuild" Version="6.0.0" />
     <PackageVersion Include="GitHubActionsTestLogger" Version="2.3.3" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="8.1.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="ReportGenerator" Version="5.2.0" />
