@@ -12,7 +12,6 @@ namespace MartinCostello.BrowserStack.Automate;
 [JsonSerializable(typeof(AutomatePlanStatus))]
 [JsonSerializable(typeof(AutomationSession))]
 [JsonSerializable(typeof(AutomationSessionDetail))]
-[JsonSerializable(typeof(BrowserStackAutomateError))]
 [JsonSerializable(typeof(EmptyRequest))]
 [JsonSerializable(typeof(List<AutomationBuild>))]
 [JsonSerializable(typeof(List<AutomationSession>))]

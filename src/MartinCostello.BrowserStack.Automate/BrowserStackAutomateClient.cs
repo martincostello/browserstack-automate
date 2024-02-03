@@ -773,11 +773,37 @@ public class BrowserStackAutomateClient : IDisposable
         {
             try
             {
-                var error = await response.Content.ReadFromJsonAsync(
-                    AppJsonSerializerContext.Default.BrowserStackAutomateError,
-                    cancellationToken).ConfigureAwait(false);
+#if NET8_0_OR_GREATER
+                using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+#else
+                using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+#endif
 
-                throw new BrowserStackAutomateException(error);
+                var error = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken).ConfigureAwait(false);
+
+                BrowserStackAutomateError? errorDetail = null;
+
+                if (error.RootElement.TryGetProperty("message", out var message) &&
+                    message.ValueKind is JsonValueKind.String)
+                {
+                    errorDetail = new BrowserStackAutomateError()
+                    {
+                        Message = message.GetString() ?? string.Empty,
+                    };
+
+                    if (error.RootElement.TryGetProperty("status", out var status))
+                    {
+                        // The type of the status property is not consistent
+                        errorDetail.Status = status.ValueKind switch
+                        {
+                            JsonValueKind.Number => status.GetInt32().ToString(CultureInfo.InvariantCulture),
+                            JsonValueKind.String => status.GetString() ?? string.Empty,
+                            _ => string.Empty,
+                        };
+                    }
+                }
+
+                throw new BrowserStackAutomateException(errorDetail);
             }
             catch (JsonException)
             {
