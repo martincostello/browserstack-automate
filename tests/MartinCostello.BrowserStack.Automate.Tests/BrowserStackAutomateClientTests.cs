@@ -2,19 +2,22 @@
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
 using System.Net;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Polly.CircuitBreaker;
 using Shouldly;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace MartinCostello.BrowserStack.Automate;
 
 /// <summary>
 /// A class containing tests for the <see cref="BrowserStackAutomateClient"/> class.
 /// </summary>
-public static class BrowserStackAutomateClientTests
+public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
 {
-    [RequiresServiceCredentialsFact]
+    [SkippableFact]
     public static async Task Can_Query_BrowserStack_Automate_Api()
     {
         // Arrange
@@ -289,6 +292,20 @@ public static class BrowserStackAutomateClientTests
     }
 
     [Fact]
+    public static void Constructor_Sets_UserName()
+    {
+        // Arrange
+        var userName = "MyUserName";
+        var accessToken = "MyAccessKey";
+
+        // Act
+        using var client = new BrowserStackAutomateClient(userName, accessToken);
+
+        // Assert
+        client.UserName.ShouldBe(userName);
+    }
+
+    [Fact]
     public static void FromCredential_Throws_If_Credential_Is_Null()
     {
         // Arrange
@@ -334,7 +351,7 @@ public static class BrowserStackAutomateClientTests
         await Assert.ThrowsAsync<ArgumentException>("buildIds", () => target.DeleteBuildsAsync(buildIds));
     }
 
-    [RequiresServiceCredentialsFact]
+    [SkippableFact]
     public static async Task DeleteBuildAsync_Throws_If_BuildId_Is_Not_Found()
     {
         // Arrange
@@ -347,7 +364,7 @@ public static class BrowserStackAutomateClientTests
         error.ErrorDetail.ShouldNotBeNull();
     }
 
-    [RequiresServiceCredentialsFact]
+    [SkippableFact]
     public static async Task DeleteProjectAsync_Throws_If_ProjectId_Is_Not_Found()
     {
         // Arrange
@@ -396,7 +413,7 @@ public static class BrowserStackAutomateClientTests
         await Assert.ThrowsAsync<ArgumentException>("sessionIds", () => target.DeleteSessionsAsync(sessionIds));
     }
 
-    [RequiresServiceCredentialsFact]
+    [SkippableFact]
     public static async Task DeleteSessionAsync_Throws_If_SessionId_Is_Not_Found()
     {
         // Arrange
@@ -421,7 +438,7 @@ public static class BrowserStackAutomateClientTests
         await Assert.ThrowsAsync<ArgumentException>("sessionId", () => target.GetSessionAsync(sessionId));
     }
 
-    [RequiresServiceCredentialsFact]
+    [SkippableFact]
     public static async Task GetSessionAsync_Throws_If_SessionId_Is_Not_Found()
     {
         // Arrange
@@ -760,10 +777,11 @@ public static class BrowserStackAutomateClientTests
     }
 
     [Fact]
-    public static async Task Can_Configure_With_HttpClient_Factory()
+    public async Task Can_Configure_With_HttpClient_Factory()
     {
         // Arrange
-        var services = new ServiceCollection();
+        var services = new ServiceCollection()
+            .AddLogging((p) => p.AddXUnit(outputHelper));
 
         // Create a pre-isolated circuit breaker that is guaranteed to fail
         var manualControl = new CircuitBreakerManualControl(isIsolated: true);
@@ -830,8 +848,13 @@ public static class BrowserStackAutomateClientTests
     /// </returns>
     private static BrowserStackAutomateClient CreateAuthenticatedClient()
     {
-        string? userName = Environment.GetEnvironmentVariable("BrowserStack_UserName");
-        string? accessKey = Environment.GetEnvironmentVariable("BrowserStack_AccessKey");
+        var configuration = new ConfigurationBuilder()
+            .AddEnvironmentVariables()
+            .AddUserSecrets<BrowserStackAutomateClientTests>()
+            .Build();
+
+        string? userName = configuration["BrowserStack_UserName"];
+        string? accessKey = configuration["BrowserStack_AccessKey"];
 
         Skip.If(string.IsNullOrEmpty(userName), "The BrowserStack_UserName environment variable is not set.");
         Skip.If(string.IsNullOrEmpty(accessKey), "The BrowserStack_AccessKey environment variable is not set.");

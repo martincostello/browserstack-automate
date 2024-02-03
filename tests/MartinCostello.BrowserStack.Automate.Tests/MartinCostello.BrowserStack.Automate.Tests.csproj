@@ -6,6 +6,7 @@
     <NoWarn>$(NoWarn);CA1707;CA2007;SA1600;RS0016;RS0037</NoWarn>
     <RootNamespace>MartinCostello.BrowserStack.Automate</RootNamespace>
     <TargetFramework>net8.0</TargetFramework>
+    <UserSecretsId>MartinCostello.BrowserStack.Automate</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="xunit.runner.json" CopyToPublishDirectory="PreserveNewest" />
@@ -16,6 +17,9 @@
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" />
     <PackageReference Include="GitHubActionsTestLogger" />
+    <PackageReference Include="MartinCostello.Logging.XUnit" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
