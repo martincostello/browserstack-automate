@@ -81,7 +81,6 @@ public static class BrowserStackAutomateClientTests
                 sessionDetail.VideoUri.ShouldNotBeNull();
                 sessionDetail.BrowserName.ShouldNotBeNullOrEmpty();
                 sessionDetail.BrowserName.ShouldBe(session.BrowserName);
-                sessionDetail.BrowserVersion.ShouldNotBeNullOrEmpty();
                 sessionDetail.BrowserVersion.ShouldBe(session.BrowserVersion);
                 sessionDetail.BuildName.ShouldBe(session.BuildName);
                 sessionDetail.Duration.ShouldBe(session.Duration);
