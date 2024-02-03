@@ -51,7 +51,7 @@ public sealed class RequiresBrowserStackAutomateAttribute : FactAttribute
 
         if (userName is not null && accessKey is not null)
         {
-            var client = new BrowserStackAutomateClient(userName, accessKey);
+            using var client = new BrowserStackAutomateClient(userName, accessKey);
             var plan = client.GetStatusAsync().Result;
 
             if (plan.MaximumAllowedParallelSessions < 1 ||
