@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json.Serialization.Metadata;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace MartinCostello.BrowserStack.Automate;
 
@@ -159,9 +160,7 @@ public class BrowserStackAutomateClient : IDisposable
             throw new ArgumentException("No build Id specified.", nameof(buildId));
         }
 
-        string relativeUri = string.Format(CultureInfo.InvariantCulture, "builds/{0}.json", Uri.EscapeDataString(buildId));
-
-        await DeleteAsync(relativeUri, cancellationToken).ConfigureAwait(false);
+        await DeleteAsync($"builds/{Escape(buildId)}.json", cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -197,9 +196,12 @@ public class BrowserStackAutomateClient : IDisposable
             throw new ArgumentException("No build Ids specified.", nameof(buildIds));
         }
 
-        string query = string.Join("&", buildIds.Select((p) => $"buildId={Uri.EscapeDataString(p)}"));
+        string relativeUri = "builds";
 
-        string relativeUri = string.Format(CultureInfo.InvariantCulture, "builds?{0}", query);
+        foreach (string sessionId in buildIds)
+        {
+            relativeUri = QueryHelpers.AddQueryString(relativeUri, "buildId", sessionId);
+        }
 
         await DeleteAsync(relativeUri, cancellationToken).ConfigureAwait(false);
     }
@@ -216,11 +218,7 @@ public class BrowserStackAutomateClient : IDisposable
     /// The project could not be deleted.
     /// </exception>
     public virtual async Task DeleteProjectAsync(int projectId, CancellationToken cancellationToken = default)
-    {
-        string relativeUri = string.Format(CultureInfo.InvariantCulture, "projects/{0}.json", projectId);
-
-        await DeleteAsync(relativeUri, cancellationToken).ConfigureAwait(false);
-    }
+        => await DeleteAsync(FormattableString.Invariant($"projects/{projectId}.json"), cancellationToken).ConfigureAwait(false);
 
     /// <summary>
     /// Deletes the session with the specified Id as an asynchronous operation.
@@ -240,12 +238,7 @@ public class BrowserStackAutomateClient : IDisposable
             throw new ArgumentException("No session Id specified.", nameof(sessionId));
         }
 
-        string relativeUri = string.Format(
-            CultureInfo.InvariantCulture,
-            "sessions/{0}.json",
-            Uri.EscapeDataString(sessionId));
-
-        await DeleteAsync(relativeUri, cancellationToken).ConfigureAwait(false);
+        await DeleteAsync($"sessions/{Escape(sessionId)}.json", cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -281,9 +274,12 @@ public class BrowserStackAutomateClient : IDisposable
             throw new ArgumentException("No session Ids specified.", nameof(sessionIds));
         }
 
-        string query = string.Join("&", sessionIds.Select((p) => $"sessionId={Uri.EscapeDataString(p)}"));
+        string relativeUri = "session";
 
-        string relativeUri = string.Format(CultureInfo.InvariantCulture, "session?{0}", query);
+        foreach (string sessionId in sessionIds)
+        {
+            relativeUri = QueryHelpers.AddQueryString(relativeUri, "sessionId", sessionId);
+        }
 
         await DeleteAsync(relativeUri, cancellationToken).ConfigureAwait(false);
     }
@@ -324,10 +320,7 @@ public class BrowserStackAutomateClient : IDisposable
         string? status,
         CancellationToken cancellationToken = default)
     {
-        string relativeUri = string.Format(
-            CultureInfo.InvariantCulture,
-            "builds.json{0}",
-            BuildQuery(limit, offset, status));
+        string relativeUri = AppendQuery("builds.json", limit, offset, status);
 
         var builds = await GetJsonAsync(
             relativeUri,
@@ -349,10 +342,8 @@ public class BrowserStackAutomateClient : IDisposable
     /// </returns>
     public virtual async Task<ProjectDetailItem> GetProjectAsync(int projectId, CancellationToken cancellationToken = default)
     {
-        string relativeUri = string.Format(CultureInfo.InvariantCulture, "projects/{0}.json", projectId);
-
         var item = await GetJsonAsync(
-            relativeUri,
+            FormattableString.Invariant($"projects/{projectId}.json"),
             AppJsonSerializerContext.Default.ProjectDetailItem,
             cancellationToken).ConfigureAwait(false);
 
@@ -387,13 +378,8 @@ public class BrowserStackAutomateClient : IDisposable
             throw new ArgumentException("No session Id specified.", nameof(sessionId));
         }
 
-        string relativeUri = string.Format(
-            CultureInfo.InvariantCulture,
-            "sessions/{0}.json",
-            Uri.EscapeDataString(sessionId));
-
         var result = await GetJsonAsync(
-            relativeUri,
+            $"sessions/{Escape(sessionId)}.json",
             AppJsonSerializerContext.Default.AutomationSessionDetail,
             cancellationToken).ConfigureAwait(false);
 
@@ -504,11 +490,7 @@ public class BrowserStackAutomateClient : IDisposable
             throw new ArgumentException("No build Id specified.", nameof(buildId));
         }
 
-        string relativeUri = string.Format(
-            CultureInfo.InvariantCulture,
-            "builds/{0}/sessions.json{1}",
-            Uri.EscapeDataString(buildId),
-            BuildQuery(limit, offset, status));
+        string relativeUri = AppendQuery($"builds/{Escape(buildId)}/sessions.json", limit, offset, status);
 
         var sessions = await GetJsonAsync(
             relativeUri,
@@ -579,9 +561,11 @@ public class BrowserStackAutomateClient : IDisposable
             throw new ArgumentException("No name specified.", nameof(name));
         }
 
-        string relativeUri = string.Format(CultureInfo.InvariantCulture, "builds/{0}.json", buildId);
-
-        return SetNameAsync(relativeUri, name, AppJsonSerializerContext.Default.Build, cancellationToken);
+        return SetNameAsync(
+            FormattableString.Invariant($"builds/{buildId}.json"),
+            name,
+            AppJsonSerializerContext.Default.Build,
+            cancellationToken);
     }
 
     /// <summary>
@@ -606,9 +590,11 @@ public class BrowserStackAutomateClient : IDisposable
             throw new ArgumentException("No name specified.", nameof(name));
         }
 
-        string relativeUri = string.Format(CultureInfo.InvariantCulture, "projects/{0}.json", projectId);
-
-        return SetNameAsync(relativeUri, name, AppJsonSerializerContext.Default.Project, cancellationToken);
+        return SetNameAsync(
+            FormattableString.Invariant($"projects/{projectId}.json"),
+            name,
+            AppJsonSerializerContext.Default.Project,
+            cancellationToken);
     }
 
     /// <summary>
@@ -633,9 +619,11 @@ public class BrowserStackAutomateClient : IDisposable
             throw new ArgumentException("No name specified.", nameof(name));
         }
 
-        string relativeUri = string.Format(CultureInfo.InvariantCulture, "sessions/{0}.json", sessionId);
-
-        return SetNameAsync(relativeUri, name, AppJsonSerializerContext.Default.Session, cancellationToken);
+        return SetNameAsync(
+            $"sessions/{Escape(sessionId)}.json",
+            name,
+            AppJsonSerializerContext.Default.Session,
+            cancellationToken);
     }
 
     /// <summary>
@@ -667,11 +655,6 @@ public class BrowserStackAutomateClient : IDisposable
             throw new ArgumentException("No status specified.", nameof(status));
         }
 
-        string relativeUri = string.Format(
-            CultureInfo.InvariantCulture,
-            "sessions/{0}.json",
-            Uri.EscapeDataString(sessionId));
-
         var request = new SetSessionStatusRequest()
         {
             Status = status,
@@ -679,7 +662,7 @@ public class BrowserStackAutomateClient : IDisposable
         };
 
         var session = await PutJsonAsync(
-            relativeUri,
+            $"sessions/{Escape(sessionId)}.json",
             request,
             AppJsonSerializerContext.Default.SetSessionStatusRequest,
             AppJsonSerializerContext.Default.AutomationSession,
@@ -709,17 +692,18 @@ public class BrowserStackAutomateClient : IDisposable
     }
 
     /// <summary>
-    /// Builds the query string parameters to use, if any, for the specified parameters.
+    /// Appends the query string parameters to use, if any, for the specified parameters.
     /// </summary>
+    /// <param name="relativeUri">The relative URI to append the query to.</param>
     /// <param name="limit">The limit to use, if any.</param>
     /// <param name="offset">The offset to use, if any.</param>
     /// <param name="status">The status to filter to, if any.</param>
     /// <returns>
     /// The query string to use, if any.
     /// </returns>
-    private static string BuildQuery(int? limit, int? offset, string? status)
+    private static string AppendQuery(string relativeUri, int? limit, int? offset, string? status)
     {
-        var builder = new StringBuilder();
+        var parameters = new Dictionary<string, string?>(3);
 
         if (limit.HasValue)
         {
@@ -728,7 +712,7 @@ public class BrowserStackAutomateClient : IDisposable
                 throw new ArgumentOutOfRangeException(nameof(limit), limit.Value, "The limit value cannot be less than one.");
             }
 
-            builder.AppendFormat(CultureInfo.InvariantCulture, "limit={0}", limit.Value);
+            parameters["limit"] = limit.Value.ToString(CultureInfo.InvariantCulture);
         }
 
         if (offset.HasValue)
@@ -738,26 +722,30 @@ public class BrowserStackAutomateClient : IDisposable
                 throw new ArgumentOutOfRangeException(nameof(offset), offset.Value, "The offset value cannot be less than zero.");
             }
 
-            builder.AppendFormat(CultureInfo.InvariantCulture, "offset={0}", offset.Value);
+            parameters["offset"] = offset.Value.ToString(CultureInfo.InvariantCulture);
         }
 
-        if (!string.IsNullOrEmpty(status))
+        if (status is { })
         {
-            if (builder.Length > 0)
-            {
-                builder.Append('&');
-            }
-
-            builder.AppendFormat(CultureInfo.InvariantCulture, "status={0}", Uri.EscapeDataString(status));
+            parameters["status"] = status;
         }
 
-        if (builder.Length > 0)
+        if (parameters.Count > 0)
         {
-            builder.Insert(0, "?");
+            relativeUri = QueryHelpers.AddQueryString(relativeUri, parameters);
         }
 
-        return builder.ToString();
+        return relativeUri;
     }
+
+    /// <summary>
+    /// Escapes the specified value for use in a URI.
+    /// </summary>
+    /// <param name="value">The value to escape.</param>
+    /// <returns>
+    /// The escaped value.
+    /// </returns>
+    private static string Escape(string value) => Uri.EscapeDataString(value);
 
     /// <summary>
     /// Sets the authorization header for the specified <see cref="HttpClient"/>.
@@ -829,14 +817,9 @@ public class BrowserStackAutomateClient : IDisposable
             throw new ArgumentException("No session Id specified.", nameof(sessionId));
         }
 
-        string relativeUri = string.Format(
-            CultureInfo.InvariantCulture,
-            "builds/{0}/sessions/{1}/{2}",
-            Uri.EscapeDataString(buildId),
-            Uri.EscapeDataString(sessionId),
-            Uri.EscapeDataString(logType));
-
-        using var response = await _client.GetAsync(relativeUri, cancellationToken).ConfigureAwait(false);
+        using var response = await _client.GetAsync(
+            $"builds/{Escape(buildId)}/sessions/{Escape(sessionId)}/{Escape(logType)}",
+            cancellationToken).ConfigureAwait(false);
 
         if (response.StatusCode is HttpStatusCode.NotFound)
         {
