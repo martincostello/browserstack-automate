@@ -7,6 +7,13 @@
     <OutputType>Library</OutputType>
     <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
   </PropertyGroup>
+  <!--
+  TODO Enable after version 4.0.0 is published.
+  <PropertyGroup>
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <PackageValidationBaselineVersion>3.0.3</PackageValidationBaselineVersion>
+  </PropertyGroup>
+  -->
   <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
     <EnableAotAnalyzer>true</EnableAotAnalyzer>
     <EnableSingleFileAnalyzer>true</EnableSingleFileAnalyzer>
