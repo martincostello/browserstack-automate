@@ -3,24 +3,23 @@
 
 using Xunit;
 
-namespace MartinCostello.BrowserStack.Automate
+namespace MartinCostello.BrowserStack.Automate;
+
+/// <summary>
+/// A test that requires service credentials to be configured as environment variables. This class cannot be inherited.
+/// </summary>
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+internal sealed class RequiresServiceCredentialsFactAttribute : FactAttribute
 {
     /// <summary>
-    /// A test that requires service credentials to be configured as environment variables. This class cannot be inherited.
+    /// Initializes a new instance of the <see cref="RequiresServiceCredentialsFactAttribute"/> class.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    internal sealed class RequiresServiceCredentialsFactAttribute : FactAttribute
+    public RequiresServiceCredentialsFactAttribute()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RequiresServiceCredentialsFactAttribute"/> class.
-        /// </summary>
-        public RequiresServiceCredentialsFactAttribute()
+        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("BrowserStack_UserName")) ||
+            string.IsNullOrEmpty(Environment.GetEnvironmentVariable("BrowserStack_AccessKey")))
         {
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("BrowserStack_UserName")) ||
-                string.IsNullOrEmpty(Environment.GetEnvironmentVariable("BrowserStack_AccessKey")))
-            {
-                Skip = "No BrowserStack service credentials are configured.";
-            }
+            Skip = "No BrowserStack service credentials are configured.";
         }
     }
 }
