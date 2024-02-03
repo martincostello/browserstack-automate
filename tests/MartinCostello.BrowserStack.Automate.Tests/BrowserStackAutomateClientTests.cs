@@ -67,7 +67,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
             sessions.ShouldNotContain((p) => p == null);
 
             // Limit the sessions for performance
-            foreach (var session in sessions.Take(1))
+            foreach (var session in sessions.Take(10))
             {
                 AssertSession(session, build.Name);
 
@@ -110,7 +110,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
             }
 
             // Arrange
-            limit = 5;
+            limit = 10;
             offset = 1;
             status = null;
 
@@ -144,7 +144,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
             }
 
             // Arrange
-            limit = 5;
+            limit = 10;
             status = SessionStatuses.Done;
 
             // Act
@@ -180,7 +180,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         }
 
         // Arrange
-        limit = 5;
+        limit = 10;
         offset = 1;
         status = null;
 
@@ -705,6 +705,24 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         var error = await Assert.ThrowsAsync<ArgumentOutOfRangeException>("offset", () => target.GetBuildsAsync(limit, offset, status));
 
         error.Message.ShouldStartWith("The offset value cannot be less than zero.");
+        error.ActualValue.ShouldBe(-1);
+    }
+
+    [Fact]
+    public static async Task GetBuildsAsync_Throws_If_ProjectId_Is_Less_Than_One()
+    {
+        // Arrange
+        using var target = CreateClient();
+
+        int? limit = 1;
+        int? offset = 1;
+        string? status = null;
+        int? projectId = -1;
+
+        // Act and Assert
+        var error = await Assert.ThrowsAsync<ArgumentOutOfRangeException>("projectId", () => target.GetBuildsAsync(limit, offset, status, projectId));
+
+        error.Message.ShouldStartWith("The projectId value cannot be less than one.");
         error.ActualValue.ShouldBe(-1);
     }
 
