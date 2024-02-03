@@ -44,4 +44,10 @@ public class Project
     /// </summary>
     [JsonPropertyName("group_id")]
     public int GroupId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the sub-group Id.
+    /// </summary>
+    [JsonPropertyName("sub_group_id")]
+    public int? SubGroupId { get; set; }
 }

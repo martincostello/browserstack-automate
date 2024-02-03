@@ -25,6 +25,8 @@ MartinCostello.BrowserStack.Automate.Browser.OSName.get -> string!
 MartinCostello.BrowserStack.Automate.Browser.OSName.set -> void
 MartinCostello.BrowserStack.Automate.Browser.OSVersion.get -> string!
 MartinCostello.BrowserStack.Automate.Browser.OSVersion.set -> void
+MartinCostello.BrowserStack.Automate.Browser.RealMobile.get -> bool?
+MartinCostello.BrowserStack.Automate.Browser.RealMobile.set -> void
 MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient
 MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.BrowserStackAutomateClient(string! userName, string! accessKey) -> void
 MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.BrowserStackAutomateClient(string! userName, string! accessKey, System.Net.Http.HttpClient! httpClient) -> void
@@ -47,12 +49,16 @@ MartinCostello.BrowserStack.Automate.BrowserStackAutomateException.BrowserStackA
 MartinCostello.BrowserStack.Automate.BrowserStackAutomateException.ErrorDetail.get -> MartinCostello.BrowserStack.Automate.BrowserStackAutomateError?
 MartinCostello.BrowserStack.Automate.Build
 MartinCostello.BrowserStack.Automate.Build.Build() -> void
+MartinCostello.BrowserStack.Automate.Build.BuildTag.get -> string?
+MartinCostello.BrowserStack.Automate.Build.BuildTag.set -> void
 MartinCostello.BrowserStack.Automate.Build.Duration.get -> int?
 MartinCostello.BrowserStack.Automate.Build.Duration.set -> void
 MartinCostello.BrowserStack.Automate.Build.HashedId.get -> string!
 MartinCostello.BrowserStack.Automate.Build.HashedId.set -> void
 MartinCostello.BrowserStack.Automate.Build.Name.get -> string!
 MartinCostello.BrowserStack.Automate.Build.Name.set -> void
+MartinCostello.BrowserStack.Automate.Build.PublicUrl.get -> string?
+MartinCostello.BrowserStack.Automate.Build.PublicUrl.set -> void
 MartinCostello.BrowserStack.Automate.Build.Status.get -> string!
 MartinCostello.BrowserStack.Automate.Build.Status.set -> void
 MartinCostello.BrowserStack.Automate.BuildDetail
@@ -90,6 +96,8 @@ MartinCostello.BrowserStack.Automate.Project.Id.set -> void
 MartinCostello.BrowserStack.Automate.Project.Name.get -> string!
 MartinCostello.BrowserStack.Automate.Project.Name.set -> void
 MartinCostello.BrowserStack.Automate.Project.Project() -> void
+MartinCostello.BrowserStack.Automate.Project.SubGroupId.get -> int?
+MartinCostello.BrowserStack.Automate.Project.SubGroupId.set -> void
 MartinCostello.BrowserStack.Automate.Project.UpdatedAt.get -> System.DateTime
 MartinCostello.BrowserStack.Automate.Project.UpdatedAt.set -> void
 MartinCostello.BrowserStack.Automate.Project.UserId.get -> int?
@@ -109,6 +117,12 @@ MartinCostello.BrowserStack.Automate.RecycleAccessKeyResult.OldKey.get -> string
 MartinCostello.BrowserStack.Automate.RecycleAccessKeyResult.OldKey.set -> void
 MartinCostello.BrowserStack.Automate.RecycleAccessKeyResult.RecycleAccessKeyResult() -> void
 MartinCostello.BrowserStack.Automate.Session
+MartinCostello.BrowserStack.Automate.Session.AppiumLogsUrl.get -> string!
+MartinCostello.BrowserStack.Automate.Session.AppiumLogsUrl.set -> void
+MartinCostello.BrowserStack.Automate.Session.BrowserUrl.get -> string!
+MartinCostello.BrowserStack.Automate.Session.BrowserUrl.set -> void
+MartinCostello.BrowserStack.Automate.Session.BrowserConsoleLogsUrl.get -> string!
+MartinCostello.BrowserStack.Automate.Session.BrowserConsoleLogsUrl.set -> void
 MartinCostello.BrowserStack.Automate.Session.BrowserName.get -> string!
 MartinCostello.BrowserStack.Automate.Session.BrowserName.set -> void
 MartinCostello.BrowserStack.Automate.Session.BrowserVersion.get -> string!
@@ -119,6 +133,8 @@ MartinCostello.BrowserStack.Automate.Session.Device.get -> string!
 MartinCostello.BrowserStack.Automate.Session.Device.set -> void
 MartinCostello.BrowserStack.Automate.Session.Duration.get -> int?
 MartinCostello.BrowserStack.Automate.Session.Duration.set -> void
+MartinCostello.BrowserStack.Automate.Session.HarLogsUrl.get -> string!
+MartinCostello.BrowserStack.Automate.Session.HarLogsUrl.set -> void
 MartinCostello.BrowserStack.Automate.Session.HashedId.get -> string!
 MartinCostello.BrowserStack.Automate.Session.HashedId.set -> void
 MartinCostello.BrowserStack.Automate.Session.LogsUri.get -> string!
@@ -131,19 +147,19 @@ MartinCostello.BrowserStack.Automate.Session.OSVersion.get -> string!
 MartinCostello.BrowserStack.Automate.Session.OSVersion.set -> void
 MartinCostello.BrowserStack.Automate.Session.ProjectName.get -> string!
 MartinCostello.BrowserStack.Automate.Session.ProjectName.set -> void
+MartinCostello.BrowserStack.Automate.Session.PublicUrl.get -> string!
+MartinCostello.BrowserStack.Automate.Session.PublicUrl.set -> void
 MartinCostello.BrowserStack.Automate.Session.Reason.get -> string!
 MartinCostello.BrowserStack.Automate.Session.Reason.set -> void
+MartinCostello.BrowserStack.Automate.Session.SeleniumLogsUrl.get -> string!
+MartinCostello.BrowserStack.Automate.Session.SeleniumLogsUrl.set -> void
+MartinCostello.BrowserStack.Automate.Session.SeleniumTelemetryLogsUrl.get -> string!
+MartinCostello.BrowserStack.Automate.Session.SeleniumTelemetryLogsUrl.set -> void
 MartinCostello.BrowserStack.Automate.Session.Session() -> void
 MartinCostello.BrowserStack.Automate.Session.Status.get -> string!
 MartinCostello.BrowserStack.Automate.Session.Status.set -> void
-MartinCostello.BrowserStack.Automate.SessionDetail
-MartinCostello.BrowserStack.Automate.SessionDetail.BrowserUri.get -> string!
-MartinCostello.BrowserStack.Automate.SessionDetail.BrowserUri.set -> void
-MartinCostello.BrowserStack.Automate.SessionDetail.PublicUri.get -> string!
-MartinCostello.BrowserStack.Automate.SessionDetail.PublicUri.set -> void
-MartinCostello.BrowserStack.Automate.SessionDetail.SessionDetail() -> void
-MartinCostello.BrowserStack.Automate.SessionDetail.VideoUri.get -> string!
-MartinCostello.BrowserStack.Automate.SessionDetail.VideoUri.set -> void
+MartinCostello.BrowserStack.Automate.Session.VideoUrl.get -> string!
+MartinCostello.BrowserStack.Automate.Session.VideoUrl.set -> void
 MartinCostello.BrowserStack.Automate.SessionStatuses
 static MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.ApiBaseAddress.get -> System.Uri!
 static MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.FromCredential(System.Net.NetworkCredential! credential) -> MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient!
@@ -162,20 +178,23 @@ virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.DeleteSe
 virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.DeleteSessionsAsync(System.Collections.Generic.ICollection<string!>! sessionIds, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
 virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.Dispose(bool disposing) -> void
 virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.GetBrowsersAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MartinCostello.BrowserStack.Automate.Browser!>!>!
-virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.GetBuildsAsync(int? limit = null, int? offset = null, string? status = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MartinCostello.BrowserStack.Automate.Build!>!>!
+virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.GetBuildsAsync(int? limit = null, int? offset = null, string? status = null, int? projectId = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MartinCostello.BrowserStack.Automate.Build!>!>!
 virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.GetBuildsAsync(System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MartinCostello.BrowserStack.Automate.Build!>!>!
 virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.GetProjectAsync(int projectId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MartinCostello.BrowserStack.Automate.ProjectDetailItem!>!
 virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.GetProjectsAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MartinCostello.BrowserStack.Automate.Project!>!>!
+virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.GetProjectStatusBadgeAsync(int projectId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<string!>!
 virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.GetSessionAppiumLogsAsync(string! buildId, string! sessionId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<string!>!
-virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.GetSessionAsync(string! sessionId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MartinCostello.BrowserStack.Automate.SessionDetail?>!
+virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.GetSessionAsync(string! sessionId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MartinCostello.BrowserStack.Automate.Session?>!
 virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.GetSessionConsoleLogsAsync(string! buildId, string! sessionId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<string!>!
 virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.GetSessionLogsAsync(string! buildId, string! sessionId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<string!>!
 virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.GetSessionNetworkLogsAsync(string! buildId, string! sessionId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<string!>!
+virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.GetSessionSeleniumLogsAsync(string! buildId, string! sessionId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<string!>!
+virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.GetSessionTelemetryLogsAsync(string! buildId, string! sessionId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<string!>!
 virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.GetSessionsAsync(string! buildId, int? limit = null, int? offset = null, string? status = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MartinCostello.BrowserStack.Automate.Session!>!>!
 virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.GetSessionsAsync(string! buildId, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<System.Collections.Generic.ICollection<MartinCostello.BrowserStack.Automate.Session!>!>!
 virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.GetStatusAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MartinCostello.BrowserStack.Automate.AutomatePlanStatus?>!
 virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.RecycleAccessKeyAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MartinCostello.BrowserStack.Automate.RecycleAccessKeyResult?>!
-virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.SetBuildNameAsync(int buildId, string! name, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MartinCostello.BrowserStack.Automate.Build?>!
+virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.SetBuildTagAsync(int buildId, string! tag, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MartinCostello.BrowserStack.Automate.Build?>!
 virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.SetProjectNameAsync(int projectId, string! name, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MartinCostello.BrowserStack.Automate.Project?>!
 virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.SetSessionNameAsync(string! sessionId, string! name, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MartinCostello.BrowserStack.Automate.Session?>!
 virtual MartinCostello.BrowserStack.Automate.BrowserStackAutomateClient.SetSessionStatusAsync(string! sessionId, string! status, string! reason, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<MartinCostello.BrowserStack.Automate.Session?>!

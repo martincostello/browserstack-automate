@@ -302,7 +302,7 @@ public class BrowserStackAutomateClient : IDisposable
     /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the builds.
     /// </returns>
     public virtual Task<ICollection<Build>> GetBuildsAsync(CancellationToken cancellationToken)
-        => GetBuildsAsync(null, null, null, cancellationToken);
+        => GetBuildsAsync(null, null, null, null, cancellationToken);
 
     /// <summary>
     /// Gets the builds as an asynchronous operation.
@@ -310,6 +310,7 @@ public class BrowserStackAutomateClient : IDisposable
     /// <param name="limit">The optional number of builds to return. The default value is 10.</param>
     /// <param name="offset">The optional offset for builds to return. The default value is 0.</param>
     /// <param name="status">The optional status to filter builds to.</param>
+    /// <param name="projectId">The optional project Id to filter builds to, if any.</param>
     /// <param name="cancellationToken">The optional cancellation token to use.</param>
     /// <returns>
     /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the builds.
@@ -318,9 +319,10 @@ public class BrowserStackAutomateClient : IDisposable
         int? limit = default,
         int? offset = default,
         string? status = default,
+        int? projectId = default,
         CancellationToken cancellationToken = default)
     {
-        string relativeUri = AppendQuery("builds.json", limit, offset, status);
+        string relativeUri = AppendQuery("builds.json", limit, offset, status, projectId);
 
         var builds = await GetJsonAsync(
             relativeUri,
@@ -351,6 +353,30 @@ public class BrowserStackAutomateClient : IDisposable
     }
 
     /// <summary>
+    /// Gets the badge for the project with the specified Id as an asynchronous operation.
+    /// </summary>
+    /// <param name="projectId">The Id of the project to get the status badge for.</param>
+    /// <param name="cancellationToken">The optional cancellation token to use.</param>
+    /// <returns>
+    /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the
+    /// key for the status badge for the project with the specified Id.
+    /// </returns>
+    public virtual async Task<string> GetProjectStatusBadgeAsync(int projectId, CancellationToken cancellationToken = default)
+    {
+        using var response = await _client.GetAsync(
+            FormattableString.Invariant($"projects/{projectId}/badge_key"),
+            cancellationToken).ConfigureAwait(false);
+
+        await EnsureSuccessAsync(response, cancellationToken).ConfigureAwait(false);
+
+#if NET8_0_OR_GREATER
+        return await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+#else
+        return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+#endif
+    }
+
+    /// <summary>
     /// Gets the projects as an asynchronous operation.
     /// </summary>
     /// <param name="cancellationToken">The optional cancellation token to use.</param>
@@ -371,7 +397,7 @@ public class BrowserStackAutomateClient : IDisposable
     /// <exception cref="ArgumentException">
     /// <paramref name="sessionId"/> is <see langword="null"/> or white space.
     /// </exception>
-    public virtual async Task<SessionDetail?> GetSessionAsync(string sessionId, CancellationToken cancellationToken = default)
+    public virtual async Task<Session?> GetSessionAsync(string sessionId, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(sessionId))
         {
@@ -449,6 +475,38 @@ public class BrowserStackAutomateClient : IDisposable
     /// </exception>
     public virtual Task<string> GetSessionNetworkLogsAsync(string buildId, string sessionId, CancellationToken cancellationToken = default)
         => GetLogsAsync(buildId, sessionId, "networklogs", cancellationToken);
+
+    /// <summary>
+    /// Gets the session Selenium logs associated with the specified build and session Id as an asynchronous operation.
+    /// </summary>
+    /// <param name="buildId">The build Id to return the logs for.</param>
+    /// <param name="sessionId">The session Id to return the logs for.</param>
+    /// <param name="cancellationToken">The optional cancellation token to use.</param>
+    /// <returns>
+    /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the logs for the build and session
+    /// with the specified Ids as a string.
+    /// </returns>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="buildId"/> or <paramref name="sessionId"/> is <see langword="null"/> or white space.
+    /// </exception>
+    public virtual Task<string> GetSessionSeleniumLogsAsync(string buildId, string sessionId, CancellationToken cancellationToken = default)
+        => GetLogsAsync(buildId, sessionId, "seleniumlogs", cancellationToken);
+
+    /// <summary>
+    /// Gets the session Selenium 4 telemetry logs associated with the specified build and session Id as an asynchronous operation.
+    /// </summary>
+    /// <param name="buildId">The build Id to return the logs for.</param>
+    /// <param name="sessionId">The session Id to return the logs for.</param>
+    /// <param name="cancellationToken">The optional cancellation token to use.</param>
+    /// <returns>
+    /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the logs for the build and session
+    /// with the specified Ids as a string.
+    /// </returns>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="buildId"/> or <paramref name="sessionId"/> is <see langword="null"/> or white space.
+    /// </exception>
+    public virtual Task<string> GetSessionTelemetryLogsAsync(string buildId, string sessionId, CancellationToken cancellationToken = default)
+        => GetLogsAsync(buildId, sessionId, "telemetrylogs", cancellationToken);
 
     /// <summary>
     /// Gets the sessions associated with the specified build Id as an asynchronous operation.
@@ -540,30 +598,33 @@ public class BrowserStackAutomateClient : IDisposable
     }
 
     /// <summary>
-    /// Sets the name of the build with the specified Id as an asynchronous operation.
+    /// Sets a tag of the build with the specified Id as an asynchronous operation.
     /// </summary>
-    /// <param name="buildId">The build Id to set the name of.</param>
-    /// <param name="name">The new name.</param>
+    /// <param name="buildId">The build Id to set the tag for.</param>
+    /// <param name="tag">The new build tag to set.</param>
     /// <param name="cancellationToken">The optional cancellation token to use.</param>
     /// <returns>
     /// A <see cref="Task{TResult}"/> representing the asynchronous operation to set the name for the specified build Id.
     /// </returns>
     /// <exception cref="ArgumentException">
-    /// <paramref name="name"/> is <see langword="null"/> or white space.
+    /// <paramref name="tag"/> is <see langword="null"/> or white space.
     /// </exception>
-    public virtual Task<Build?> SetBuildNameAsync(
+    public virtual Task<Build?> SetBuildTagAsync(
         int buildId,
-        string name,
+        string tag,
         CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(name))
+        if (string.IsNullOrWhiteSpace(tag))
         {
-            throw new ArgumentException("No name specified.", nameof(name));
+            throw new ArgumentException("No tag specified.", nameof(tag));
         }
 
-        return SetNameAsync(
+        var request = new SetBuildTagRequest() { BuildTag = tag };
+
+        return PutJsonAsync(
             FormattableString.Invariant($"builds/{buildId}.json"),
-            name,
+            request,
+            AppJsonSerializerContext.Default.SetBuildTagRequest,
             AppJsonSerializerContext.Default.Build,
             cancellationToken);
     }
@@ -698,10 +759,16 @@ public class BrowserStackAutomateClient : IDisposable
     /// <param name="limit">The limit to use, if any.</param>
     /// <param name="offset">The offset to use, if any.</param>
     /// <param name="status">The status to filter to, if any.</param>
+    /// <param name="projectId">The project Id to filter to, if any.</param>
     /// <returns>
     /// The query string to use, if any.
     /// </returns>
-    private static string AppendQuery(string relativeUri, int? limit, int? offset, string? status)
+    private static string AppendQuery(
+        string relativeUri,
+        int? limit,
+        int? offset,
+        string? status,
+        int? projectId = null)
     {
         var parameters = new Dictionary<string, string?>(3);
 
@@ -728,6 +795,16 @@ public class BrowserStackAutomateClient : IDisposable
         if (status is { })
         {
             parameters["status"] = status;
+        }
+
+        if (projectId.HasValue)
+        {
+            if (projectId < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(projectId), projectId.Value, "The projectId value cannot be less than one.");
+            }
+
+            parameters["projectId"] = projectId.Value.ToString(CultureInfo.InvariantCulture);
         }
 
         if (parameters.Count > 0)

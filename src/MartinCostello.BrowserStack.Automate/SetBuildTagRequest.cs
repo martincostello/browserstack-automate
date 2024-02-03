@@ -4,13 +4,13 @@
 namespace MartinCostello.BrowserStack.Automate;
 
 /// <summary>
-/// A class representing a BrowserStack Automate session's details. This class cannot be inherited.
+/// A class representing a request to set a build tag. This class cannot be inherited.
 /// </summary>
-internal sealed class AutomationSessionDetail
+internal sealed class SetBuildTagRequest
 {
     /// <summary>
-    /// Gets or sets the session.
+    /// Gets or sets the build tag.
     /// </summary>
-    [JsonPropertyName("automation_session")]
-    public Session SessionDetail { get; set; } = default!;
+    [JsonPropertyName("build_tag")]
+    public string BuildTag { get; set; } = default!;
 }

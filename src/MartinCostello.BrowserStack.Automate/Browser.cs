@@ -38,4 +38,10 @@ public class Browser : IBrowserInfo
     /// </summary>
     [JsonPropertyName("browser")]
     public string BrowserName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets if a mobile device is used or not.
+    /// </summary>
+    [JsonPropertyName("real_mobile")]
+    public bool? RealMobile { get; set; }
 }
