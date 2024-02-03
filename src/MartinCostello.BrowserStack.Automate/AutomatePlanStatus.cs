@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Martin Costello, 2015. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
-using Newtonsoft.Json;
-
 namespace MartinCostello.BrowserStack.Automate
 {
     /// <summary>
@@ -14,37 +12,39 @@ namespace MartinCostello.BrowserStack.Automate
         /// <summary>
         /// Gets or sets the current plan.
         /// </summary>
-        [JsonProperty("automate_plan")]
-        public string AutomatePlan { get; set; }
+        [JsonPropertyName("automate_plan")]
+        public string AutomatePlan { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the maximum allowed number of parallel sessions.
         /// </summary>
-        [JsonProperty("parallel_sessions_max_allowed")]
+        [JsonPropertyName("parallel_sessions_max_allowed")]
         public int MaximumAllowedParallelSessions { get; set; }
 
         /// <summary>
         /// Gets or sets the number of parallel sessions currently running.
         /// </summary>
-        [JsonProperty("parallel_sessions_running", NullValueHandling = NullValueHandling.Ignore)]
-        public int ParallelSessionsRunning { get; set; }
+        [JsonPropertyName("parallel_sessions_running")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public int? ParallelSessionsRunning { get; set; }
 
         /// <summary>
         /// Gets or sets the maximum allowed number of parallel sessions for the team.
         /// </summary>
-        [JsonProperty("team_parallel_sessions_max_allowed")]
+        [JsonPropertyName("team_parallel_sessions_max_allowed")]
         public int TeamMaximumAllowedParallelSessions { get; set; }
 
         /// <summary>
         /// Gets or sets the number of parallel sessions currently queued.
         /// </summary>
-        [JsonProperty("queued_sessions", NullValueHandling = NullValueHandling.Ignore)]
-        public int QueuedParallelSessions { get; set; }
+        [JsonPropertyName("queued_sessions")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public int? QueuedParallelSessions { get; set; }
 
         /// <summary>
         /// Gets or sets the maximum allowed number of parallel sessions that can be queued.
         /// </summary>
-        [JsonProperty("queued_sessions_max_allowed")]
+        [JsonPropertyName("queued_sessions_max_allowed")]
         public int MaximumQueuedParallelSessions { get; set; }
     }
 }

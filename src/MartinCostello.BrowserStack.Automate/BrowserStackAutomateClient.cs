@@ -4,16 +4,32 @@
 using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization.Metadata;
 
 namespace MartinCostello.BrowserStack.Automate
 {
     /// <summary>
     /// A class representing a client for the <c>BrowserStack</c> Automate REST API.
     /// </summary>
-    public class BrowserStackAutomateClient
+    public class BrowserStackAutomateClient : IDisposable
     {
+        /// <summary>
+        /// Gets the used specified <see cref="HttpClient"/> to use.
+        /// </summary>
+        private readonly HttpClient _client;
+
+        /// <summary>
+        /// Whether the instance owns the <see cref="HttpClient"/> instance.
+        /// </summary>
+        private readonly bool _ownsClient;
+
+        /// <summary>
+        /// Whether the instance has been disposed.
+        /// </summary>
+        private bool _disposed;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="BrowserStackAutomateClient"/> class.
         /// </summary>
@@ -23,7 +39,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <paramref name="userName"/> or <paramref name="accessKey"/> is <see langword="null"/> or white space.
         /// </exception>
         public BrowserStackAutomateClient(string userName, string accessKey)
-            : this(userName, accessKey, new HttpClient())
+            : this(userName, accessKey, new HttpClient(), ownsClient: true)
         {
         }
 
@@ -40,6 +56,24 @@ namespace MartinCostello.BrowserStack.Automate
         /// <paramref name="httpClient"/> is <see langword="null"/>.
         /// </exception>
         public BrowserStackAutomateClient(string userName, string accessKey, HttpClient httpClient)
+            : this(userName, accessKey, httpClient, ownsClient: false)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BrowserStackAutomateClient"/> class.
+        /// </summary>
+        /// <param name="userName">The user name to use to authenticate.</param>
+        /// <param name="accessKey">The access key to use to authenticate.</param>
+        /// <param name="httpClient">The <see cref="HttpClient"/> to use.</param>
+        /// <param name="ownsClient">Whether the instance owns the HTTP client.</param>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="userName"/> or <paramref name="accessKey"/> is <see langword="null"/> or white space.
+        /// </exception>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="httpClient"/> is <see langword="null"/>.
+        /// </exception>
+        private BrowserStackAutomateClient(string userName, string accessKey, HttpClient httpClient, bool ownsClient)
         {
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -51,30 +85,27 @@ namespace MartinCostello.BrowserStack.Automate
                 throw new ArgumentException("No access key specified.", nameof(accessKey));
             }
 
-            Client = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            _client = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            _ownsClient = ownsClient;
             UserName = userName;
-            SetAuthorization(userName, accessKey);
+
+            _client.BaseAddress ??= ApiBaseAddress;
+
+            if (_client.DefaultRequestHeaders.Authorization is null)
+            {
+                SetAuthorization(_client, userName, accessKey);
+            }
         }
 
         /// <summary>
         /// Gets the base URI of the BrowserStack Automate REST API.
         /// </summary>
-        public static Uri ApiBaseAddress => new("https://api.browserstack.com/automate/", UriKind.Absolute);
+        public static Uri ApiBaseAddress { get; } = new("https://api.browserstack.com/automate/", UriKind.Absolute);
 
         /// <summary>
         /// Gets the user name in use.
         /// </summary>
         public string UserName { get; }
-
-        /// <summary>
-        /// Gets or sets the <c>Authorization</c> value to use.
-        /// </summary>
-        private string Authorization { get; set; }
-
-        /// <summary>
-        /// Gets the <see cref="HttpClient"/> in use.
-        /// </summary>
-        private HttpClient Client { get; }
 
         /// <summary>
         /// Creates an instance of <see cref="BrowserStackAutomateClient"/> using the specified <see cref="NetworkCredential"/>.
@@ -88,12 +119,23 @@ namespace MartinCostello.BrowserStack.Automate
         /// </exception>
         public static BrowserStackAutomateClient FromCredential(NetworkCredential credential)
         {
+#if NET8_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(credential);
+#else
             if (credential == null)
             {
                 throw new ArgumentNullException(nameof(credential));
             }
+#endif
 
             return new BrowserStackAutomateClient(credential.UserName, credential.Password);
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -119,10 +161,7 @@ namespace MartinCostello.BrowserStack.Automate
 
             string relativeUri = string.Format(CultureInfo.InvariantCulture, "builds/{0}.json", Uri.EscapeDataString(buildId));
 
-            using var request = CreateRequest(HttpMethod.Delete, relativeUri);
-            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
-            await EnsureSuccessAsync(response).ConfigureAwait(false);
+            await DeleteAsync(relativeUri, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -144,10 +183,14 @@ namespace MartinCostello.BrowserStack.Automate
         /// </exception>
         public virtual async Task DeleteBuildsAsync(ICollection<string> buildIds, CancellationToken cancellationToken = default)
         {
+#if NET8_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(buildIds);
+#else
             if (buildIds == null)
             {
                 throw new ArgumentNullException(nameof(buildIds));
             }
+#endif
 
             if (buildIds.Count < 1)
             {
@@ -158,10 +201,7 @@ namespace MartinCostello.BrowserStack.Automate
 
             string relativeUri = string.Format(CultureInfo.InvariantCulture, "builds?{0}", query);
 
-            using var request = CreateRequest(HttpMethod.Delete, relativeUri);
-            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
-            await EnsureSuccessAsync(response).ConfigureAwait(false);
+            await DeleteAsync(relativeUri, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -179,10 +219,7 @@ namespace MartinCostello.BrowserStack.Automate
         {
             string relativeUri = string.Format(CultureInfo.InvariantCulture, "projects/{0}.json", projectId);
 
-            using var request = CreateRequest(HttpMethod.Delete, relativeUri);
-            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
-            await EnsureSuccessAsync(response).ConfigureAwait(false);
+            await DeleteAsync(relativeUri, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -208,10 +245,7 @@ namespace MartinCostello.BrowserStack.Automate
                 "sessions/{0}.json",
                 Uri.EscapeDataString(sessionId));
 
-            using var request = CreateRequest(HttpMethod.Delete, relativeUri);
-            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
-            await EnsureSuccessAsync(response).ConfigureAwait(false);
+            await DeleteAsync(relativeUri, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -233,10 +267,14 @@ namespace MartinCostello.BrowserStack.Automate
         /// </exception>
         public virtual async Task DeleteSessionsAsync(ICollection<string> sessionIds, CancellationToken cancellationToken = default)
         {
+#if NET8_0_OR_GREATER
+            ArgumentNullException.ThrowIfNull(sessionIds);
+#else
             if (sessionIds == null)
             {
                 throw new ArgumentNullException(nameof(sessionIds));
             }
+#endif
 
             if (sessionIds.Count < 1)
             {
@@ -247,10 +285,7 @@ namespace MartinCostello.BrowserStack.Automate
 
             string relativeUri = string.Format(CultureInfo.InvariantCulture, "session?{0}", query);
 
-            using var request = CreateRequest(HttpMethod.Delete, relativeUri);
-            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
-            await EnsureSuccessAsync(response).ConfigureAwait(false);
+            await DeleteAsync(relativeUri, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -261,13 +296,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the browsers.
         /// </returns>
         public virtual async Task<ICollection<Browser>> GetBrowsersAsync(CancellationToken cancellationToken = default)
-        {
-            using var request = CreateRequest(HttpMethod.Get, "browsers.json");
-            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
-            await EnsureSuccessAsync(response).ConfigureAwait(false);
-            return await DeserializeAsync<List<Browser>>(response).ConfigureAwait(false);
-        }
+            => await GetJsonAsync("browsers.json", AppJsonSerializerContext.Default.ListBrowser, cancellationToken).ConfigureAwait(false) ?? [];
 
         /// <summary>
         /// Gets the builds as an asynchronous operation.
@@ -292,7 +321,7 @@ namespace MartinCostello.BrowserStack.Automate
         public virtual async Task<ICollection<Build>> GetBuildsAsync(
             int? limit,
             int? offset,
-            string status,
+            string? status,
             CancellationToken cancellationToken = default)
         {
             string relativeUri = string.Format(
@@ -300,12 +329,10 @@ namespace MartinCostello.BrowserStack.Automate
                 "builds.json{0}",
                 BuildQuery(limit, offset, status));
 
-            using var request = CreateRequest(HttpMethod.Get, relativeUri);
-            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
-            await EnsureSuccessAsync(response).ConfigureAwait(false);
-
-            var builds = await DeserializeAsync<List<AutomationBuild>>(response).ConfigureAwait(false);
+            var builds = await GetJsonAsync(
+                relativeUri,
+                AppJsonSerializerContext.Default.ListAutomationBuild,
+                cancellationToken).ConfigureAwait(false) ?? [];
 
             return builds
                 .Select((p) => p.Build)
@@ -324,11 +351,12 @@ namespace MartinCostello.BrowserStack.Automate
         {
             string relativeUri = string.Format(CultureInfo.InvariantCulture, "projects/{0}.json", projectId);
 
-            using var request = CreateRequest(HttpMethod.Get, relativeUri);
-            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            var item = await GetJsonAsync(
+                relativeUri,
+                AppJsonSerializerContext.Default.ProjectDetailItem,
+                cancellationToken).ConfigureAwait(false);
 
-            await EnsureSuccessAsync(response).ConfigureAwait(false);
-            return await DeserializeAsync<ProjectDetailItem>(response).ConfigureAwait(false);
+            return item!;
         }
 
         /// <summary>
@@ -339,13 +367,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the projects.
         /// </returns>
         public virtual async Task<ICollection<Project>> GetProjectsAsync(CancellationToken cancellationToken = default)
-        {
-            using var request = CreateRequest(HttpMethod.Get, "projects.json");
-            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
-            await EnsureSuccessAsync(response).ConfigureAwait(false);
-            return await DeserializeAsync<List<Project>>(response).ConfigureAwait(false);
-        }
+            => await GetJsonAsync("projects.json", AppJsonSerializerContext.Default.ListProject, cancellationToken).ConfigureAwait(false) ?? [];
 
         /// <summary>
         /// Gets the session associated with the specified Id as an asynchronous operation.
@@ -358,7 +380,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <exception cref="ArgumentException">
         /// <paramref name="sessionId"/> is <see langword="null"/> or white space.
         /// </exception>
-        public virtual async Task<SessionDetail> GetSessionAsync(string sessionId, CancellationToken cancellationToken = default)
+        public virtual async Task<SessionDetail?> GetSessionAsync(string sessionId, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(sessionId))
             {
@@ -370,11 +392,10 @@ namespace MartinCostello.BrowserStack.Automate
                 "sessions/{0}.json",
                 Uri.EscapeDataString(sessionId));
 
-            using var request = CreateRequest(HttpMethod.Get, relativeUri);
-            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
-            await EnsureSuccessAsync(response).ConfigureAwait(false);
-            var result = await DeserializeAsync<AutomationSessionDetail>(response).ConfigureAwait(false);
+            var result = await GetJsonAsync(
+                relativeUri,
+                AppJsonSerializerContext.Default.AutomationSessionDetail,
+                cancellationToken).ConfigureAwait(false);
 
             return result?.SessionDetail;
         }
@@ -475,7 +496,7 @@ namespace MartinCostello.BrowserStack.Automate
             string buildId,
             int? limit,
             int? offset,
-            string status,
+            string? status,
             CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(buildId))
@@ -489,11 +510,10 @@ namespace MartinCostello.BrowserStack.Automate
                 Uri.EscapeDataString(buildId),
                 BuildQuery(limit, offset, status));
 
-            using var request = CreateRequest(HttpMethod.Get, relativeUri);
-            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
-            await EnsureSuccessAsync(response).ConfigureAwait(false);
-            var sessions = await DeserializeAsync<List<AutomationSession>>(response).ConfigureAwait(false);
+            var sessions = await GetJsonAsync(
+                relativeUri,
+                AppJsonSerializerContext.Default.ListAutomationSession,
+                cancellationToken).ConfigureAwait(false) ?? [];
 
             return sessions
                 .Select((p) => p.Session)
@@ -507,14 +527,8 @@ namespace MartinCostello.BrowserStack.Automate
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the status of the Automate plan.
         /// </returns>
-        public virtual async Task<AutomatePlanStatus> GetStatusAsync(CancellationToken cancellationToken = default)
-        {
-            using var request = CreateRequest(HttpMethod.Get, "plan.json");
-            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
-            await EnsureSuccessAsync(response).ConfigureAwait(false);
-            return await DeserializeAsync<AutomatePlanStatus>(response).ConfigureAwait(false);
-        }
+        public virtual async Task<AutomatePlanStatus?> GetStatusAsync(CancellationToken cancellationToken = default)
+            => await GetJsonAsync("plan.json", AppJsonSerializerContext.Default.AutomatePlanStatus, cancellationToken).ConfigureAwait(false);
 
         /// <summary>
         /// Recycles the current access key as an asynchronous operation.
@@ -526,21 +540,18 @@ namespace MartinCostello.BrowserStack.Automate
         /// <remarks>
         /// The credentials used by the current instance are automatically updated if successful.
         /// </remarks>
-        public virtual async Task<RecycleAccessKeyResult> RecycleAccessKeyAsync(CancellationToken cancellationToken = default)
+        public virtual async Task<RecycleAccessKeyResult?> RecycleAccessKeyAsync(CancellationToken cancellationToken = default)
         {
-            var value = new { };
-            var json = SerializeAsJson(value);
+            var result = await PutJsonAsync(
+                "recycle_key.json",
+                new EmptyRequest(),
+                AppJsonSerializerContext.Default.EmptyRequest,
+                AppJsonSerializerContext.Default.RecycleAccessKeyResult,
+                cancellationToken).ConfigureAwait(false);
 
-            using var request = CreateRequest(HttpMethod.Put, "recycle_key.json", json);
-            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
-            await EnsureSuccessAsync(response).ConfigureAwait(false);
-
-            var result = await DeserializeAsync<RecycleAccessKeyResult>(response).ConfigureAwait(false);
-
-            if (result != null)
+            if (result?.NewKey is { } accessKey)
             {
-                SetAuthorization(UserName, result.NewKey);
+                SetAuthorization(_client, UserName, accessKey);
             }
 
             return result;
@@ -558,7 +569,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <exception cref="ArgumentException">
         /// <paramref name="name"/> is <see langword="null"/> or white space.
         /// </exception>
-        public virtual Task<Build> SetBuildNameAsync(
+        public virtual Task<Build?> SetBuildNameAsync(
             int buildId,
             string name,
             CancellationToken cancellationToken = default)
@@ -570,7 +581,7 @@ namespace MartinCostello.BrowserStack.Automate
 
             string relativeUri = string.Format(CultureInfo.InvariantCulture, "builds/{0}.json", buildId);
 
-            return SetNameAsync<Build>(relativeUri, name, cancellationToken);
+            return SetNameAsync(relativeUri, name, AppJsonSerializerContext.Default.Build, cancellationToken);
         }
 
         /// <summary>
@@ -585,7 +596,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <exception cref="ArgumentException">
         /// <paramref name="name"/> is <see langword="null"/> or white space.
         /// </exception>
-        public virtual Task<Project> SetProjectNameAsync(
+        public virtual Task<Project?> SetProjectNameAsync(
             int projectId,
             string name,
             CancellationToken cancellationToken = default)
@@ -597,7 +608,7 @@ namespace MartinCostello.BrowserStack.Automate
 
             string relativeUri = string.Format(CultureInfo.InvariantCulture, "projects/{0}.json", projectId);
 
-            return SetNameAsync<Project>(relativeUri, name, cancellationToken);
+            return SetNameAsync(relativeUri, name, AppJsonSerializerContext.Default.Project, cancellationToken);
         }
 
         /// <summary>
@@ -612,7 +623,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <exception cref="ArgumentException">
         /// <paramref name="name"/> is <see langword="null"/> or white space.
         /// </exception>
-        public virtual Task<Session> SetSessionNameAsync(
+        public virtual Task<Session?> SetSessionNameAsync(
             string sessionId,
             string name,
             CancellationToken cancellationToken = default)
@@ -624,7 +635,7 @@ namespace MartinCostello.BrowserStack.Automate
 
             string relativeUri = string.Format(CultureInfo.InvariantCulture, "sessions/{0}.json", sessionId);
 
-            return SetNameAsync<Session>(relativeUri, name, cancellationToken);
+            return SetNameAsync(relativeUri, name, AppJsonSerializerContext.Default.Session, cancellationToken);
         }
 
         /// <summary>
@@ -640,7 +651,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <exception cref="ArgumentException">
         /// <paramref name="sessionId"/> or <paramref name="status"/> is <see langword="null"/> or white space.
         /// </exception>
-        public virtual async Task<Session> SetSessionStatusAsync(
+        public virtual async Task<Session?> SetSessionStatusAsync(
             string sessionId,
             string status,
             string reason,
@@ -661,51 +672,41 @@ namespace MartinCostello.BrowserStack.Automate
                 "sessions/{0}.json",
                 Uri.EscapeDataString(sessionId));
 
-            var value = new
+            var request = new SetSessionStatusRequest()
             {
-                status,
-                reason,
+                Status = status,
+                Reason = reason,
             };
 
-            var json = SerializeAsJson(value);
-
-            using var request = CreateRequest(HttpMethod.Put, relativeUri, json);
-            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
-            await EnsureSuccessAsync(response).ConfigureAwait(false);
-            var session = await DeserializeAsync<AutomationSession>(response).ConfigureAwait(false);
+            var session = await PutJsonAsync(
+                relativeUri,
+                request,
+                AppJsonSerializerContext.Default.SetSessionStatusRequest,
+                AppJsonSerializerContext.Default.AutomationSession,
+                cancellationToken).ConfigureAwait(false);
 
             return session?.Session;
         }
 
         /// <summary>
-        /// Deserializes the content of the specified <see cref="HttpResponseMessage"/> as an asynchronous operation.
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        /// <typeparam name="T">The type to deserialize the content as.</typeparam>
-        /// <param name="response">The HTTP response to deserialize.</param>
-        /// <returns>
-        /// A <see cref="Task{TResult}"/> representing the asynchronous operation to deserialize the response.
-        /// </returns>
-        protected virtual async Task<T> DeserializeAsync<T>(HttpResponseMessage response)
+        /// <param name="disposing">
+        /// <see langword="true" /> to release both managed and unmanaged resources;
+        /// <see langword="false" /> to release only unmanaged resources.
+        /// </param>
+        protected virtual void Dispose(bool disposing)
         {
-            if (response == null)
+            if (!_disposed)
             {
-                throw new ArgumentNullException(nameof(response));
+                if (disposing && _ownsClient)
+                {
+                    _client?.Dispose();
+                }
+
+                _disposed = true;
             }
-
-            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonConvert.DeserializeObject<T>(json);
         }
-
-        /// <summary>
-        /// Serializes the specified <see cref="object"/> as JSON.
-        /// </summary>
-        /// <param name="value">The value to serialize.</param>
-        /// <returns>
-        /// A <see cref="string"/> containing the JSON representation of <paramref name="value"/>.
-        /// </returns>
-        protected virtual string SerializeAsJson(object value)
-            => JsonConvert.SerializeObject(value);
 
         /// <summary>
         /// Builds the query string parameters to use, if any, for the specified parameters.
@@ -716,7 +717,7 @@ namespace MartinCostello.BrowserStack.Automate
         /// <returns>
         /// The query string to use, if any.
         /// </returns>
-        private static string BuildQuery(int? limit, int? offset, string status)
+        private static string BuildQuery(int? limit, int? offset, string? status)
         {
             var builder = new StringBuilder();
 
@@ -759,26 +760,38 @@ namespace MartinCostello.BrowserStack.Automate
         }
 
         /// <summary>
+        /// Sets the authorization header for the specified <see cref="HttpClient"/>.
+        /// </summary>
+        /// <param name="client">The HTTP client to configure.</param>
+        /// <param name="userName">The BrowserStack Automate user name.</param>
+        /// <param name="accessKey">The BrowserStack Automate access key.</param>
+        private static void SetAuthorization(HttpClient client, string userName, string accessKey)
+        {
+            string authorization = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{userName}:{accessKey}"));
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authorization);
+        }
+
+        /// <summary>
         /// Ensures that the specified <see cref="HttpResponseMessage"/> was successful.
         /// </summary>
         /// <param name="response">The HTTP response message.</param>
+        /// <param name="cancellationToken">The cancellation token to use.</param>
         /// <returns>
         /// A <see cref="Task"/> representing the asynchronous operation to test the response for success.
         /// </returns>
-        private async Task EnsureSuccessAsync(HttpResponseMessage response)
+        private static async Task EnsureSuccessAsync(HttpResponseMessage response, CancellationToken cancellationToken)
         {
             if (response.StatusCode == HttpStatusCode.NotFound)
             {
                 try
                 {
-                    var error = await DeserializeAsync<BrowserStackAutomateError>(response).ConfigureAwait(false);
+                    var error = await response.Content.ReadFromJsonAsync(
+                        AppJsonSerializerContext.Default.BrowserStackAutomateError,
+                        cancellationToken).ConfigureAwait(false);
+
                     throw new BrowserStackAutomateException(error);
                 }
-                catch (System.Runtime.Serialization.SerializationException)
-                {
-                    // Just fall-through to EnsureSuccessStatusCode() if deserialization fails
-                }
-                catch (JsonReaderException)
+                catch (JsonException)
                 {
                     // Just fall-through to EnsureSuccessStatusCode() if deserialization fails
                 }
@@ -788,54 +801,12 @@ namespace MartinCostello.BrowserStack.Automate
         }
 
         /// <summary>
-        /// Sets the <c>Authorization</c> header value used by this instance.
-        /// </summary>
-        /// <param name="userName">The user name to use.</param>
-        /// <param name="accessKey">The access key to use.</param>
-        private void SetAuthorization(string userName, string accessKey)
-        {
-            Authorization = Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format(CultureInfo.InvariantCulture, "{0}:{1}", userName, accessKey)));
-        }
-
-        /// <summary>
-        /// Creates a new HTTP request message.
-        /// </summary>
-        /// <param name="method">The HTTP method to use.</param>
-        /// <param name="relativeUri">The relative URI of the request.</param>
-        /// <param name="json">The optional HTTP JSON content to send.</param>
-        /// <returns>
-        /// The <see cref="HttpRequestMessage"/> to send.
-        /// </returns>
-        private HttpRequestMessage CreateRequest(HttpMethod method, string relativeUri, string json = null)
-        {
-            var requestUri = new Uri(ApiBaseAddress, relativeUri);
-            var request = new HttpRequestMessage(method, requestUri);
-
-            try
-            {
-                request.Headers.Authorization = new AuthenticationHeaderValue("Basic", Authorization);
-
-                if (json != null)
-                {
-                    request.Content = new StringContent(json, Encoding.UTF8, "application/json");
-                }
-
-                return request;
-            }
-            catch (Exception)
-            {
-                request.Dispose();
-                throw;
-            }
-        }
-
-        /// <summary>
         /// Gets the specified type of logs associated with the specified build and session Id as an asynchronous operation.
         /// </summary>
         /// <param name="buildId">The build Id to return the logs for.</param>
         /// <param name="sessionId">The session Id to return the logs for.</param>
         /// <param name="logType">The log type to retrieve.</param>
-        /// <param name="cancellationToken">The optional cancellation token to use.</param>
+        /// <param name="cancellationToken">The cancellation token to use.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the logs for the build and session with the specified Ids.
         /// </returns>
@@ -846,7 +817,7 @@ namespace MartinCostello.BrowserStack.Automate
             string buildId,
             string sessionId,
             string logType,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(buildId))
             {
@@ -865,17 +836,85 @@ namespace MartinCostello.BrowserStack.Automate
                 Uri.EscapeDataString(sessionId),
                 Uri.EscapeDataString(logType));
 
-            using var request = CreateRequest(HttpMethod.Get, relativeUri);
-            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            using var response = await _client.GetAsync(relativeUri, cancellationToken).ConfigureAwait(false);
 
-            if (response.StatusCode == HttpStatusCode.NotFound)
+            if (response.StatusCode is HttpStatusCode.NotFound)
             {
                 // Returns an HTML error page, so just return empty if there are no logs
                 return string.Empty;
             }
 
             response.EnsureSuccessStatusCode();
+
+#if NET8_0_OR_GREATER
+            return await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+#else
             return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+#endif
+        }
+
+        /// <summary>
+        /// Deletes the specified resource as an asynchronous operation.
+        /// </summary>
+        /// <param name="relativeUri">The relative URI of the resource to delete.</param>
+        /// <param name="cancellationToken">The cancellation token to use.</param>
+        /// <returns>
+        /// A <see cref="Task{TResult}"/> representing the asynchronous operation to delete the specified resource.
+        /// </returns>
+        private async Task DeleteAsync(string relativeUri, CancellationToken cancellationToken)
+        {
+            using var response = await _client.DeleteAsync(relativeUri, cancellationToken).ConfigureAwait(false);
+            await EnsureSuccessAsync(response, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Gets the specified resource as an asynchronous operation.
+        /// </summary>
+        /// <typeparam name="T">The type of the JSON response.</typeparam>
+        /// <param name="relativeUri">The relative URI of the resource to delete.</param>
+        /// <param name="jsonTypeInfo">The JSON type information to use.</param>
+        /// <param name="cancellationToken">The cancellation token to use.</param>
+        /// <returns>
+        /// A <see cref="Task{TResult}"/> representing the asynchronous operation to delete the specified resource.
+        /// </returns>
+        private async Task<T?> GetJsonAsync<T>(string relativeUri, JsonTypeInfo<T> jsonTypeInfo, CancellationToken cancellationToken)
+        {
+            using var response = await _client.GetAsync(relativeUri, cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessAsync(response, cancellationToken).ConfigureAwait(false);
+
+            return await response.Content.ReadFromJsonAsync(jsonTypeInfo, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Sets the name of the session with the specified Id as an asynchronous operation.
+        /// </summary>
+        /// <typeparam name="TRequest">The type of the request.</typeparam>
+        /// <typeparam name="TResponse">The type of the response.</typeparam>
+        /// <param name="relativeUri">The relative URI of the resource to set the name of.</param>
+        /// <param name="request">The request body.</param>
+        /// <param name="requestJsonTypeInfo">The JSON type information to use for the request.</param>
+        /// <param name="responseJsonTypeInfo">The JSON type information to use for the response.</param>
+        /// <param name="cancellationToken">The cancellation token to use.</param>
+        /// <returns>
+        /// A <see cref="Task{TResult}"/> representing the asynchronous operation to set the name for the specified resource.
+        /// </returns>
+        private async Task<TResponse?> PutJsonAsync<TRequest, TResponse>(
+            string relativeUri,
+            TRequest request,
+            JsonTypeInfo<TRequest> requestJsonTypeInfo,
+            JsonTypeInfo<TResponse> responseJsonTypeInfo,
+            CancellationToken cancellationToken)
+        {
+            using var response = await _client.PutAsJsonAsync(
+                relativeUri,
+                request,
+                requestJsonTypeInfo,
+                cancellationToken).ConfigureAwait(false);
+
+            await EnsureSuccessAsync(response, cancellationToken).ConfigureAwait(false);
+
+            return await response.Content.ReadFromJsonAsync(responseJsonTypeInfo, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -884,58 +923,25 @@ namespace MartinCostello.BrowserStack.Automate
         /// <typeparam name="T">The type of the resource.</typeparam>
         /// <param name="relativeUri">The relative URI of the resource to set the name of.</param>
         /// <param name="name">The new name.</param>
-        /// <param name="cancellationToken">The optional cancellation token to use.</param>
+        /// <param name="jsonTypeInfo">The JSON type information to use.</param>
+        /// <param name="cancellationToken">The cancellation token to use.</param>
         /// <returns>
         /// A <see cref="Task{TResult}"/> representing the asynchronous operation to set the name for the specified resource.
         /// </returns>
-        private async Task<T> SetNameAsync<T>(
+        private async Task<T?> SetNameAsync<T>(
             string relativeUri,
             string name,
-            CancellationToken cancellationToken = default)
+            JsonTypeInfo<T> jsonTypeInfo,
+            CancellationToken cancellationToken)
         {
-            var json = SerializeAsJson(new { name });
+            var request = new SetNameRequest() { Name = name };
 
-            using var request = CreateRequest(HttpMethod.Put, relativeUri, json);
-            using var response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
-
-            await EnsureSuccessAsync(response).ConfigureAwait(false);
-            return await DeserializeAsync<T>(response).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// A class representing a BrowserStack Automate build. This class cannot be inherited.
-        /// </summary>
-        private sealed class AutomationBuild
-        {
-            /// <summary>
-            /// Gets or sets the build.
-            /// </summary>
-            [JsonProperty("automation_build")]
-            public Build Build { get; set; }
-        }
-
-        /// <summary>
-        /// A class representing a BrowserStack Automate session. This class cannot be inherited.
-        /// </summary>
-        private sealed class AutomationSession
-        {
-            /// <summary>
-            /// Gets or sets the session.
-            /// </summary>
-            [JsonProperty("automation_session")]
-            public Session Session { get; set; }
-        }
-
-        /// <summary>
-        /// A class representing a BrowserStack Automate session's details. This class cannot be inherited.
-        /// </summary>
-        private sealed class AutomationSessionDetail
-        {
-            /// <summary>
-            /// Gets or sets the session.
-            /// </summary>
-            [JsonProperty("automation_session")]
-            public SessionDetail SessionDetail { get; set; }
+            return await PutJsonAsync(
+                relativeUri,
+                request,
+                AppJsonSerializerContext.Default.SetNameRequest,
+                jsonTypeInfo,
+                cancellationToken).ConfigureAwait(false);
         }
     }
 }

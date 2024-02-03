@@ -14,7 +14,7 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task SetSessionCompletedAsync_Throws_If_Client_Is_Null()
         {
             // Arrange
-            BrowserStackAutomateClient client = null;
+            BrowserStackAutomateClient client = null!;
 
             string sessionId = "MySessionId";
             string reason = "My reason";
@@ -27,7 +27,7 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task SetSessionErrorAsync_Throws_If_Client_Is_Null()
         {
             // Arrange
-            BrowserStackAutomateClient client = null;
+            BrowserStackAutomateClient client = null!;
 
             string sessionId = "MySessionId";
             string reason = "My reason";
