@@ -21,6 +21,7 @@ namespace MartinCostello.BrowserStack.Automate;
 [JsonSerializable(typeof(ProjectDetailItem))]
 [JsonSerializable(typeof(RecycleAccessKeyResult))]
 [JsonSerializable(typeof(Session))]
+[JsonSerializable(typeof(SetBuildTagRequest))]
 [JsonSerializable(typeof(SetNameRequest))]
 [JsonSerializable(typeof(SetSessionStatusRequest))]
 internal sealed partial class AppJsonSerializerContext : JsonSerializerContext

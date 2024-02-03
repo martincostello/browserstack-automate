@@ -33,4 +33,16 @@ public class Build
     /// </summary>
     [JsonPropertyName("status")]
     public string Status { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the public URL of the build, if any.
+    /// </summary>
+    [JsonPropertyName("public_url")]
+    public string? PublicUrl { get; set; }
+
+    /// <summary>
+    /// Gets or sets the build tag of the build, if any.
+    /// </summary>
+    [JsonPropertyName("build_tag")]
+    public string? BuildTag { get; set; }
 }

@@ -76,9 +76,18 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
 
                 // Assert
                 sessionDetail.ShouldNotBeNull();
-                sessionDetail.BrowserUri.ShouldNotBeNull();
-                sessionDetail.PublicUri.ShouldNotBeNull();
-                sessionDetail.VideoUri.ShouldNotBeNull();
+
+                AssertSession(sessionDetail, build.Name);
+
+                StripQuery(sessionDetail.AppiumLogsUrl).ShouldBe(StripQuery(session.AppiumLogsUrl));
+                StripQuery(sessionDetail.BrowserConsoleLogsUrl).ShouldBe(StripQuery(session.BrowserConsoleLogsUrl));
+                StripQuery(sessionDetail.BrowserUrl).ShouldBe(StripQuery(session.BrowserUrl));
+                StripQuery(sessionDetail.HarLogsUrl).ShouldBe(StripQuery(session.HarLogsUrl));
+                StripQuery(sessionDetail.PublicUrl).ShouldBe(StripQuery(session.PublicUrl));
+                StripQuery(sessionDetail.SeleniumLogsUrl).ShouldBe(StripQuery(session.SeleniumLogsUrl));
+                StripQuery(sessionDetail.SeleniumTelemetryLogsUrl).ShouldBe(StripQuery(session.SeleniumTelemetryLogsUrl));
+                StripQuery(sessionDetail.VideoUrl).ShouldBe(StripQuery(session.VideoUrl));
+
                 sessionDetail.BrowserName.ShouldNotBeNullOrEmpty();
                 sessionDetail.BrowserName.ShouldBe(session.BrowserName);
                 sessionDetail.BrowserVersion.ShouldBe(session.BrowserVersion);
@@ -86,7 +95,6 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
                 sessionDetail.Duration.ShouldBe(session.Duration);
                 sessionDetail.HashedId.ShouldBe(session.HashedId);
                 sessionDetail.LogsUri.ShouldBe(session.LogsUri);
-                sessionDetail.Name.ShouldBe(session.Name);
                 sessionDetail.OSName.ShouldBe(session.OSName);
                 sessionDetail.OSVersion.ShouldBe(session.OSVersion);
                 sessionDetail.ProjectName.ShouldBe(session.ProjectName);
@@ -151,17 +159,23 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
             {
                 AssertSession(session, build.Name);
 
-                // Act (no Assert)
-                await target.GetSessionLogsAsync(build.HashedId, session.HashedId);
+                // Act and Assert
+                await Should.NotThrowAsync(() => target.GetSessionLogsAsync(build.HashedId, session.HashedId));
 
-                // Act (no Assert)
-                await target.GetSessionAppiumLogsAsync(build.HashedId, session.HashedId);
+                // Act and Assert
+                await Should.NotThrowAsync(() => target.GetSessionAppiumLogsAsync(build.HashedId, session.HashedId));
 
-                // Act (no Assert)
-                await target.GetSessionConsoleLogsAsync(build.HashedId, session.HashedId);
+                // Act and Assert
+                await Should.NotThrowAsync(() => target.GetSessionConsoleLogsAsync(build.HashedId, session.HashedId));
 
-                // Act (no Assert)
-                await target.GetSessionNetworkLogsAsync(build.HashedId, session.HashedId);
+                // Act and Assert
+                await Should.NotThrowAsync(() => target.GetSessionNetworkLogsAsync(build.HashedId, session.HashedId));
+
+                // Act and Assert
+                await Should.NotThrowAsync(() => target.GetSessionSeleniumLogsAsync(build.HashedId, session.HashedId));
+
+                // Act and Assert
+                await Should.NotThrowAsync(() => target.GetSessionTelemetryLogsAsync(build.HashedId, session.HashedId));
             }
         }
 
@@ -227,6 +241,12 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         foreach (int projectId in projects.Select((p) => p.Id))
         {
             // Act
+            string badge = await target.GetProjectStatusBadgeAsync(projectId);
+
+            // Assert
+            badge.ShouldNotBeNullOrEmpty();
+
+            // Act
             ProjectDetailItem projectItem = await target.GetProjectAsync(projectId);
 
             // Assert
@@ -244,20 +264,25 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
 
             foreach (var build in project.Builds)
             {
-                build.ShouldNotBeNull();
-                build.ShouldNotBeNull();
-                build.CreatedAt.ShouldBeGreaterThanOrEqualTo(project.CreatedAt);
-                build.Duration.ShouldNotBeNull();
-                build.Duration.Value.ShouldBeGreaterThanOrEqualTo(0);
-                build.Id.ShouldBeGreaterThan(0);
-                build.HashedId.ShouldNotBeNullOrEmpty();
-                build.Name.ShouldNotBeNullOrEmpty();
-                build.Status.ShouldNotBeNullOrEmpty();
+                AssertBuild(build);
+
                 build.UpdatedAt.ShouldBeGreaterThan(project.CreatedAt);
                 build.UpdatedAt.ShouldBeGreaterThan(build.CreatedAt);
                 build.GroupId.ShouldBe(project.GroupId);
                 build.ProjectId.ShouldBe(project.Id);
                 build.UserId.ShouldBeGreaterThan(0);
+            }
+
+            // Act
+            builds = await target.GetBuildsAsync(projectId: projectId);
+
+            // Assert
+            builds.ShouldNotBeNull();
+            builds.ShouldNotContain((p) => p == null);
+
+            foreach (var build in builds)
+            {
+                AssertBuild(build);
             }
         }
 
@@ -565,7 +590,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
     }
 
     [Fact]
-    public static async Task SetBuildNameAsync_Throws_If_Name_Is_Null()
+    public static async Task SetBuildTagAsync_Throws_If_Name_Is_Null()
     {
         // Arrange
         using var target = CreateClient();
@@ -574,7 +599,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string name = null!;
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentException>("name", () => target.SetBuildNameAsync(buildId, name));
+        await Assert.ThrowsAsync<ArgumentException>("tag", () => target.SetBuildTagAsync(buildId, name));
     }
 
     [Fact]
@@ -798,11 +823,13 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
     }
 
     /// <summary>
-    /// Asserts that the specified <see cref="Build"/> is correct.
+    /// Asserts that the specified build is valid.
     /// </summary>
-    /// <param name="build">The <see cref="Build"/> to assert on.</param>
+    /// <typeparam name="T">The type of the build.</typeparam>
+    /// <param name="build">The build to assert on.</param>
     /// <param name="expectedStatus">The optional expected status.</param>
-    private static void AssertBuild(Build build, string? expectedStatus = null)
+    private static void AssertBuild<T>(T build, string? expectedStatus = null)
+        where T : Build
     {
         build.ShouldNotBeNull();
         build.Duration.ShouldNotBeNull();
@@ -818,21 +845,31 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
     }
 
     /// <summary>
-    /// Asserts that the specified <see cref="Session"/> is correct.
+    /// Asserts that the specified session is correct.
     /// </summary>
-    /// <param name="session">The <see cref="Session"/> to assert on.</param>
-    /// <param name="expectedName">The expected name of the session item.</param>
-    private static void AssertSession(Session session, string expectedName)
+    /// <typeparam name="T">The type of the session.</typeparam>
+    /// <param name="session">The session to assert on.</param>
+    /// <param name="expectedBuildName">The expected name of the session's build item.</param>
+    private static void AssertSession<T>(T session, string expectedBuildName)
+        where T : Session
     {
         session.ShouldNotBeNull();
-        session.BuildName.ShouldBe(expectedName);
+        session.BuildName.ShouldBe(expectedBuildName);
+        session.AppiumLogsUrl.ShouldNotBeNull();
+        session.BrowserConsoleLogsUrl.ShouldNotBeNull();
+        session.BuildName.ShouldNotBeNull();
+        session.HarLogsUrl.ShouldNotBeNull();
         session.HashedId.ShouldNotBeNullOrEmpty();
         session.LogsUri.ShouldNotBeNullOrEmpty();
         session.OSName.ShouldNotBeNullOrEmpty();
         session.OSVersion.ShouldNotBeNullOrEmpty();
+        session.Name.ShouldNotBeNullOrEmpty();
         session.ProjectName.ShouldNotBeNullOrEmpty();
+        session.PublicUrl.ShouldNotBeNull();
         session.Reason.ShouldNotBeNullOrEmpty();
+        session.SeleniumLogsUrl.ShouldNotBeNull();
         session.Status.ShouldNotBeNullOrEmpty();
+        session.VideoUrl.ShouldNotBeNull();
         session.Duration.ShouldNotBeNull();
         session.Duration.Value.ShouldBeGreaterThan(-1);
     }
@@ -868,4 +905,16 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
     /// The instance of <see cref="BrowserStackAutomateClient"/>.
     /// </returns>
     private static BrowserStackAutomateClient CreateClient() => new("x", "x");
+
+    private static string? StripQuery(string? input)
+    {
+        int index = input?.IndexOf('?', StringComparison.Ordinal) ?? -1;
+
+        if (index >= 0)
+        {
+            return input![..index];
+        }
+
+        return input;
+    }
 }

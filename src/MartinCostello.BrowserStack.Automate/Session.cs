@@ -86,4 +86,52 @@ public class Session : IBrowserInfo
     /// </summary>
     [JsonPropertyName("browser")]
     public string BrowserName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the browser URL.
+    /// </summary>
+    [JsonPropertyName("browser_url")]
+    public string BrowserUrl { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the public URL.
+    /// </summary>
+    [JsonPropertyName("public_url")]
+    public string PublicUrl { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the Appium logs URL.
+    /// </summary>
+    [JsonPropertyName("appium_logs_url")]
+    public string AppiumLogsUrl { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the video URL.
+    /// </summary>
+    [JsonPropertyName("video_url")]
+    public string VideoUrl { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the URL to view the browser's console logs.
+    /// </summary>
+    [JsonPropertyName("browser_console_logs_url")]
+    public string BrowserConsoleLogsUrl { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the URL to view the browser's HAR logs.
+    /// </summary>
+    [JsonPropertyName("har_logs_url")]
+    public string HarLogsUrl { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the URL to view the Selenium logs.
+    /// </summary>
+    [JsonPropertyName("selenium_logs_url")]
+    public string SeleniumLogsUrl { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the URL to view the Selenium 4 telemetry logs, if enabled.
+    /// </summary>
+    [JsonPropertyName("selenium_telemetry_logs_url")]
+    public string SeleniumTelemetryLogsUrl { get; set; } = string.Empty;
 }
