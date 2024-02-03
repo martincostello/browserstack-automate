@@ -3,37 +3,36 @@
 
 using Xunit;
 
-namespace MartinCostello.BrowserStack.Automate
+namespace MartinCostello.BrowserStack.Automate;
+
+/// <summary>
+/// A class containing tests for the <see cref="BrowserStackAutomateClientExtensions"/> class.
+/// </summary>
+public static class BrowserStackAutomateClientExtensionsTests
 {
-    /// <summary>
-    /// A class containing tests for the <see cref="BrowserStackAutomateClientExtensions"/> class.
-    /// </summary>
-    public static class BrowserStackAutomateClientExtensionsTests
+    [Fact]
+    public static async Task SetSessionCompletedAsync_Throws_If_Client_Is_Null()
     {
-        [Fact]
-        public static async Task SetSessionCompletedAsync_Throws_If_Client_Is_Null()
-        {
-            // Arrange
-            BrowserStackAutomateClient client = null!;
+        // Arrange
+        BrowserStackAutomateClient client = null!;
 
-            string sessionId = "MySessionId";
-            string reason = "My reason";
+        string sessionId = "MySessionId";
+        string reason = "My reason";
 
-            // Act and Assert
-            await Assert.ThrowsAsync<ArgumentNullException>("client", () => client.SetSessionCompletedAsync(sessionId, reason));
-        }
+        // Act and Assert
+        await Assert.ThrowsAsync<ArgumentNullException>("client", () => client.SetSessionCompletedAsync(sessionId, reason));
+    }
 
-        [Fact]
-        public static async Task SetSessionErrorAsync_Throws_If_Client_Is_Null()
-        {
-            // Arrange
-            BrowserStackAutomateClient client = null!;
+    [Fact]
+    public static async Task SetSessionErrorAsync_Throws_If_Client_Is_Null()
+    {
+        // Arrange
+        BrowserStackAutomateClient client = null!;
 
-            string sessionId = "MySessionId";
-            string reason = "My reason";
+        string sessionId = "MySessionId";
+        string reason = "My reason";
 
-            // Act and Assert
-            await Assert.ThrowsAsync<ArgumentNullException>("client", () => client.SetSessionErrorAsync(sessionId, reason));
-        }
+        // Act and Assert
+        await Assert.ThrowsAsync<ArgumentNullException>("client", () => client.SetSessionErrorAsync(sessionId, reason));
     }
 }
