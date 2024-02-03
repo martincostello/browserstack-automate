@@ -297,11 +297,11 @@ public class BrowserStackAutomateClient : IDisposable
     /// <summary>
     /// Gets the builds as an asynchronous operation.
     /// </summary>
-    /// <param name="cancellationToken">The optional cancellation token to use.</param>
+    /// <param name="cancellationToken">The cancellation token to use.</param>
     /// <returns>
     /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the builds.
     /// </returns>
-    public virtual Task<ICollection<Build>> GetBuildsAsync(CancellationToken cancellationToken = default)
+    public virtual Task<ICollection<Build>> GetBuildsAsync(CancellationToken cancellationToken)
         => GetBuildsAsync(null, null, null, cancellationToken);
 
     /// <summary>
@@ -315,9 +315,9 @@ public class BrowserStackAutomateClient : IDisposable
     /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the builds.
     /// </returns>
     public virtual async Task<ICollection<Build>> GetBuildsAsync(
-        int? limit,
-        int? offset,
-        string? status,
+        int? limit = default,
+        int? offset = default,
+        string? status = default,
         CancellationToken cancellationToken = default)
     {
         string relativeUri = AppendQuery("builds.json", limit, offset, status);
@@ -454,14 +454,14 @@ public class BrowserStackAutomateClient : IDisposable
     /// Gets the sessions associated with the specified build Id as an asynchronous operation.
     /// </summary>
     /// <param name="buildId">The build Id of the sessions to return.</param>
-    /// <param name="cancellationToken">The optional cancellation token to use.</param>
+    /// <param name="cancellationToken">The cancellation token to use.</param>
     /// <returns>
     /// A <see cref="Task{TResult}"/> representing the asynchronous operation to get the sessions for the specified build Id.
     /// </returns>
     /// <exception cref="ArgumentException">
     /// <paramref name="buildId"/> is <see langword="null"/> or white space.
     /// </exception>
-    public virtual Task<ICollection<Session>> GetSessionsAsync(string buildId, CancellationToken cancellationToken = default)
+    public virtual Task<ICollection<Session>> GetSessionsAsync(string buildId, CancellationToken cancellationToken)
         => GetSessionsAsync(buildId, null, null, null, cancellationToken);
 
     /// <summary>
@@ -480,9 +480,9 @@ public class BrowserStackAutomateClient : IDisposable
     /// </exception>
     public virtual async Task<ICollection<Session>> GetSessionsAsync(
         string buildId,
-        int? limit,
-        int? offset,
-        string? status,
+        int? limit = default,
+        int? offset = default,
+        string? status = default,
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(buildId))
