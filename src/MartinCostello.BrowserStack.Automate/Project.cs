@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Martin Costello, 2015. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
-using Newtonsoft.Json;
-
 namespace MartinCostello.BrowserStack.Automate
 {
     /// <summary>
@@ -14,37 +12,37 @@ namespace MartinCostello.BrowserStack.Automate
         /// <summary>
         /// Gets or sets the project Id.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public int Id { get; set; }
 
         /// <summary>
         /// Gets or sets the date and time the project was last updated.
         /// </summary>
-        [JsonProperty("updated_at")]
+        [JsonPropertyName("updated_at")]
         public DateTime UpdatedAt { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the project.
         /// </summary>
-        [JsonProperty("name")]
-        public string Name { get; set; }
+        [JsonPropertyName("name")]
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the date and time the project was created.
         /// </summary>
-        [JsonProperty("created_at")]
+        [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; }
 
         /// <summary>
         /// Gets or sets the user Id.
         /// </summary>
-        [JsonProperty("user_id")]
+        [JsonPropertyName("user_id")]
         public int? UserId { get; set; }
 
         /// <summary>
         /// Gets or sets the group Id.
         /// </summary>
-        [JsonProperty("group_id")]
+        [JsonPropertyName("group_id")]
         public int GroupId { get; set; }
     }
 }

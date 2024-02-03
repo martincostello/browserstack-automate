@@ -3,7 +3,6 @@
 
 using System.Net;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Http.Resilience;
 using Polly.CircuitBreaker;
 using Shouldly;
 using Xunit;
@@ -19,11 +18,11 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task Can_Query_BrowserStack_Automate_Api()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateAuthenticatedClient();
+            using var target = CreateAuthenticatedClient();
 
             int? limit;
             int? offset;
-            string status;
+            string? status;
 
             // Act
             ICollection<Browser> browsers = await target.GetBrowsersAsync();
@@ -50,7 +49,8 @@ namespace MartinCostello.BrowserStack.Automate
             foreach (var build in builds)
             {
                 build.ShouldNotBeNull();
-                build.Duration.ShouldBeGreaterThanOrEqualTo(1);
+                build.Duration.ShouldNotBeNull();
+                build.Duration.Value.ShouldBeGreaterThanOrEqualTo(1);
                 build.HashedId.ShouldNotBeNullOrEmpty();
                 build.Name.ShouldNotBeNullOrEmpty();
                 build.Status.ShouldNotBeNullOrEmpty();
@@ -95,7 +95,7 @@ namespace MartinCostello.BrowserStack.Automate
                     sessionDetail.Status.ShouldBe(session.Status);
 
                     // Act
-                    Session updatedSession = await target.SetSessionCompletedAsync(session.HashedId, string.Empty);
+                    Session? updatedSession = await target.SetSessionCompletedAsync(session.HashedId, string.Empty);
 
                     // Assert
                     updatedSession.ShouldNotBeNull();
@@ -248,7 +248,8 @@ namespace MartinCostello.BrowserStack.Automate
                     build.ShouldNotBeNull();
                     build.ShouldNotBeNull();
                     build.CreatedAt.ShouldBeGreaterThanOrEqualTo(project.CreatedAt);
-                    build.Duration.ShouldBeGreaterThanOrEqualTo(0);
+                    build.Duration.ShouldNotBeNull();
+                    build.Duration.Value.ShouldBeGreaterThanOrEqualTo(0);
                     build.Id.ShouldBeGreaterThan(0);
                     build.HashedId.ShouldNotBeNullOrEmpty();
                     build.Name.ShouldNotBeNullOrEmpty();
@@ -262,15 +263,17 @@ namespace MartinCostello.BrowserStack.Automate
             }
 
             // Act
-            AutomatePlanStatus plan = await target.GetStatusAsync();
+            AutomatePlanStatus? plan = await target.GetStatusAsync();
 
             // Assert
             plan.ShouldNotBeNull();
             plan.AutomatePlan.ShouldNotBeNullOrEmpty();
             plan.MaximumAllowedParallelSessions.ShouldBeGreaterThanOrEqualTo(1);
             plan.MaximumQueuedParallelSessions.ShouldBeGreaterThanOrEqualTo(1);
-            plan.ParallelSessionsRunning.ShouldBeGreaterThanOrEqualTo(0);
-            plan.QueuedParallelSessions.ShouldBeGreaterThanOrEqualTo(0);
+            plan.ParallelSessionsRunning.ShouldNotBeNull();
+            plan.ParallelSessionsRunning.Value.ShouldBeGreaterThanOrEqualTo(0);
+            plan.QueuedParallelSessions.ShouldNotBeNull();
+            plan.QueuedParallelSessions.Value.ShouldBeGreaterThanOrEqualTo(0);
             plan.TeamMaximumAllowedParallelSessions.ShouldBeGreaterThanOrEqualTo(0);
         }
 
@@ -278,10 +281,10 @@ namespace MartinCostello.BrowserStack.Automate
         public static void Constructor_Validates_Parameters()
         {
             // Act and Assert
-            Assert.Throws<ArgumentException>("userName", () => new BrowserStackAutomateClient(null, "MyAccessKey"));
+            Assert.Throws<ArgumentException>("userName", () => new BrowserStackAutomateClient(null!, "MyAccessKey"));
             Assert.Throws<ArgumentException>("userName", () => new BrowserStackAutomateClient(string.Empty, "MyAccessKey"));
             Assert.Throws<ArgumentException>("userName", () => new BrowserStackAutomateClient("          ", "MyAccessKey"));
-            Assert.Throws<ArgumentException>("accessKey", () => new BrowserStackAutomateClient("MyUserName", null));
+            Assert.Throws<ArgumentException>("accessKey", () => new BrowserStackAutomateClient("MyUserName", null!));
             Assert.Throws<ArgumentException>("accessKey", () => new BrowserStackAutomateClient("MyUserName", string.Empty));
             Assert.Throws<ArgumentException>("accessKey", () => new BrowserStackAutomateClient("MyUserName", "          "));
         }
@@ -290,7 +293,7 @@ namespace MartinCostello.BrowserStack.Automate
         public static void FromCredential_Throws_If_Credential_Is_Null()
         {
             // Arrange
-            NetworkCredential credential = null;
+            NetworkCredential credential = null!;
 
             // Act and Assert
             Assert.Throws<ArgumentNullException>("credential", () => BrowserStackAutomateClient.FromCredential(credential));
@@ -300,9 +303,9 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task DeleteBuildAsync_Throws_If_BuildId_Is_Null()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
-            string buildId = null;
+            string buildId = null!;
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentException>("buildId", () => target.DeleteBuildAsync(buildId));
@@ -312,9 +315,9 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task DeleteBuildsAsync_Throws_If_BuildIds_Is_Null()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
-            ICollection<string> buildIds = null;
+            ICollection<string> buildIds = null!;
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentNullException>("buildIds", () => target.DeleteBuildsAsync(buildIds));
@@ -324,7 +327,7 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task DeleteBuildsAsync_Throws_If_BuildIds_Is_Empty()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
             var buildIds = Array.Empty<string>();
 
@@ -336,7 +339,7 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task DeleteBuildAsync_Throws_If_BuildId_Is_Not_Found()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateAuthenticatedClient();
+            using var target = CreateAuthenticatedClient();
 
             string buildId = Guid.NewGuid().ToString();
 
@@ -349,7 +352,7 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task DeleteProjectAsync_Throws_If_ProjectId_Is_Not_Found()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateAuthenticatedClient();
+            using var target = CreateAuthenticatedClient();
 
             int projectId = 0;
 
@@ -362,9 +365,9 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task DeleteSessionAsync_Throws_If_SessionId_Is_Null()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
-            string sessionId = null;
+            string sessionId = null!;
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentException>("sessionId", () => target.DeleteSessionAsync(sessionId));
@@ -374,9 +377,9 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task DeleteSessionsAsync_Throws_If_SessionIds_Is_Null()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
-            ICollection<string> sessionIds = null;
+            ICollection<string> sessionIds = null!;
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentNullException>("sessionIds", () => target.DeleteSessionsAsync(sessionIds));
@@ -386,7 +389,7 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task DeleteSessionsAsync_Throws_If_SessionIds_Is_Empty()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
             var sessionIds = Array.Empty<string>();
 
@@ -398,7 +401,7 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task DeleteSessionAsync_Throws_If_SessionId_Is_Not_Found()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateAuthenticatedClient();
+            using var target = CreateAuthenticatedClient();
 
             string sessionId = Guid.NewGuid().ToString();
 
@@ -411,9 +414,9 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task GetSessionAsync_Throws_If_SessionId_Is_Null()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
-            string sessionId = null;
+            string sessionId = null!;
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentException>("sessionId", () => target.GetSessionAsync(sessionId));
@@ -423,7 +426,7 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task GetSessionAsync_Throws_If_SessionId_Is_Not_Found()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateAuthenticatedClient();
+            using var target = CreateAuthenticatedClient();
 
             string sessionId = Guid.NewGuid().ToString();
 
@@ -436,9 +439,9 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task GetSessionLogsAsync_Throws_If_BuildId_Is_Null()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
-            string buildId = null;
+            string buildId = null!;
             string sessionId = Guid.NewGuid().ToString();
 
             // Act and Assert
@@ -449,10 +452,10 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task GetSessionLogsAsync_Throws_If_SessionId_Is_Null()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
             string buildId = Guid.NewGuid().ToString();
-            string sessionId = null;
+            string sessionId = null!;
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentException>("sessionId", () => target.GetSessionLogsAsync(buildId, sessionId));
@@ -462,9 +465,9 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task GetSessionAppiumLogsAsync_Throws_If_BuildId_Is_Null()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
-            string buildId = null;
+            string buildId = null!;
             string sessionId = Guid.NewGuid().ToString();
 
             // Act and Assert
@@ -475,10 +478,10 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task GetSessionAppiumLogsAsync_Throws_If_SessionId_Is_Null()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
             string buildId = Guid.NewGuid().ToString();
-            string sessionId = null;
+            string sessionId = null!;
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentException>("sessionId", () => target.GetSessionAppiumLogsAsync(buildId, sessionId));
@@ -488,9 +491,9 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task GetSessionConsoleLogsAsync_Throws_If_BuildId_Is_Null()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
-            string buildId = null;
+            string buildId = null!;
             string sessionId = Guid.NewGuid().ToString();
 
             // Act and Assert
@@ -501,10 +504,10 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task GetSessionConsoleLogsAsync_Throws_If_SessionId_Is_Null()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
             string buildId = Guid.NewGuid().ToString();
-            string sessionId = null;
+            string sessionId = null!;
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentException>("sessionId", () => target.GetSessionConsoleLogsAsync(buildId, sessionId));
@@ -514,9 +517,9 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task GetSessionNetworkLogsAsync_Throws_If_BuildId_Is_Null()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
-            string buildId = null;
+            string buildId = null!;
             string sessionId = Guid.NewGuid().ToString();
 
             // Act and Assert
@@ -527,10 +530,10 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task GetSessionNetworkLogsAsync_Throws_If_SessionId_Is_Null()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
             string buildId = Guid.NewGuid().ToString();
-            string sessionId = null;
+            string sessionId = null!;
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentException>("sessionId", () => target.GetSessionNetworkLogsAsync(buildId, sessionId));
@@ -540,9 +543,9 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task GetSessionsAsync_Throws_If_BuildId_Is_Null()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
-            string buildId = null;
+            string buildId = null!;
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentException>("buildId", () => target.GetSessionsAsync(buildId));
@@ -552,10 +555,10 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task SetBuildNameAsync_Throws_If_Name_Is_Null()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
             int buildId = 1;
-            string name = null;
+            string name = null!;
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentException>("name", () => target.SetBuildNameAsync(buildId, name));
@@ -565,10 +568,10 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task SetProjectNameAsync_Throws_If_Name_Is_Null()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
             int projectId = 1;
-            string name = null;
+            string name = null!;
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentException>("name", () => target.SetProjectNameAsync(projectId, name));
@@ -578,10 +581,10 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task SetSessionNameAsync_Throws_If_Name_Is_Null()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
             string sessionId = "x";
-            string name = null;
+            string name = null!;
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentException>("name", () => target.SetSessionNameAsync(sessionId, name));
@@ -591,11 +594,11 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task SetSessionStatusAsync_Throws_If_SessionId_Is_Null()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
-            string sessionId = null;
-            string status = null;
-            string reason = null;
+            string sessionId = null!;
+            string status = null!;
+            string reason = null!;
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentException>("sessionId", () => target.SetSessionStatusAsync(sessionId, status, reason));
@@ -605,11 +608,11 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task SetSessionStatusAsync_Throws_If_Status_Is_Null()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
             string sessionId = "x";
-            string status = null;
-            string reason = null;
+            string status = null!;
+            string reason = null!;
 
             // Act and Assert
             await Assert.ThrowsAsync<ArgumentException>("status", () => target.SetSessionStatusAsync(sessionId, status, reason));
@@ -619,11 +622,11 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task GetBuildsAsync_Throws_If_Limit_Is_Less_Than_One()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
             int? limit = 0;
             int? offset = 0;
-            string status = null;
+            string? status = null;
 
             // Act and Assert
             var error = await Assert.ThrowsAsync<ArgumentOutOfRangeException>("limit", () => target.GetBuildsAsync(limit, offset, status));
@@ -636,12 +639,12 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task GetSessionsAsync_Throws_If_Limit_Is_Less_Than_One()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
             string sessionId = "x";
             int? limit = 0;
             int? offset = 0;
-            string status = null;
+            string? status = null;
 
             // Act and Assert
             var error = await Assert.ThrowsAsync<ArgumentOutOfRangeException>("limit", () => target.GetSessionsAsync(sessionId, limit, offset, status));
@@ -654,11 +657,11 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task GetBuildsAsync_Throws_If_Offset_Is_Less_Than_Zero()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
             int? limit = 1;
             int? offset = -1;
-            string status = null;
+            string? status = null;
 
             // Act and Assert
             var error = await Assert.ThrowsAsync<ArgumentOutOfRangeException>("offset", () => target.GetBuildsAsync(limit, offset, status));
@@ -671,12 +674,12 @@ namespace MartinCostello.BrowserStack.Automate
         public static async Task GetSessionsAsync_Throws_If_Offset_Is_Less_Than_Zero()
         {
             // Arrange
-            BrowserStackAutomateClient target = CreateClient();
+            using var target = CreateClient();
 
             string sessionId = "x";
             int? limit = 1;
             int? offset = -1;
-            string status = null;
+            string? status = null;
 
             // Act and Assert
             var error = await Assert.ThrowsAsync<ArgumentOutOfRangeException>("offset", () => target.GetSessionsAsync(sessionId, limit, offset, status));
@@ -685,11 +688,13 @@ namespace MartinCostello.BrowserStack.Automate
             error.ActualValue.ShouldBe(-1);
         }
 
-        [RequiresServiceCredentialsFact(Skip = "Test can only be run manually to prevent accidental destruction of data.")]
+        [SkippableFact]
         public static async Task Can_Delete_Build()
         {
+            Skip.If(true, "Test can only be run manually to prevent accidental destruction of data.");
+
             // Arrange
-            BrowserStackAutomateClient target = CreateAuthenticatedClient();
+            using var target = CreateAuthenticatedClient();
 
             string buildId = "CHANGE_ME";
 
@@ -701,11 +706,13 @@ namespace MartinCostello.BrowserStack.Automate
             error.ErrorDetail.ShouldNotBeNull();
         }
 
-        [RequiresServiceCredentialsFact(Skip = "Test can only be run manually to prevent accidental destruction of data.")]
+        [SkippableFact]
         public static async Task Can_Delete_Project()
         {
+            Skip.If(true, "Test can only be run manually to prevent accidental destruction of data.");
+
             // Arrange
-            BrowserStackAutomateClient target = CreateAuthenticatedClient();
+            using var target = CreateAuthenticatedClient();
 
             int projectId = 0;
 
@@ -717,11 +724,13 @@ namespace MartinCostello.BrowserStack.Automate
             error.ErrorDetail.ShouldNotBeNull();
         }
 
-        [RequiresServiceCredentialsFact(Skip = "Test can only be run manually to prevent accidental destruction of data.")]
+        [SkippableFact]
         public static async Task Can_Delete_Session()
         {
+            Skip.If(true, "Test can only be run manually to prevent accidental destruction of data.");
+
             // Arrange
-            BrowserStackAutomateClient target = CreateAuthenticatedClient();
+            using var target = CreateAuthenticatedClient();
 
             string sessionId = "CHANGE_ME";
 
@@ -733,15 +742,17 @@ namespace MartinCostello.BrowserStack.Automate
             error.ErrorDetail.ShouldNotBeNull();
         }
 
-        [RequiresServiceCredentialsFact(Skip = "Test can only be run manually so that the API key can be updated.")]
+        [SkippableFact]
         public static async Task Can_Recycle_BrowserStack_Api_Key()
         {
+            Skip.If(true, "Test can only be run manually so that the API key can be updated.");
+
             // Arrange
-            string expected = Environment.GetEnvironmentVariable("BrowserStack_AccessKey");
-            BrowserStackAutomateClient target = CreateAuthenticatedClient();
+            string? expected = Environment.GetEnvironmentVariable("BrowserStack_AccessKey");
+            using var target = CreateAuthenticatedClient();
 
             // Act
-            RecycleAccessKeyResult actual = await target.RecycleAccessKeyAsync();
+            RecycleAccessKeyResult? actual = await target.RecycleAccessKeyAsync();
 
             // Assert
             actual.ShouldNotBeNull();
@@ -777,10 +788,11 @@ namespace MartinCostello.BrowserStack.Automate
         /// </summary>
         /// <param name="build">The <see cref="Build"/> to assert on.</param>
         /// <param name="expectedStatus">The optional expected status.</param>
-        private static void AssertBuild(Build build, string expectedStatus = null)
+        private static void AssertBuild(Build build, string? expectedStatus = null)
         {
             build.ShouldNotBeNull();
-            build.Duration.ShouldBeGreaterThanOrEqualTo(1);
+            build.Duration.ShouldNotBeNull();
+            build.Duration.Value.ShouldBeGreaterThanOrEqualTo(1);
             build.HashedId.ShouldNotBeNullOrEmpty();
             build.Name.ShouldNotBeNullOrEmpty();
             build.Status.ShouldNotBeNullOrEmpty();
@@ -807,7 +819,8 @@ namespace MartinCostello.BrowserStack.Automate
             session.ProjectName.ShouldNotBeNullOrEmpty();
             session.Reason.ShouldNotBeNullOrEmpty();
             session.Status.ShouldNotBeNullOrEmpty();
-            session.Duration.ShouldBeGreaterThan(-1);
+            session.Duration.ShouldNotBeNull();
+            session.Duration.Value.ShouldBeGreaterThan(-1);
         }
 
         /// <summary>
@@ -818,8 +831,11 @@ namespace MartinCostello.BrowserStack.Automate
         /// </returns>
         private static BrowserStackAutomateClient CreateAuthenticatedClient()
         {
-            string userName = Environment.GetEnvironmentVariable("BrowserStack_UserName");
-            string accessKey = Environment.GetEnvironmentVariable("BrowserStack_AccessKey");
+            string? userName = Environment.GetEnvironmentVariable("BrowserStack_UserName");
+            string? accessKey = Environment.GetEnvironmentVariable("BrowserStack_AccessKey");
+
+            Skip.If(string.IsNullOrEmpty(userName), "The BrowserStack_UserName environment variable is not set.");
+            Skip.If(string.IsNullOrEmpty(accessKey), "The BrowserStack_AccessKey environment variable is not set.");
 
             var credential = new NetworkCredential(userName, accessKey);
 
