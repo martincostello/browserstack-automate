@@ -1,11 +1,14 @@
 ﻿// Copyright (c) Martin Costello, 2015. All rights reserved.
 // Licensed under the Apache 2.0 license. See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace MartinCostello.BrowserStack.Automate;
 
 /// <summary>
 /// A class representing the <see cref="JsonSerializerContext"/> to use for JSON serialization. This class cannot be inherited.
 /// </summary>
+[ExcludeFromCodeCoverage]
 [JsonSerializable(typeof(AutomatePlanStatus))]
 [JsonSerializable(typeof(AutomationSession))]
 [JsonSerializable(typeof(AutomationSessionDetail))]
