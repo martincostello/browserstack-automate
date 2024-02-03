@@ -35,7 +35,7 @@ MartinCostello.BrowserStack.Automate.BrowserStackAutomateError
 MartinCostello.BrowserStack.Automate.BrowserStackAutomateError.BrowserStackAutomateError() -> void
 MartinCostello.BrowserStack.Automate.BrowserStackAutomateError.Message.get -> string!
 MartinCostello.BrowserStack.Automate.BrowserStackAutomateError.Message.set -> void
-MartinCostello.BrowserStack.Automate.BrowserStackAutomateError.Status.get -> int
+MartinCostello.BrowserStack.Automate.BrowserStackAutomateError.Status.get -> string!
 MartinCostello.BrowserStack.Automate.BrowserStackAutomateError.Status.set -> void
 MartinCostello.BrowserStack.Automate.BrowserStackAutomateException
 MartinCostello.BrowserStack.Automate.BrowserStackAutomateException.BrowserStackAutomateException() -> void
