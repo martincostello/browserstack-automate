@@ -33,13 +33,11 @@ dotnet add package MartinCostello.BrowserStack.Automate
 
 ## Usage Examples
 
-The following example shows a custom [xUnit.net](https://xunit.github.io/) ```[Trait]``` that checks for an available BrowserStack Automate session before running the test, otherwise it is skipped.
+The following example shows a custom [xUnit.net](https://xunit.github.io/) `[Fact]` that checks for an available BrowserStack Automate session before running the test, otherwise it is skipped.
 
 ```csharp
 namespace MyApp.Tests;
 
-using System;
-using System.Configuration;
 using MartinCostello.BrowserStack.Automate;
 using Xunit;
 
@@ -48,16 +46,23 @@ public sealed class RequiresBrowserStackAutomateAttribute : FactAttribute
 {
     public RequiresBrowserStackAutomateAttribute()
     {
-        string userName = Environment.GetEnvironmentVariable("BrowserStack_UserName");
-        string accessKey = Environment.GetEnvironmentVariable("BrowserStack_AccessKey");
+        var userName = Environment.GetEnvironmentVariable("BrowserStack_UserName");
+        var accessKey = Environment.GetEnvironmentVariable("BrowserStack_AccessKey");
 
-        var client = new BrowserStackAutomateClient(userName, accessKey);
-        var plan = client.GetStatusAsync().Result;
-
-        if (plan.MaximumAllowedParallelSessions < 1 ||
-            plan.ParallelSessionsRunning == plan.MaximumAllowedParallelSessions)
+        if (userName is not null && accessKey is not null)
         {
-            Skip = "No BrowserStack Automate sessions are currently available.";
+            var client = new BrowserStackAutomateClient(userName, accessKey);
+            var plan = client.GetStatusAsync().Result;
+
+            if (plan.MaximumAllowedParallelSessions < 1 ||
+                plan.ParallelSessionsRunning == plan.MaximumAllowedParallelSessions)
+            {
+                Skip = "No BrowserStack Automate sessions are currently available.";
+            }
+        }
+        else
+        {
+            Skip = "No BrowserStack Automate credentials are available.";
         }
     }
 }
