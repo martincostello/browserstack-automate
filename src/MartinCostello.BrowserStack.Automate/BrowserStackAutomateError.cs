@@ -13,7 +13,7 @@ public class BrowserStackAutomateError
     /// Gets or sets the error status.
     /// </summary>
     [JsonPropertyName("status")]
-    public string Status { get; set; } = string.Empty;
+    public int Status { get; set; }
 
     /// <summary>
     /// Gets or sets the error message.
