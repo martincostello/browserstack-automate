@@ -21,7 +21,7 @@
   <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" VersionOverride="2.1.1" />
     <PackageReference Include="System.Net.Http.Json" VersionOverride="8.0.0" />
-    <PackageReference Include="System.Text.Json" VersionOverride="8.0.1" />
+    <PackageReference Include="System.Text.Json" VersionOverride="8.0.0" />
   </ItemGroup>
   <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" VersionOverride="8.0.0" />
