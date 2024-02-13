@@ -3,9 +3,9 @@
     <Description>Tests for MartinCostello.BrowserStack.Automate.</Description>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <NoWarn>$(NoWarn);CA1707;CA2007;SA1600</NoWarn>
+    <NoWarn>$(NoWarn);CA1515;CA1707;CA2007;SA1600</NoWarn>
     <RootNamespace>MartinCostello.BrowserStack.Automate</RootNamespace>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <UserSecretsId>MartinCostello.BrowserStack.Automate</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
