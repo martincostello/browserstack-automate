@@ -19,12 +19,12 @@
     <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>
   <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
-    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" VersionOverride="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" VersionOverride="2.2.0" />
     <PackageReference Include="System.Net.Http.Json" VersionOverride="8.0.0" />
     <PackageReference Include="System.Text.Json" />
   </ItemGroup>
   <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
-    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" VersionOverride="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" VersionOverride="8.0.4" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="All" />
