@@ -24,7 +24,7 @@
     <PackageReference Include="System.Text.Json" />
   </ItemGroup>
   <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
-    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" VersionOverride="8.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" VersionOverride="8.0.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="All" />
