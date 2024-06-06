@@ -80,13 +80,13 @@ jobs:
         flags: ${{ matrix.os-name }}
         token: ${{ secrets.CODECOV_TOKEN }}
 
-
     - name: Generate SBOM
       uses: anchore/sbom-action@e8d2a6937ecead383dfe75190d104edd1f9c5751 # v0.16.0
       with:
         artifact-name: build-${{ matrix.os-name }}.spdx.json
         output-file: ./artifacts/build.spdx.json
         path: ./artifacts/bin
+        syft-version: 'v1.5.0'
         upload-release-assets: ${{ runner.os == 'Windows' }}
 
     - name: Attest artifacts
