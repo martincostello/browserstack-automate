@@ -33,7 +33,7 @@ public static class BrowserStackAutomateClientExtensions
         string reason,
         CancellationToken cancellationToken = default)
     {
-#if NET8_0_OR_GREATER
+#if NET
         ArgumentNullException.ThrowIfNull(client);
 #else
         if (client == null)
@@ -67,7 +67,7 @@ public static class BrowserStackAutomateClientExtensions
         string reason,
         CancellationToken cancellationToken = default)
     {
-#if NET8_0_OR_GREATER
+#if NET
         ArgumentNullException.ThrowIfNull(client);
 #else
         if (client == null)

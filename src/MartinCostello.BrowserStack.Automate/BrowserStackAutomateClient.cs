@@ -120,7 +120,7 @@ public class BrowserStackAutomateClient : IDisposable
     /// </exception>
     public static BrowserStackAutomateClient FromCredential(NetworkCredential credential)
     {
-#if NET8_0_OR_GREATER
+#if NET
         ArgumentNullException.ThrowIfNull(credential);
 #else
         if (credential == null)
@@ -182,7 +182,7 @@ public class BrowserStackAutomateClient : IDisposable
     /// </exception>
     public virtual async Task DeleteBuildsAsync(ICollection<string> buildIds, CancellationToken cancellationToken = default)
     {
-#if NET8_0_OR_GREATER
+#if NET
         ArgumentNullException.ThrowIfNull(buildIds);
 #else
         if (buildIds == null)
@@ -260,7 +260,7 @@ public class BrowserStackAutomateClient : IDisposable
     /// </exception>
     public virtual async Task DeleteSessionsAsync(ICollection<string> sessionIds, CancellationToken cancellationToken = default)
     {
-#if NET8_0_OR_GREATER
+#if NET
         ArgumentNullException.ThrowIfNull(sessionIds);
 #else
         if (sessionIds == null)
@@ -369,7 +369,7 @@ public class BrowserStackAutomateClient : IDisposable
 
         await EnsureSuccessAsync(response, cancellationToken).ConfigureAwait(false);
 
-#if NET8_0_OR_GREATER
+#if NET
         return await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 #else
         return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -850,7 +850,7 @@ public class BrowserStackAutomateClient : IDisposable
         {
             try
             {
-#if NET8_0_OR_GREATER
+#if NET
                 using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
 #else
                 using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
@@ -932,7 +932,7 @@ public class BrowserStackAutomateClient : IDisposable
 
         response.EnsureSuccessStatusCode();
 
-#if NET8_0_OR_GREATER
+#if NET
         return await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 #else
         return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
