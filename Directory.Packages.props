@@ -12,7 +12,7 @@
     <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.0-preview.6.24327.7" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.0-preview.6.24327.7" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0-preview.6.24327.7" />
-    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.0.0-preview.6.24327.7" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.0.0-preview.5.24311.7" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
     <PackageVersion Include="ReportGenerator" Version="5.3.8" />
     <PackageVersion Include="Shouldly" Version="4.2.1" />
