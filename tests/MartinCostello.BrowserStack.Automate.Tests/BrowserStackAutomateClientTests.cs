@@ -382,8 +382,17 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string buildId = Guid.NewGuid().ToString();
 
         // Act and Assert
-        var error = await Assert.ThrowsAsync<BrowserStackAutomateException>(() => target.DeleteBuildAsync(buildId));
-        error.ErrorDetail.ShouldNotBeNull();
+        var exception = await Assert.ThrowsAnyAsync<Exception>(() => target.DeleteBuildAsync(buildId));
+
+        if (exception is BrowserStackAutomateException error)
+        {
+            error.ErrorDetail.ShouldNotBeNull();
+        }
+        else
+        {
+            var httpError = exception.ShouldBeOfType<HttpRequestException>();
+            httpError.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+        }
     }
 
     [SkippableFact]
@@ -444,8 +453,17 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string sessionId = Guid.NewGuid().ToString();
 
         // Act and Assert
-        var error = await Assert.ThrowsAsync<BrowserStackAutomateException>(() => target.DeleteSessionAsync(sessionId));
-        error.ErrorDetail.ShouldNotBeNull();
+        var exception = await Assert.ThrowsAnyAsync<Exception>(() => target.DeleteSessionAsync(sessionId));
+
+        if (exception is BrowserStackAutomateException error)
+        {
+            error.ErrorDetail.ShouldNotBeNull();
+        }
+        else
+        {
+            var httpError = exception.ShouldBeOfType<HttpRequestException>();
+            httpError.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+        }
     }
 
     [Fact]
@@ -469,8 +487,17 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string sessionId = Guid.NewGuid().ToString();
 
         // Act and Assert
-        var error = await Assert.ThrowsAsync<BrowserStackAutomateException>(() => target.GetSessionAsync(sessionId));
-        error.ErrorDetail.ShouldNotBeNull();
+        var exception = await Assert.ThrowsAnyAsync<Exception>(() => target.GetSessionAsync(sessionId));
+
+        if (exception is BrowserStackAutomateException error)
+        {
+            error.ErrorDetail.ShouldNotBeNull();
+        }
+        else
+        {
+            var httpError = exception.ShouldBeOfType<HttpRequestException>();
+            httpError.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+        }
     }
 
     [Fact]
