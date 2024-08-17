@@ -3,6 +3,7 @@
     <Description>Tests for MartinCostello.BrowserStack.Automate.</Description>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
     <NoWarn>$(NoWarn);CA1707;CA2007;SA1600</NoWarn>
     <RootNamespace>MartinCostello.BrowserStack.Automate</RootNamespace>
     <TargetFramework>net8.0</TargetFramework>
