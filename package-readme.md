@@ -1,6 +1,6 @@
 # BrowserStack Automate REST API .NET Client
 
-[![NuGet](https://buildstats.info/nuget/MartinCostello.BrowserStack.Automate)](https://www.nuget.org/packages/MartinCostello.BrowserStack.Automate)
+[![NuGet](https://img.shields.io/nuget/v/MartinCostello.BrowserStack.Automate?logo=nuget&label=NuGet&color=blue)](https://www.nuget.org/packages/MartinCostello.BrowserStack.Automate)
 [![Build status](https://github.com/martincostello/browserstack-automate/workflows/build/badge.svg?branch=main&event=push)](https://github.com/martincostello/browserstack-automate/actions?query=workflow%3Abuild+branch%3Amain+event%3Apush)
 [![codecov](https://codecov.io/gh/martincostello/browserstack-automate/branch/main/graph/badge.svg)](https://codecov.io/gh/martincostello/browserstack-automate)
 
