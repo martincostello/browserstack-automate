@@ -2,6 +2,7 @@
 name: Bug report
 about: Create a bug report to help us improve the library
 labels: bug
+title: ''
 ---
 
 ### Describe the bug
@@ -31,7 +32,7 @@ labels: bug
 ### System information
 
 <!--
- - OS: [e.g. Windows 10]
+ - OS: [e.g. Windows 11]
  - Library Version [e.g. 4.0.0]
  - .NET version (e.g. output from `dotnet --info`)
  - IDE and version [e.g. Visual Studio 17.8.0]
