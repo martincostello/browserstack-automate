@@ -35,7 +35,7 @@ title: ''
  - OS: [e.g. Windows 11]
  - Library Version [e.g. 4.0.0]
  - .NET version (e.g. output from `dotnet --info`)
- - IDE and version [e.g. Visual Studio 17.8.0]
+ - IDE and version [e.g. Visual Studio 17.9.0]
 -->
 
 ### Additional context
