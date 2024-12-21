@@ -18,7 +18,7 @@ public static class BrowserStackAutomateClientExtensionsTests
         string reason = "My reason";
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentNullException>("client", () => client.SetSessionCompletedAsync(sessionId, reason));
+        await Assert.ThrowsAsync<ArgumentNullException>("client", () => client.SetSessionCompletedAsync(sessionId, reason, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -31,6 +31,6 @@ public static class BrowserStackAutomateClientExtensionsTests
         string reason = "My reason";
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentNullException>("client", () => client.SetSessionErrorAsync(sessionId, reason));
+        await Assert.ThrowsAsync<ArgumentNullException>("client", () => client.SetSessionErrorAsync(sessionId, reason, TestContext.Current.CancellationToken));
     }
 }
