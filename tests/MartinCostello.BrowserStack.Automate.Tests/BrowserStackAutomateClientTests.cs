@@ -14,10 +14,11 @@ namespace MartinCostello.BrowserStack.Automate;
 /// </summary>
 public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
 {
-    [SkippableFact]
+    [Fact]
     public static async Task Can_Query_BrowserStack_Automate_Api()
     {
         // Arrange
+        var cancellationToken = TestContext.Current.CancellationToken;
         using var target = CreateAuthenticatedClient();
 
         int? limit;
@@ -25,7 +26,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string? status;
 
         // Act
-        ICollection<Browser> browsers = await target.GetBrowsersAsync();
+        ICollection<Browser> browsers = await target.GetBrowsersAsync(cancellationToken);
 
         // Assert
         browsers.ShouldNotBeNull();
@@ -40,7 +41,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         }
 
         // Act
-        ICollection<Build> builds = await target.GetBuildsAsync();
+        ICollection<Build> builds = await target.GetBuildsAsync(cancellationToken);
 
         // Assert
         builds.ShouldNotBeNull();
@@ -60,7 +61,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         foreach (var build in builds)
         {
             // Act
-            ICollection<Session> sessions = await target.GetSessionsAsync(build.HashedId);
+            ICollection<Session> sessions = await target.GetSessionsAsync(build.HashedId, cancellationToken);
 
             // Assert
             sessions.ShouldNotBeNull();
@@ -72,7 +73,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
                 AssertSession(session, build.Name);
 
                 // Act
-                var sessionDetail = await target.GetSessionAsync(session.HashedId);
+                var sessionDetail = await target.GetSessionAsync(session.HashedId, cancellationToken);
 
                 // Assert
                 sessionDetail.ShouldNotBeNull();
@@ -102,7 +103,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
                 sessionDetail.Status.ShouldBe(session.Status);
 
                 // Act
-                Session? updatedSession = await target.SetSessionCompletedAsync(session.HashedId, string.Empty);
+                Session? updatedSession = await target.SetSessionCompletedAsync(session.HashedId, string.Empty, cancellationToken);
 
                 // Assert
                 updatedSession.ShouldNotBeNull();
@@ -115,7 +116,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
             status = null;
 
             // Act
-            sessions = await target.GetSessionsAsync(build.HashedId, limit, offset, status);
+            sessions = await target.GetSessionsAsync(build.HashedId, limit, offset, status, cancellationToken);
 
             // Assert
             sessions.ShouldNotBeNull();
@@ -132,7 +133,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
             status = SessionStatuses.Done;
 
             // Act
-            sessions = await target.GetSessionsAsync(build.HashedId, limit, offset, status);
+            sessions = await target.GetSessionsAsync(build.HashedId, limit, offset, status, cancellationToken);
 
             // Assert
             sessions.ShouldNotBeNull();
@@ -148,7 +149,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
             status = SessionStatuses.Done;
 
             // Act
-            sessions = await target.GetSessionsAsync(build.HashedId, limit, offset, status);
+            sessions = await target.GetSessionsAsync(build.HashedId, limit, offset, status, cancellationToken);
 
             // Assert
             sessions.ShouldNotBeNull();
@@ -160,22 +161,22 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
                 AssertSession(session, build.Name);
 
                 // Act and Assert
-                await Should.NotThrowAsync(() => target.GetSessionLogsAsync(build.HashedId, session.HashedId));
+                await Should.NotThrowAsync(() => target.GetSessionLogsAsync(build.HashedId, session.HashedId, cancellationToken));
 
                 // Act and Assert
-                await Should.NotThrowAsync(() => target.GetSessionAppiumLogsAsync(build.HashedId, session.HashedId));
+                await Should.NotThrowAsync(() => target.GetSessionAppiumLogsAsync(build.HashedId, session.HashedId, cancellationToken));
 
                 // Act and Assert
-                await Should.NotThrowAsync(() => target.GetSessionConsoleLogsAsync(build.HashedId, session.HashedId));
+                await Should.NotThrowAsync(() => target.GetSessionConsoleLogsAsync(build.HashedId, session.HashedId, cancellationToken));
 
                 // Act and Assert
-                await Should.NotThrowAsync(() => target.GetSessionNetworkLogsAsync(build.HashedId, session.HashedId));
+                await Should.NotThrowAsync(() => target.GetSessionNetworkLogsAsync(build.HashedId, session.HashedId, cancellationToken));
 
                 // Act and Assert
-                await Should.NotThrowAsync(() => target.GetSessionSeleniumLogsAsync(build.HashedId, session.HashedId));
+                await Should.NotThrowAsync(() => target.GetSessionSeleniumLogsAsync(build.HashedId, session.HashedId, cancellationToken));
 
                 // Act and Assert
-                await Should.NotThrowAsync(() => target.GetSessionTelemetryLogsAsync(build.HashedId, session.HashedId));
+                await Should.NotThrowAsync(() => target.GetSessionTelemetryLogsAsync(build.HashedId, session.HashedId, cancellationToken));
             }
         }
 
@@ -185,7 +186,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         status = null;
 
         // Act
-        builds = await target.GetBuildsAsync(limit, offset, status);
+        builds = await target.GetBuildsAsync(limit, offset, status, cancellationToken: cancellationToken);
 
         // Assert
         builds.ShouldNotBeNull();
@@ -203,7 +204,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         status = BuildStatuses.Done;
 
         // Act
-        builds = await target.GetBuildsAsync(limit, offset, status);
+        builds = await target.GetBuildsAsync(limit, offset, status, cancellationToken: cancellationToken);
 
         // Assert
         builds.ShouldNotBeNull();
@@ -215,7 +216,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         }
 
         // Act
-        ICollection<Project> projects = await target.GetProjectsAsync();
+        ICollection<Project> projects = await target.GetProjectsAsync(cancellationToken);
 
         // Assert
         projects.ShouldNotContain((p) => p == null);
@@ -241,13 +242,13 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         foreach (int projectId in projects.Select((p) => p.Id))
         {
             // Act
-            string badge = await target.GetProjectStatusBadgeAsync(projectId);
+            string badge = await target.GetProjectStatusBadgeAsync(projectId, cancellationToken);
 
             // Assert
             badge.ShouldNotBeNullOrEmpty();
 
             // Act
-            ProjectDetailItem projectItem = await target.GetProjectAsync(projectId);
+            ProjectDetailItem projectItem = await target.GetProjectAsync(projectId, cancellationToken);
 
             // Assert
             projectItem.ShouldNotBeNull();
@@ -274,7 +275,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
             }
 
             // Act
-            builds = await target.GetBuildsAsync(projectId: projectId);
+            builds = await target.GetBuildsAsync(projectId: projectId, cancellationToken: cancellationToken);
 
             // Assert
             builds.ShouldNotBeNull();
@@ -287,7 +288,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         }
 
         // Act
-        AutomatePlanStatus? plan = await target.GetStatusAsync();
+        AutomatePlanStatus? plan = await target.GetStatusAsync(cancellationToken);
 
         // Assert
         plan.ShouldNotBeNull();
@@ -346,7 +347,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string buildId = null!;
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentException>("buildId", () => target.DeleteBuildAsync(buildId));
+        await Assert.ThrowsAsync<ArgumentException>("buildId", () => target.DeleteBuildAsync(buildId, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -358,7 +359,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         ICollection<string> buildIds = null!;
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentNullException>("buildIds", () => target.DeleteBuildsAsync(buildIds));
+        await Assert.ThrowsAsync<ArgumentNullException>("buildIds", () => target.DeleteBuildsAsync(buildIds, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -370,10 +371,10 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         var buildIds = Array.Empty<string>();
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentException>("buildIds", () => target.DeleteBuildsAsync(buildIds));
+        await Assert.ThrowsAsync<ArgumentException>("buildIds", () => target.DeleteBuildsAsync(buildIds, TestContext.Current.CancellationToken));
     }
 
-    [SkippableFact]
+    [Fact]
     public static async Task DeleteBuildAsync_Throws_If_BuildId_Is_Not_Found()
     {
         // Arrange
@@ -382,7 +383,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string buildId = Guid.NewGuid().ToString();
 
         // Act and Assert
-        var exception = await Assert.ThrowsAnyAsync<Exception>(() => target.DeleteBuildAsync(buildId));
+        var exception = await Assert.ThrowsAnyAsync<Exception>(() => target.DeleteBuildAsync(buildId, TestContext.Current.CancellationToken));
 
         if (exception is BrowserStackAutomateException error)
         {
@@ -395,7 +396,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         }
     }
 
-    [SkippableFact]
+    [Fact]
     public static async Task DeleteProjectAsync_Throws_If_ProjectId_Is_Not_Found()
     {
         // Arrange
@@ -404,7 +405,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         int projectId = 0;
 
         // Act and Assert
-        var error = await Assert.ThrowsAsync<BrowserStackAutomateException>(() => target.DeleteProjectAsync(projectId));
+        var error = await Assert.ThrowsAsync<BrowserStackAutomateException>(() => target.DeleteProjectAsync(projectId, TestContext.Current.CancellationToken));
         error.ErrorDetail.ShouldNotBeNull();
     }
 
@@ -417,7 +418,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string sessionId = null!;
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentException>("sessionId", () => target.DeleteSessionAsync(sessionId));
+        await Assert.ThrowsAsync<ArgumentException>("sessionId", () => target.DeleteSessionAsync(sessionId, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -429,7 +430,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         ICollection<string> sessionIds = null!;
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentNullException>("sessionIds", () => target.DeleteSessionsAsync(sessionIds));
+        await Assert.ThrowsAsync<ArgumentNullException>("sessionIds", () => target.DeleteSessionsAsync(sessionIds, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -441,10 +442,10 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         var sessionIds = Array.Empty<string>();
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentException>("sessionIds", () => target.DeleteSessionsAsync(sessionIds));
+        await Assert.ThrowsAsync<ArgumentException>("sessionIds", () => target.DeleteSessionsAsync(sessionIds, TestContext.Current.CancellationToken));
     }
 
-    [SkippableFact]
+    [Fact]
     public static async Task DeleteSessionAsync_Throws_If_SessionId_Is_Not_Found()
     {
         // Arrange
@@ -453,7 +454,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string sessionId = Guid.NewGuid().ToString();
 
         // Act and Assert
-        var exception = await Assert.ThrowsAnyAsync<Exception>(() => target.DeleteSessionAsync(sessionId));
+        var exception = await Assert.ThrowsAnyAsync<Exception>(() => target.DeleteSessionAsync(sessionId, TestContext.Current.CancellationToken));
 
         if (exception is BrowserStackAutomateException error)
         {
@@ -475,10 +476,10 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string sessionId = null!;
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentException>("sessionId", () => target.GetSessionAsync(sessionId));
+        await Assert.ThrowsAsync<ArgumentException>("sessionId", () => target.GetSessionAsync(sessionId, TestContext.Current.CancellationToken));
     }
 
-    [SkippableFact]
+    [Fact]
     public static async Task GetSessionAsync_Throws_If_SessionId_Is_Not_Found()
     {
         // Arrange
@@ -487,7 +488,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string sessionId = Guid.NewGuid().ToString();
 
         // Act and Assert
-        var exception = await Assert.ThrowsAnyAsync<Exception>(() => target.GetSessionAsync(sessionId));
+        var exception = await Assert.ThrowsAnyAsync<Exception>(() => target.GetSessionAsync(sessionId, TestContext.Current.CancellationToken));
 
         if (exception is BrowserStackAutomateException error)
         {
@@ -510,7 +511,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string sessionId = Guid.NewGuid().ToString();
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentException>("buildId", () => target.GetSessionLogsAsync(buildId, sessionId));
+        await Assert.ThrowsAsync<ArgumentException>("buildId", () => target.GetSessionLogsAsync(buildId, sessionId, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -523,7 +524,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string sessionId = null!;
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentException>("sessionId", () => target.GetSessionLogsAsync(buildId, sessionId));
+        await Assert.ThrowsAsync<ArgumentException>("sessionId", () => target.GetSessionLogsAsync(buildId, sessionId, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -536,7 +537,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string sessionId = Guid.NewGuid().ToString();
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentException>("buildId", () => target.GetSessionAppiumLogsAsync(buildId, sessionId));
+        await Assert.ThrowsAsync<ArgumentException>("buildId", () => target.GetSessionAppiumLogsAsync(buildId, sessionId, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -549,7 +550,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string sessionId = null!;
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentException>("sessionId", () => target.GetSessionAppiumLogsAsync(buildId, sessionId));
+        await Assert.ThrowsAsync<ArgumentException>("sessionId", () => target.GetSessionAppiumLogsAsync(buildId, sessionId, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -562,7 +563,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string sessionId = Guid.NewGuid().ToString();
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentException>("buildId", () => target.GetSessionConsoleLogsAsync(buildId, sessionId));
+        await Assert.ThrowsAsync<ArgumentException>("buildId", () => target.GetSessionConsoleLogsAsync(buildId, sessionId, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -575,7 +576,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string sessionId = null!;
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentException>("sessionId", () => target.GetSessionConsoleLogsAsync(buildId, sessionId));
+        await Assert.ThrowsAsync<ArgumentException>("sessionId", () => target.GetSessionConsoleLogsAsync(buildId, sessionId, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -588,7 +589,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string sessionId = Guid.NewGuid().ToString();
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentException>("buildId", () => target.GetSessionNetworkLogsAsync(buildId, sessionId));
+        await Assert.ThrowsAsync<ArgumentException>("buildId", () => target.GetSessionNetworkLogsAsync(buildId, sessionId, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -601,7 +602,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string sessionId = null!;
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentException>("sessionId", () => target.GetSessionNetworkLogsAsync(buildId, sessionId));
+        await Assert.ThrowsAsync<ArgumentException>("sessionId", () => target.GetSessionNetworkLogsAsync(buildId, sessionId, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -613,7 +614,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string buildId = null!;
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentException>("buildId", () => target.GetSessionsAsync(buildId));
+        await Assert.ThrowsAsync<ArgumentException>("buildId", () => target.GetSessionsAsync(buildId, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -626,7 +627,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string name = null!;
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentException>("tag", () => target.SetBuildTagAsync(buildId, name));
+        await Assert.ThrowsAsync<ArgumentException>("tag", () => target.SetBuildTagAsync(buildId, name, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -639,7 +640,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string name = null!;
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentException>("name", () => target.SetProjectNameAsync(projectId, name));
+        await Assert.ThrowsAsync<ArgumentException>("name", () => target.SetProjectNameAsync(projectId, name, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -652,7 +653,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string name = null!;
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentException>("name", () => target.SetSessionNameAsync(sessionId, name));
+        await Assert.ThrowsAsync<ArgumentException>("name", () => target.SetSessionNameAsync(sessionId, name, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -666,7 +667,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string reason = null!;
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentException>("sessionId", () => target.SetSessionStatusAsync(sessionId, status, reason));
+        await Assert.ThrowsAsync<ArgumentException>("sessionId", () => target.SetSessionStatusAsync(sessionId, status, reason, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -680,7 +681,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string reason = null!;
 
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentException>("status", () => target.SetSessionStatusAsync(sessionId, status, reason));
+        await Assert.ThrowsAsync<ArgumentException>("status", () => target.SetSessionStatusAsync(sessionId, status, reason, TestContext.Current.CancellationToken));
     }
 
     [Fact]
@@ -694,7 +695,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string? status = null;
 
         // Act and Assert
-        var error = await Assert.ThrowsAsync<ArgumentOutOfRangeException>("limit", () => target.GetBuildsAsync(limit, offset, status));
+        var error = await Assert.ThrowsAsync<ArgumentOutOfRangeException>("limit", () => target.GetBuildsAsync(limit, offset, status, cancellationToken: TestContext.Current.CancellationToken));
 
         error.Message.ShouldStartWith("The limit value cannot be less than one.");
         error.ActualValue.ShouldBe(0);
@@ -712,7 +713,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string? status = null;
 
         // Act and Assert
-        var error = await Assert.ThrowsAsync<ArgumentOutOfRangeException>("limit", () => target.GetSessionsAsync(sessionId, limit, offset, status));
+        var error = await Assert.ThrowsAsync<ArgumentOutOfRangeException>("limit", () => target.GetSessionsAsync(sessionId, limit, offset, status, TestContext.Current.CancellationToken));
 
         error.Message.ShouldStartWith("The limit value cannot be less than one.");
         error.ActualValue.ShouldBe(0);
@@ -729,7 +730,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string? status = null;
 
         // Act and Assert
-        var error = await Assert.ThrowsAsync<ArgumentOutOfRangeException>("offset", () => target.GetBuildsAsync(limit, offset, status));
+        var error = await Assert.ThrowsAsync<ArgumentOutOfRangeException>("offset", () => target.GetBuildsAsync(limit, offset, status, cancellationToken: TestContext.Current.CancellationToken));
 
         error.Message.ShouldStartWith("The offset value cannot be less than zero.");
         error.ActualValue.ShouldBe(-1);
@@ -747,7 +748,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         int? projectId = -1;
 
         // Act and Assert
-        var error = await Assert.ThrowsAsync<ArgumentOutOfRangeException>("projectId", () => target.GetBuildsAsync(limit, offset, status, projectId));
+        var error = await Assert.ThrowsAsync<ArgumentOutOfRangeException>("projectId", () => target.GetBuildsAsync(limit, offset, status, projectId, TestContext.Current.CancellationToken));
 
         error.Message.ShouldStartWith("The projectId value cannot be less than one.");
         error.ActualValue.ShouldBe(-1);
@@ -765,77 +766,69 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string? status = null;
 
         // Act and Assert
-        var error = await Assert.ThrowsAsync<ArgumentOutOfRangeException>("offset", () => target.GetSessionsAsync(sessionId, limit, offset, status));
+        var error = await Assert.ThrowsAsync<ArgumentOutOfRangeException>("offset", () => target.GetSessionsAsync(sessionId, limit, offset, status, TestContext.Current.CancellationToken));
 
         error.Message.ShouldStartWith("The offset value cannot be less than zero.");
         error.ActualValue.ShouldBe(-1);
     }
 
-    [SkippableFact]
+    [Fact(Explicit = true)]
     public static async Task Can_Delete_Build()
     {
-        Skip.If(true, "Test can only be run manually to prevent accidental destruction of data.");
-
         // Arrange
         using var target = CreateAuthenticatedClient();
 
         string buildId = "CHANGE_ME";
 
         // Act
-        await target.DeleteBuildAsync(buildId);
+        await target.DeleteBuildAsync(buildId, TestContext.Current.CancellationToken);
 
         // Act and Assert
-        var error = await Assert.ThrowsAsync<BrowserStackAutomateException>(() => target.DeleteBuildAsync(buildId));
+        var error = await Assert.ThrowsAsync<BrowserStackAutomateException>(() => target.DeleteBuildAsync(buildId, TestContext.Current.CancellationToken));
         error.ErrorDetail.ShouldNotBeNull();
     }
 
-    [SkippableFact]
+    [Fact(Explicit = true)]
     public static async Task Can_Delete_Project()
     {
-        Skip.If(true, "Test can only be run manually to prevent accidental destruction of data.");
-
         // Arrange
         using var target = CreateAuthenticatedClient();
 
         int projectId = 0;
 
         // Act
-        await target.DeleteProjectAsync(projectId);
+        await target.DeleteProjectAsync(projectId, TestContext.Current.CancellationToken);
 
         // Act and Assert
-        var error = await Assert.ThrowsAsync<BrowserStackAutomateException>(() => target.DeleteProjectAsync(projectId));
+        var error = await Assert.ThrowsAsync<BrowserStackAutomateException>(() => target.DeleteProjectAsync(projectId, TestContext.Current.CancellationToken));
         error.ErrorDetail.ShouldNotBeNull();
     }
 
-    [SkippableFact]
+    [Fact(Explicit = true)]
     public static async Task Can_Delete_Session()
     {
-        Skip.If(true, "Test can only be run manually to prevent accidental destruction of data.");
-
         // Arrange
         using var target = CreateAuthenticatedClient();
 
         string sessionId = "CHANGE_ME";
 
         // Act
-        await target.DeleteSessionAsync(sessionId);
+        await target.DeleteSessionAsync(sessionId, TestContext.Current.CancellationToken);
 
         // Act and Assert
-        var error = await Assert.ThrowsAsync<BrowserStackAutomateException>(() => target.DeleteSessionAsync(sessionId));
+        var error = await Assert.ThrowsAsync<BrowserStackAutomateException>(() => target.DeleteSessionAsync(sessionId, TestContext.Current.CancellationToken));
         error.ErrorDetail.ShouldNotBeNull();
     }
 
-    [SkippableFact]
+    [Fact(Explicit = true)]
     public static async Task Can_Recycle_BrowserStack_Api_Key()
     {
-        Skip.If(true, "Test can only be run manually so that the API key can be updated.");
-
         // Arrange
         string? expected = Environment.GetEnvironmentVariable("BrowserStack_AccessKey");
         using var target = CreateAuthenticatedClient();
 
         // Act
-        RecycleAccessKeyResult? actual = await target.RecycleAccessKeyAsync();
+        RecycleAccessKeyResult? actual = await target.RecycleAccessKeyAsync(TestContext.Current.CancellationToken);
 
         // Assert
         actual.ShouldNotBeNull();
@@ -864,7 +857,7 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         var client = provider.GetRequiredService<BrowserStackAutomateClient>();
 
         // Act and Assert
-        await Assert.ThrowsAsync<IsolatedCircuitException>(() => client.GetBuildsAsync());
+        await Assert.ThrowsAsync<IsolatedCircuitException>(() => client.GetBuildsAsync(TestContext.Current.CancellationToken));
     }
 
     /// <summary>
@@ -935,8 +928,8 @@ public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
         string? userName = configuration["BrowserStack_UserName"];
         string? accessKey = configuration["BrowserStack_AccessKey"];
 
-        Skip.If(string.IsNullOrEmpty(userName), "The BrowserStack_UserName environment variable is not set.");
-        Skip.If(string.IsNullOrEmpty(accessKey), "The BrowserStack_AccessKey environment variable is not set.");
+        Assert.SkipWhen(string.IsNullOrEmpty(userName), "The BrowserStack_UserName environment variable is not set.");
+        Assert.SkipWhen(string.IsNullOrEmpty(accessKey), "The BrowserStack_AccessKey environment variable is not set.");
 
         var credential = new NetworkCredential(userName, accessKey);
 
