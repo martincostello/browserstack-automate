@@ -22,4 +22,5 @@ updates:
     - "martincostello"
   open-pull-requests-limit: 99
   ignore:
+    - dependency-name: Microsoft.AspNetCore.WebUtilities
     - dependency-name: System.Text.Json
