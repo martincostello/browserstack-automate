@@ -329,7 +329,7 @@ public class BrowserStackAutomateClient : IDisposable
             AppJsonSerializerContext.Default.ListAutomationBuild,
             cancellationToken).ConfigureAwait(false) ?? [];
 
-        return [.. Builds.Select((p) => p.Build)];
+        return [.. builds.Select((p) => p.Build)];
     }
 
     /// <summary>
