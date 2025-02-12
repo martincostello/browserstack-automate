@@ -329,9 +329,7 @@ public class BrowserStackAutomateClient : IDisposable
             AppJsonSerializerContext.Default.ListAutomationBuild,
             cancellationToken).ConfigureAwait(false) ?? [];
 
-        return builds
-            .Select((p) => p.Build)
-            .ToList();
+        return [.. builds.Select((p) => p.Build)];
     }
 
     /// <summary>
@@ -555,9 +553,7 @@ public class BrowserStackAutomateClient : IDisposable
             AppJsonSerializerContext.Default.ListAutomationSession,
             cancellationToken).ConfigureAwait(false) ?? [];
 
-        return sessions
-            .Select((p) => p.Session)
-            .ToList();
+        return [.. sessions.Select((p) => p.Session)];
     }
 
     /// <summary>
