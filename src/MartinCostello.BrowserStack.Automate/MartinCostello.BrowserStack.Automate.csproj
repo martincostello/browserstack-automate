@@ -3,20 +3,13 @@
     <AssemblyTitle>BrowserStack Automate Client API</AssemblyTitle>
     <Description>.NET client for the BrowserStack Automate REST API.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IsPackable>true</IsPackable>
     <NoWarn>$(NoWarn);CA1056;CA2227</NoWarn>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;netstandard2.0</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup>
     <EnablePackageValidation>true</EnablePackageValidation>
-    <PackageValidationBaselineVersion>4.0.1</PackageValidationBaselineVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
-    <EnableAotAnalyzer>true</EnableAotAnalyzer>
-    <EnableSingleFileAnalyzer>true</EnableSingleFileAnalyzer>
-    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
-    <IsAotCompatible>true</IsAotCompatible>
-    <IsTrimmable>true</IsTrimmable>
   </PropertyGroup>
   <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" VersionOverride="2.3.0" />
@@ -28,10 +21,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="All" />
-  </ItemGroup>
-  <ItemGroup>
-    <AdditionalFiles Include="PublicAPI\PublicAPI.Shipped.txt" />
-    <AdditionalFiles Include="PublicAPI\PublicAPI.Unshipped.txt" />
   </ItemGroup>
   <ItemGroup>
     <AssemblyAttribute Include="System.CLSCompliant">
