@@ -12,7 +12,7 @@
     <EnablePackageValidation>true</EnablePackageValidation>
   </PropertyGroup>
   <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
-    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" VersionOverride="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" VersionOverride="2.3.0" />
     <PackageReference Include="System.Net.Http.Json" VersionOverride="8.0.0" />
     <PackageReference Include="System.Text.Json" />
   </ItemGroup>
@@ -23,10 +23,6 @@
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
-    <AssemblyAttribute Include="System.CLSCompliant">
-      <_Parameter1>true</_Parameter1>
-      <_Parameter1_IsLiteral>true</_Parameter1_IsLiteral>
-    </AssemblyAttribute>
     <InternalsVisibleTo Include="MartinCostello.BrowserStack.Automate.Tests" PublicKey="$(StrongNamePublicKey)" />
   </ItemGroup>
 </Project>

@@ -26,6 +26,7 @@ UpgradeLog*.XML
 *.GhostDoc.xml
 *.log
 *.nupkg
+!.packages/*.nupkg
 *.[Pp]ublish.xml
 *.sln.cache
 *.sln.docstates

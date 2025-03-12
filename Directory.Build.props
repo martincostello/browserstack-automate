@@ -3,12 +3,12 @@
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />
   </ItemGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)MartinCostello.BrowserStack.Automate.snk</AssemblyOriginatorKeyFile>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)MartinCostello.BrowserStack.Automate.ruleset</CodeAnalysisRuleSet>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <PackageTags>BrowserStack;Automate</PackageTags>
     <UseArtifactsOutput>true</UseArtifactsOutput>
+    <UseDefaultAssemblyOriginatorKeyFile>true</UseDefaultAssemblyOriginatorKeyFile>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <PackageValidationBaselineVersion>4.0.1</PackageValidationBaselineVersion>
     <VersionPrefix>4.1.1</VersionPrefix>
