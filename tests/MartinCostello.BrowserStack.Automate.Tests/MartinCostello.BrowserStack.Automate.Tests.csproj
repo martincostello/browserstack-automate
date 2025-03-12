@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <AssemblyIsCLSCompliant>false</AssemblyIsCLSCompliant>
     <Description>Tests for MartinCostello.BrowserStack.Automate.</Description>
     <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
     <RootNamespace>MartinCostello.BrowserStack.Automate</RootNamespace>
