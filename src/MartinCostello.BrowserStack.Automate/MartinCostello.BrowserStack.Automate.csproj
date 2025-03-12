@@ -12,7 +12,7 @@
     <EnablePackageValidation>true</EnablePackageValidation>
   </PropertyGroup>
   <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
-    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" VersionOverride="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" VersionOverride="8.0.0" />
     <PackageReference Include="System.Net.Http.Json" VersionOverride="8.0.0" />
     <PackageReference Include="System.Text.Json" />
   </ItemGroup>
