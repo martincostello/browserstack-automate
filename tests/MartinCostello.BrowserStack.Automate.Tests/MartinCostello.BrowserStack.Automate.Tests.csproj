@@ -5,6 +5,7 @@
     <RootNamespace>MartinCostello.BrowserStack.Automate</RootNamespace>
     <TargetFramework>net9.0</TargetFramework>
     <UserSecretsId>MartinCostello.BrowserStack.Automate</UserSecretsId>
+    <UseDefaultCodeAnalysisRuleSet>true</UseDefaultCodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="xunit.runner.json" CopyToPublishDirectory="PreserveNewest" />
