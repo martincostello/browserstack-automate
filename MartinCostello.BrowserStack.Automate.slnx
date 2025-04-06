@@ -1,0 +1,49 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path=".vsconfig" />
+    <File Path="browserstack-logo.png" />
+    <File Path="build.ps1" />
+    <File Path="CODE_OF_CONDUCT.md" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="LICENSE" />
+    <File Path="MartinCostello.BrowserStack.Automate.ruleset" />
+    <File Path="NuGet.config" />
+    <File Path="README.md" />
+    <File Path="stylecop.json" />
+  </Folder>
+  <Folder Name="/Solution Items/.github/">
+    <File Path=".github/CONTRIBUTING.md" />
+    <File Path=".github/ISSUE_TEMPLATE.md" />
+    <File Path=".github/PULL_REQUEST_TEMPLATE.md" />
+    <File Path=".github/stale.yml" />
+  </Folder>
+  <Folder Name="/Solution Items/.github/ISSUE_TEMPLATE/">
+    <File Path=".github/ISSUE_TEMPLATE/bug_report.md" />
+    <File Path=".github/ISSUE_TEMPLATE/feature_request.md" />
+  </Folder>
+  <Folder Name="/Solution Items/.github/workflows/">
+    <File Path=".github/workflows/build.yml" />
+    <File Path=".github/workflows/bump-version.yml" />
+    <File Path=".github/workflows/codeql-analysis.yml" />
+    <File Path=".github/workflows/dependency-review.yml" />
+    <File Path=".github/workflows/lint.yml" />
+    <File Path=".github/workflows/ossf-scorecard.yml" />
+    <File Path=".github/workflows/release.yml" />
+  </Folder>
+  <Folder Name="/Solution Items/.vscode/">
+    <File Path=".vscode/extensions.json" />
+    <File Path=".vscode/launch.json" />
+    <File Path=".vscode/tasks.json" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/MartinCostello.BrowserStack.Automate/MartinCostello.BrowserStack.Automate.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MartinCostello.BrowserStack.Automate.Tests/MartinCostello.BrowserStack.Automate.Tests.csproj" />
+  </Folder>
+</Solution>
