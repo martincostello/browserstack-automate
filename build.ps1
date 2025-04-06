@@ -12,10 +12,6 @@ $sdkFile = Join-Path $solutionPath "global.json"
 
 $libraryProject = Join-Path $solutionPath "src" "MartinCostello.BrowserStack.Automate" "MartinCostello.BrowserStack.Automate.csproj"
 
-$testProjects = @(
-    (Join-Path $solutionPath "tests" "MartinCostello.BrowserStack.Automate.Tests" "MartinCostello.BrowserStack.Automate.Tests.csproj")
-)
-
 $dotnetVersion = (Get-Content $sdkFile | Out-String | ConvertFrom-Json).sdk.version
 
 $installDotNetSdk = $false
@@ -82,7 +78,7 @@ function DotNetPack {
 }
 
 function DotNetTest {
-    param([string]$Project)
+    param()
 
     $additionalArgs = @()
 
@@ -91,7 +87,7 @@ function DotNetTest {
         $additionalArgs += "GitHubActions;report-warnings=false"
     }
 
-    & $dotnet test $Project --configuration "Release" $additionalArgs
+    & $dotnet test --configuration "Release" $additionalArgs
 
     if ($LASTEXITCODE-ne 0) {
         throw "dotnet test failed with exit code $LASTEXITCODE"
@@ -103,7 +99,5 @@ DotNetPack $libraryProject
 
 if (-Not $SkipTests) {
     Write-Information "Running tests..."
-    ForEach ($testProject in $testProjects) {
-        DotNetTest $testProject
-    }
+    DotNetTest
 }
