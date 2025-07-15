@@ -6,6 +6,8 @@
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)MartinCostello.BrowserStack.Automate.ruleset</CodeAnalysisRuleSet>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <!-- TODO Remove once .NET 10 is stable -->
+    <NoWarn>$(NoWarn);NU5104</NoWarn>
     <PackageTags>BrowserStack;Automate</PackageTags>
     <UseArtifactsOutput>true</UseArtifactsOutput>
     <UseDefaultAssemblyOriginatorKeyFile>true</UseDefaultAssemblyOriginatorKeyFile>
