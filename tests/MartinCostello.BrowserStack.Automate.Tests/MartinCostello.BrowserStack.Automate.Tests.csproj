@@ -2,7 +2,9 @@
   <PropertyGroup>
     <Description>Tests for MartinCostello.BrowserStack.Automate.</Description>
     <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
+    <PublicSign>false</PublicSign>
     <RootNamespace>MartinCostello.BrowserStack.Automate</RootNamespace>
+    <SignAssembly>false</SignAssembly>
     <TargetFramework>net9.0</TargetFramework>
     <UserSecretsId>MartinCostello.BrowserStack.Automate</UserSecretsId>
     <UseDefaultCodeAnalysisRuleSet>true</UseDefaultCodeAnalysisRuleSet>
