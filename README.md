@@ -86,8 +86,8 @@ This project is licensed under the [Apache 2.0](https://github.com/martincostell
 To build and test the assembly run one of the following set of commands:
 
 ```powershell
-$env:BrowserStack_UserName  = "MyUserName"
-$env:BrowserStack_AccessKey = "MyAccessKey"
+${env:BrowserStack_UserName}  = "MyUserName"
+${env:BrowserStack_AccessKey} = "MyAccessKey"
 ./build.ps1
 ```
 
