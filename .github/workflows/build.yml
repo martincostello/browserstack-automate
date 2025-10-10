@@ -29,7 +29,7 @@ jobs:
 
     outputs:
       dotnet-sdk-version: ${{ steps.setup-dotnet.outputs.dotnet-version }}
-      dotnet-validate-version: ${{ steps.get-dotnet-validate-version.outputs.dotnet-validate-version }}
+      dotnet-validate-version: ${{ steps.get-dotnet-tools-versions.outputs.dotnet-validate-version }}
       nuget-package-validation-version: ${{ steps.get-dotnet-tools-versions.outputs.nuget-package-validation-version }}
       package-names: ${{ steps.build.outputs.package-names }}
       package-version: ${{ steps.build.outputs.package-version }}
@@ -117,8 +117,8 @@ jobs:
         path: ./artifacts/package/release
         if-no-files-found: error
 
-    - name: Get dotnet-validate version
-      id: get-dotnet-validate-version
+    - name: Get .NET tools versions
+      id: get-dotnet-tools-versions
       shell: pwsh
       run: |
         $manifest = (Get-Content "./.config/dotnet-tools.json" | Out-String | ConvertFrom-Json)
