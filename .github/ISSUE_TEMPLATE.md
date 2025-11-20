@@ -10,7 +10,6 @@ title: ''
 
 <!-- Explain what actually happened. If an exception occurred, please include a stack trace if available. -->
 
-###
-Steps to reproduce
+## Steps to reproduce
 
 <!-- A concise, repeatable, example of how to illustrate the issue. -->
