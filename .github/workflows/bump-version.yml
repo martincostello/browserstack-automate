@@ -28,6 +28,7 @@ jobs:
         with:
           filter: 'tree:0'
           persist-credentials: true # zizmor: ignore[artipacked] Needed to push commits
+          ref: ${{ github.event.release.tag_name || github.event.repository.default_branch }}
           show-progress: false
           token: ${{ secrets.COSTELLOBOT_TOKEN }}
 
@@ -36,6 +37,7 @@ jobs:
         shell: pwsh
         env:
           NEXT_VERSION: ${{ inputs.version }}
+          RELEASED_VERSION: ${{ github.event.release.tag_name }}
         run: |
           $properties = Join-Path "." "Directory.Build.props"
 
@@ -48,6 +50,9 @@ jobs:
             $assemblyVersionProperty = $xml.SelectSingleNode('Project/PropertyGroup/AssemblyVersion')
             $assemblyVersion = [System.Version]::new($version.Major, 0, 0, 0)
             $assemblyVersionProperty.InnerText = $assemblyVersion.ToString()
+          } elseif (-Not [string]::IsNullOrEmpty(${env:RELEASED_VERSION})) {
+            $version = [System.Version]::new(${env:RELEASED_VERSION}.TrimStart('v'))
+            $version = [System.Version]::new($version.Major, $version.Minor, $version.Build + 1)
           } else {
             $version = [System.Version]::new($publishedVersion)
             $version = [System.Version]::new($version.Major, $version.Minor, $version.Build + 1)
