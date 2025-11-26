@@ -92,7 +92,7 @@ jobs:
         shell: bash
         run: |
           gpg_script="${RUNNER_TEMP}/${GITHUB_REPOSITORY_OWNER_ID}-${GITHUB_REPOSITORY_ID}-gpg.sh"
-          echo '#!/bin/bash' >> "${gpg_script}"
+          echo '#!/bin/bash' > "${gpg_script}"
           # shellcheck disable=SC2016
           echo 'gpg --batch --pinentry-mode=loopback --passphrase "${GPG_PASSPHRASE}" "$@"' >> "${gpg_script}"
           chmod +x "${gpg_script}"
