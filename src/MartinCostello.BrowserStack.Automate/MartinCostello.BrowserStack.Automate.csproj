@@ -6,21 +6,21 @@
     <IsPackable>true</IsPackable>
     <NoWarn>$(NoWarn);CA1056;CA2227</NoWarn>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>net10.0;net8.0;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net10.0;net8.0;netstandard2.0;net11.0</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup>
     <EnablePackageValidation>true</EnablePackageValidation>
   </PropertyGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" VersionOverride="[2.3.0,)" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" VersionOverride="2.3.9" />
     <PackageReference Include="System.Net.Http.Json" VersionOverride="[8.0.0,)" />
-    <PackageReference Include="System.Text.Json" VersionOverride="[8.0.5,)" />
+    <PackageReference Include="System.Text.Json" VersionOverride="11.0.0-preview.1.26104.118" />
   </ItemGroup>
   <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
-    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" VersionOverride="[8.0.0,)" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" VersionOverride="8.0.24" />
   </ItemGroup>
   <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net10.0'))">
-    <PackageReference Update="Microsoft.AspNetCore.WebUtilities" VersionOverride="[10.0.0,)" />
+    <PackageReference Update="Microsoft.AspNetCore.WebUtilities" VersionOverride="11.0.0-preview.1.26104.118" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="All" />
