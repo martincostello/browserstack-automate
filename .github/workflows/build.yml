@@ -23,6 +23,10 @@ jobs:
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 20
 
+    environment:
+      name: build
+      deployment: false
+
     outputs:
       dotnet-sdk-version: ${{ steps.setup-dotnet.outputs.dotnet-version }}
       dotnet-validate-version: ${{ steps.get-dotnet-tools-versions.outputs.dotnet-validate-version }}
@@ -66,8 +70,8 @@ jobs:
       shell: pwsh
       run: ./build.ps1
       env:
-        BrowserStack_AccessKey: ${{ secrets.BrowserStack_AccessKey }}
-        BrowserStack_UserName: ${{ secrets.BrowserStack_UserName }}
+        BrowserStack_AccessKey: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+        BrowserStack_UserName: ${{ secrets.BROWSERSTACK_USER_NAME }}
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6.0.1
