@@ -2,6 +2,7 @@
   <PropertyGroup>
     <Description>Tests for MartinCostello.BrowserStack.Automate.</Description>
     <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
+    <OutputType>Exe</OutputType>
     <RootNamespace>MartinCostello.BrowserStack.Automate</RootNamespace>
     <TargetFramework>net10.0</TargetFramework>
     <UserSecretsId>MartinCostello.BrowserStack.Automate</UserSecretsId>
