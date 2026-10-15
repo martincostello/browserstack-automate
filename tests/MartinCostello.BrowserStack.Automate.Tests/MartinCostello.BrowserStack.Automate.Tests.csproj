@@ -2,6 +2,7 @@
   <PropertyGroup>
     <Description>Tests for MartinCostello.BrowserStack.Automate.</Description>
     <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
+    <OutputType>Exe</OutputType>
     <RootNamespace>MartinCostello.BrowserStack.Automate</RootNamespace>
     <TargetFramework>net10.0</TargetFramework>
     <UserSecretsId>MartinCostello.BrowserStack.Automate</UserSecretsId>
@@ -20,10 +21,8 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
     <PackageReference Include="Shouldly" />
-    <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="xunit.v3.mtp-v2" />
   </ItemGroup>
   <PropertyGroup>
