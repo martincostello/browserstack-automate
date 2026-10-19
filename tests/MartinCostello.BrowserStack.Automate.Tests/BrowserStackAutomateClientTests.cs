@@ -12,6 +12,7 @@ namespace MartinCostello.BrowserStack.Automate;
 /// <summary>
 /// A class containing tests for the <see cref="BrowserStackAutomateClient"/> class.
 /// </summary>
+/// <param name="outputHelper">The <see cref="ITestOutputHelper"/> to use.</param>
 public class BrowserStackAutomateClientTests(ITestOutputHelper outputHelper)
 {
     [Fact]
